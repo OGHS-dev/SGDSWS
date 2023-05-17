@@ -1,6 +1,5 @@
 package com.oghs.sgdsws.model.entity;
 
-import com.oghs.sgdsws.model.EstatusBitacoraProyecto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,9 +41,9 @@ public class BitacoraProyecto implements Serializable {
     @NotNull
     private Long revision;
     
-    @Column(name = "ESTATUS")
-    @NotNull
-    private EstatusBitacoraProyecto estatus;
+    // @Column(name = "ESTATUS")
+    // @NotNull
+    // private EstatusBitacoraProyecto estatus;
     
     @OneToMany(mappedBy = "bitacoraProyecto")
     private Set<Archivo> archivo;
@@ -84,13 +83,13 @@ public class BitacoraProyecto implements Serializable {
         this.revision = revision;
     }
 
-    public EstatusBitacoraProyecto getEstatus() {
-        return estatus;
-    }
+    // public EstatusBitacoraProyecto getEstatus() {
+    //     return estatus;
+    // }
 
-    public void setEstatus(EstatusBitacoraProyecto estatus) {
-        this.estatus = estatus;
-    }
+    // public void setEstatus(EstatusBitacoraProyecto estatus) {
+    //     this.estatus = estatus;
+    // }
 
     public Set<Archivo> getArchivo() {
         return archivo;
@@ -111,7 +110,7 @@ public class BitacoraProyecto implements Serializable {
     @Override
     public String toString() {
         return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", proyecto=" + proyecto
-                + ", fechaBitacora=" + fechaBitacora + ", revision=" + revision + ", estatus=" + estatus + ", archivo="
+                + ", fechaBitacora=" + fechaBitacora + ", revision=" + revision + /* ", estatus=" + estatus + */ ", archivo="
                 + archivo + ", comentario=" + comentario + "]";
     }
     

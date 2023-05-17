@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.oghs.sgdsws.model.ProyectoDTO;
 import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.service.BitacoraProyectoService;
+import com.oghs.sgdsws.model.service.EstadoProyectoService;
 import com.oghs.sgdsws.model.service.ProyectoService;
 import com.oghs.sgdsws.model.service.UsuarioService;
 
@@ -31,6 +32,9 @@ public class ProyectoController {
 
     @Autowired
     private ProyectoService proyectoService;
+
+    @Autowired
+    private EstadoProyectoService estadoProyectoService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -53,6 +57,7 @@ public class ProyectoController {
         model.addAttribute("titulo", "Nuevo Proyecto");
         model.addAttribute("proyectoDTO", new ProyectoDTO());
         model.addAttribute("listaUsuarios", usuarioService.obtenerUsuarios());
+        model.addAttribute("listaEstadosProyecto", estadoProyectoService.obtenerEstadosProyecto());
         
         return "/views/proyectos/crearProyecto";
     }

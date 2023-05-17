@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
  * @author oghs
  */
 @Entity
-@Table(name = "ARCHIVOS")
+@Table(name = "ARCHIVO")
 public class Archivo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

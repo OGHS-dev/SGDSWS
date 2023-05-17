@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.oghs.sgdsws.model.EstatusBitacoraProyecto;
 import com.oghs.sgdsws.model.ProyectoDTO;
 import com.oghs.sgdsws.model.entity.BitacoraProyecto;
 import com.oghs.sgdsws.model.entity.Proyecto;
@@ -63,10 +62,10 @@ public class ProyectoServiceImpl implements ProyectoService {
         bitacoraProyecto.setProyecto(proyectoDTO.getProyecto());
         if (listaBitacoraProyecto.isEmpty()) {
             bitacoraProyecto.setRevision(1L);
-            bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Creado);
+            // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Creado);
         } else {
             bitacoraProyecto.setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
-            bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Modificado);
+            // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Modificado);
         }
         bitacoraProyectoRepository.save(bitacoraProyecto);
     }

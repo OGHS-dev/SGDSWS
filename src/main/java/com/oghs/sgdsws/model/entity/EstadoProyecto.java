@@ -2,6 +2,7 @@ package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -47,6 +49,9 @@ public class EstadoProyecto implements Serializable {
     @UpdateTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaModificacion;
+
+    @OneToMany(mappedBy = "estadoProyecto")
+    private Set<Proyecto> proyecto;
 
     public Long getIdEstadoProyecto() {
         return idEstadoProyecto;
@@ -88,10 +93,19 @@ public class EstadoProyecto implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
+    public Set<Proyecto> getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(Set<Proyecto> proyecto) {
+        this.proyecto = proyecto;
+    }
+
     @Override
     public String toString() {
         return "EstadoProyecto [idEstadoProyecto=" + idEstadoProyecto + ", descripcion=" + descripcion + ", estatus="
-                + estatus + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion + "]";
+                + estatus + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
+                + ", proyecto=" + proyecto + "]";
     }
     
 }

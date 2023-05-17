@@ -6,13 +6,13 @@ import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.oghs.sgdsws.model.EstatusProyecto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -39,14 +39,22 @@ public class Proyecto implements Serializable {
     @NotEmpty
     private String descripcion;
 
-    @Column(name = "ESTATUS")
-    @NotNull
-    private EstatusProyecto estatus;
+    @ManyToOne
+    @JoinColumn(name = "ID_ESTADO_PROYECTO")
+    private EstadoProyecto estadoProyecto;
 
     @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date fechaCreacion;
+
+    @Column(name = "USUARIO_CREADO")
+    @NotEmpty
+    private String usuarioCreado;
+
+    @Column(name = "USUARIO_ASIGNADO")
+    @NotEmpty
+    private String usuarioAsignado;
 
     @Column(name = "FECHA_INICIO")
     @NotNull
@@ -88,12 +96,12 @@ public class Proyecto implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public EstatusProyecto getEstatus() {
-        return estatus;
+    public EstadoProyecto getEstadoProyecto() {
+        return estadoProyecto;
     }
 
-    public void setEstatus(EstatusProyecto estatus) {
-        this.estatus = estatus;
+    public void setEstadoProyecto(EstadoProyecto estadoProyecto) {
+        this.estadoProyecto = estadoProyecto;
     }
 
     public Set<UsuarioProyecto> getUsuarioProyecto() {
@@ -110,6 +118,22 @@ public class Proyecto implements Serializable {
 
     public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getUsuarioCreado() {
+        return usuarioCreado;
+    }
+
+    public void setUsuarioCreado(String usuarioCreado) {
+        this.usuarioCreado = usuarioCreado;
+    }
+
+    public String getUsuarioAsignado() {
+        return usuarioAsignado;
+    }
+
+    public void setUsuarioAsignado(String usuarioAsignado) {
+        this.usuarioAsignado = usuarioAsignado;
     }
 
     public Date getFechaInicio() {
@@ -139,7 +163,8 @@ public class Proyecto implements Serializable {
     @Override
     public String toString() {
         return "Proyecto [idProyecto=" + idProyecto + ", nombre=" + nombre + ", descripcion=" + descripcion
-                + ", estatus=" + estatus + ", fechaCreacion=" + fechaCreacion + ", fechaInicio=" + fechaInicio
+                + ", estadoProyecto=" + estadoProyecto + ", fechaCreacion=" + fechaCreacion + ", usuarioCreado="
+                + usuarioCreado + ", usuarioAsignado=" + usuarioAsignado + ", fechaInicio=" + fechaInicio
                 + ", fechaFin=" + fechaFin + ", usuarioProyecto=" + usuarioProyecto + ", bitacoraProyecto="
                 + bitacoraProyecto + "]";
     }

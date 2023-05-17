@@ -31,10 +31,10 @@
                             <div class="invalid-feedback">Requerido</div>
                         </div>
                         <div class="mb-3">
-                            <label for="estatus" class="form-label">Estatus del proyecto:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{proyecto.estatus}" id="estatus" required>
-                                <option selected disabled value="">Seleccionar estatus...</option>
-                                <option th:each="e : ${T(com.oghs.sgdsws.model.EstatusProyecto).values()}" th:value="${e}" th:text="${e}"></option>
+                            <label for="estadoProyecto" class="form-label">Estado del proyecto:</label>
+                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{proyecto.estadoProyecto}" id="estadoProyecto" required>
+                                <option selected disabled value="">Seleccionar estado...</option>
+                                <option th:each="lep : ${listaEstadosProyecto}" th:value="${lep.idEstadoProyecto}" th:text="${lep.descripcion}"></option>
                             </select>
                             <div class="valid-feedback">Correcto</div>
                             <div class="invalid-feedback">Requerido</div>
