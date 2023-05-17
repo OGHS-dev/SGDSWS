@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <form th:action="@{/views/nivelesRiesgo/guardar}" th:object="${nivelRiesgo}" method="post" class="needs-validation" novalidate>
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="card-title">
+                            <i class="bi-plus-circle"></i>
+                            <span th:text="${titulo}"></span>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{idNivelRiesgo}">
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción del nivel de riesgo:</label>
+                            <input type="text" class="form-control" id="descripcion" placeholder="Descripción del nivel de riesgo" th:field="*{descripcion}" required>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></small> -->
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="estatus" class="form-label">Estatus del nivel de riesgo:</label>
+                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{estatus}" id="estatus" required>
+                                <option selected disabled value="">Seleccionar estatus...</option>
+                                <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
+                            </select>
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <input type="hidden" th:field="*{fechaCreacion}">
+                        <input type="hidden" th:field="*{fechaModificacion}">
+                    </div>
+                    <div class="card-footer bg-dark text-white">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi-save"></i>
+                            <span>Guardar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+    
+    <footer th:replace="~{template :: footer}"></footer>
+</html>

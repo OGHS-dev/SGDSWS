@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title">
+                        <i class="bi-person-circle"></i>
+                        <span th:text="${titulo}"></span>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/usuarios/crear}" title="Crear Nuevo Usuario">
+                        <i class="bi-person-add"></i>
+                        <span>Nuevo Usuario</span>
+                    </a>
+                    <br>
+                    <br>
+                    <div class="table-responsive" data-bs-spy="scroll">
+                        <table class="table table-striped table-hover" id="">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Usuario</th>
+                                    <th scope="col">Correo</th>
+                                    <th scope="col">Rol</th>
+                                    <th scope="col">Estatus</th>
+                                    <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Fecha Modificación</th>
+                                    <th scope="col">Fecha Vigencia</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="u : ${usuarios.page}">
+                                    <th scope="row" th:text="${u.idUsuario}"></th>
+                                    <td th:text="${u.nombreUsuario}"></td>
+                                    <td th:text="${u.correo}"></td>
+                                    <td th:text="${u.rol.descripcion}"></td>
+                                    <td th:text="${u.estatus}"></td>
+                                    <td th:text="${#dates.format(u.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#dates.format(u.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#dates.format(u.fechaVigencia, 'dd/MM/yyyy')}"></td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <a class="btn btn-warning" th:href="@{/views/usuarios/editar/} + ${u.idUsuario}" title="Editar Usuario">
+                                            <i class="bi-pencil-square"></i>
+                                        </a>
+                                    </td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <a class="btn btn-danger" th:href="@{/views/usuarios/eliminar/} + ${u.idUsuario}" title="Eliminar Usuario" onclick="return confirm('Eliminar este usuario?');">
+                                            <i class="bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation" class="paging">
+                            <ul class="pagination" th:if="${usuarios.page.totalPages > 1}">
+                                <li class="page-item" th:classappend="${!usuarios.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${usuarios.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
+                                </li>
+                                <th:block th:each="item : ${usuarios.paginando.getElementos()}">
+                                    <li class="page-item" th:classappend="${item.indice == usuarios.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
+                                        <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
+                                    </li>
+                                    <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item" th:classappend="${!usuarios.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${usuarios.paginando.numeroPagina + 1}}">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="card-footer bg-dark text-white">
+                    
+                </div>
+            </div>
+        </div>
+        
+    </body>
+    <footer th:replace="~{template :: footer}"></footer>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+
+        <div class="container" data-bs-spy="scroll">
+            <form th:action="@{/views/proyectos/guardar}" th:object="${proyectoDTO}" method="post" class="needs-validation" novalidate>
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="card-title">
+                            <i class="bi-clipboard-plus"></i>
+                            <span th:text="${titulo}"></span>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{proyecto.idProyecto}">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del proyecto:</label>
+                            <input type="text" class="form-control" id="nombre" placeholder="Nombre del proyecto" th:field="*{proyecto.nombre}" required>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('proyecto.nombre')}" th:errors="*{proyecto.nombre}"></small> -->
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción del proyecto:</label>
+                            <input type="text" class="form-control" id="descripcion" placeholder="Descripción del proyecto" th:field="*{proyecto.descripcion}" required>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('proyecto.descripcion')}" th:errors="*{proyecto.descripcion}"></small> -->
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="estatus" class="form-label">Estatus del proyecto:</label>
+                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{proyecto.estatus}" id="estatus" required>
+                                <option selected disabled value="">Seleccionar estatus...</option>
+                                <option th:each="e : ${T(com.oghs.sgdsws.model.EstatusProyecto).values()}" th:value="${e}" th:text="${e}"></option>
+                            </select>
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <input type="hidden" th:field="*{proyecto.fechaCreacion}">
+                        <div class="mb-3">
+                            <label for="fechaInicio" class="form-label">Fecha de inicio del proyecto:</label>
+                            <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de inicio del proyecto" th:field="*{proyecto.fechaInicio}" required>
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fechaFin" class="form-label">Fecha de fin del proyecto:</label>
+                            <input type="date" class="form-control" id="fechaFin" placeholder="Fecha de fin del proyecto" th:field="*{proyecto.fechaFin}" required>
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+
+                        <!-- <div class="mb-3">
+                            <label for="usuarios" class="form-label">Usuarios asignados al proyecto:</label>
+                            <select class="form-control selectpicker" aria-label="multiple select example" th:field="*{listaUsuariosProyecto}" id="usuariosProyecto" multiple required>
+                                <option selected disabled value="">Seleccionar usuario(s)...</option>
+                                <option th:each="u : ${usuarios}" th:value="${u.idUsuario}" th:text="${u.nombreUsuario}"></option>
+                            </select>
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div> -->
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="listaUsuarios" class="form-label">Asignar usuarios al proyecto:</label>
+                                <select class="form-select" aria-label="multiple select example" id="listaUsuarios" multiple="multiple" required>
+                                    <option selected disabled value="">Seleccionar usuario(s)...</option>
+                                    <option th:each="lu : ${listaUsuarios}" th:value="${lu.idUsuario}" th:text="${lu.nombreUsuario}"></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1">
+
+                            </div>
+                            <div class="col">
+                                <label for="listaUsuariosProyecto" class="form-label">Usuarios asignados al proyecto:</label>
+                                <select class="form-select" aria-label="multiple select example" th:field="*{listaUsuariosProyecto}" id="listaUsuariosProyecto" multiple="multiple" required>
+                                    <option selected disabled value="">Seleccionar usuario(s)...</option>
+                                    <option th:each="lup : ${proyectoDTO.listaUsuariosProyecto}" th:value="${lup.idUsuario}" th:text="${lup.nombreUsuario}"></option>
+                                </select>
+                                <div class="valid-feedback">Correcto</div>
+                                <div class="invalid-feedback">Requerido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-white">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi-save"></i>
+                            <span>Guardar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </body>
+    <footer th:replace="~{template :: footer}">
+        <script>
+            // let fechaInicio = document.getElementById('fechaInicio')
+            // let fechaFin = document.getElementById('fechaFin')
+
+            /* fechaInicio.addEventListener('change', (e) => {
+                let fechaInicioVal = e.target.value
+                console.log(fechaInicioVal)
+            }) */
+
+            /* fechaFin.addEventListener('change', (e) => {
+                let fechaFinVal = e.target.value
+                console.log(fechaFinVal)
+            }) */
+        // </script>
+    </footer>
+</html>

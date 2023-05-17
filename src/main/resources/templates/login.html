@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+
+        <div class="container">
+            <div class="row py-5">
+                <div class="container text-center">
+                    <h1>Sistema de Gestión de Desarrollo de Software con Seguridad</h1>
+                </div>
+            </div>
+            <div class="row py-3">
+                <div class="col"></div>
+                <div class="col-6">
+                    <div class="card">
+                        <form th:action="@{/login}" method="post">
+                            <div class="card-header bg-dark text-white">
+                                <div class="card-header">
+                                    <h5 class="card-title">Iniciar Sesión</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label sr-only" for="username">Usuario</label>
+                                        <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" aria-describedby="Usuario" required autofocus>
+                                        <div id="ayuda" class="form-text text-white">Para solicitar un usuario nuevo favor de comunicarse con el área de Seguridad de la Información.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label sr-only" for="password">Contraseña</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" aria-describedby="Contraseña" required>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <!-- <button type="submit" class="btn btn-primary"><i class="bi-save"></i>&nbsp;Guardar</button> -->
+                                    <button class="btn btn-primary" type="submit">Ingresar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+    </body>
+    <!-- <footer th:replace="~{template :: footer}"></footer> -->
+    <div th:replace="~{template :: footer}"></div>
+</html>
