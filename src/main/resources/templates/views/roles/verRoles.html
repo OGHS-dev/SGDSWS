@@ -26,9 +26,12 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col">ID</th>
+                                    <th scope="col">Código</th>
                                     <th scope="col">Descripción</th>
                                     <th scope="col">Estatus</th>
+                                    <th scope="col">Usuario Creación</th>
                                     <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Usuario Modificación</th>
                                     <th scope="col">Fecha Modificación</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
@@ -37,9 +40,12 @@
                             <tbody>
                                 <tr th:each="r : ${roles.page}">
                                     <th scope="row" th:text="${r.idRol}"></th>
+                                    <td th:text="${r.codigo}"></td>
                                     <td th:text="${r.descripcion}"></td>
                                     <td th:text="${r.estatus}"></td>
+                                    <td th:text="${r.usuarioCreacion}"></td>
                                     <td th:text="${#dates.format(r.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${r.usuarioModificacion}"></td>
                                     <td th:text="${#dates.format(r.fechaModificacion, 'dd/MM/yyyy')}"></td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
                                         <a class="btn btn-warning" th:href="@{/views/roles/editar/} + ${r.idRol}" title="Editar Rol">

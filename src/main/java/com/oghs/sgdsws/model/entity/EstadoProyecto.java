@@ -1,12 +1,7 @@
 package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.oghs.sgdsws.model.Estatus;
 
@@ -26,11 +21,15 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "ESTADO_PROYECTO")
-public class EstadoProyecto implements Serializable {
+public class EstadoProyecto extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_ESTADO_PROYECTO")
     private Long idEstadoProyecto;
+
+    @Column(name = "CODIGO")
+    @NotEmpty
+    private String codigo;
 
     @Column(name = "DESCRIPCION")
     @NotEmpty
@@ -39,16 +38,6 @@ public class EstadoProyecto implements Serializable {
     @Column(name = "ESTATUS")
     @NotNull
     private Estatus estatus;
-
-    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaCreacion;
-
-    @Column(name = "FECHA_MODIFICACION")
-    @UpdateTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fechaModificacion;
 
     @OneToMany(mappedBy = "estadoProyecto")
     private Set<Proyecto> proyecto;
@@ -59,6 +48,14 @@ public class EstadoProyecto implements Serializable {
 
     public void setIdEstadoProyecto(Long idEstadoProyecto) {
         this.idEstadoProyecto = idEstadoProyecto;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getDescripcion() {
@@ -77,22 +74,6 @@ public class EstadoProyecto implements Serializable {
         this.estatus = estatus;
     }
 
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
     public Set<Proyecto> getProyecto() {
         return proyecto;
     }
@@ -103,9 +84,8 @@ public class EstadoProyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "EstadoProyecto [idEstadoProyecto=" + idEstadoProyecto + ", descripcion=" + descripcion + ", estatus="
-                + estatus + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
-                + ", proyecto=" + proyecto + "]";
+        return "EstadoProyecto [idEstadoProyecto=" + idEstadoProyecto + ", codigo=" + codigo + ", descripcion="
+                + descripcion + ", estatus=" + estatus + ", proyecto=" + proyecto + "]";
     }
-    
+
 }

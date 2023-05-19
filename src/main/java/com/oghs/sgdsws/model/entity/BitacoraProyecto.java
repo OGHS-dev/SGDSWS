@@ -9,11 +9,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -41,9 +43,46 @@ public class BitacoraProyecto implements Serializable {
     @NotNull
     private Long revision;
     
-    // @Column(name = "ESTATUS")
-    // @NotNull
-    // private EstatusBitacoraProyecto estatus;
+    @ManyToOne
+    @JoinColumn(name = "ID_PRIORIDAD")
+    private Prioridad prioridad;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_IMPACTO")
+    private Impacto impacto;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_NIVEL_RIESGO")
+    private NivelRiesgo  nivelRiesgo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_EVENTO")
+    private Evento evento;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ESTADO_BITACORA_PROYECTO")
+    private EstadoBitacoraProyecto estadoBitacoraProyecto;
+
+    @Column(name = "DESCRIPCION")
+    @NotEmpty
+    private String descripcion;
+
+    @Column(name = "USUARIO_REPORTE")
+    @CreatedBy
+    private String usuarioReporte;
+
+    @Column(name = "USUARIO_ASIGNADO")
+    @NotEmpty
+    private String usuarioAsignado;
+
+    @Column(name = "FECHA_ATENCION")
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechaAtencion;
+
+    @Column(name = "ACCIONES")
+    @NotEmpty
+    private String acciones;
     
     @OneToMany(mappedBy = "bitacoraProyecto")
     private Set<Archivo> archivo;
@@ -83,13 +122,85 @@ public class BitacoraProyecto implements Serializable {
         this.revision = revision;
     }
 
-    // public EstatusBitacoraProyecto getEstatus() {
-    //     return estatus;
-    // }
+    public Prioridad getPrioridad() {
+        return prioridad;
+    }
 
-    // public void setEstatus(EstatusBitacoraProyecto estatus) {
-    //     this.estatus = estatus;
-    // }
+    public void setPrioridad(Prioridad prioridad) {
+        this.prioridad = prioridad;
+    }
+
+    public Impacto getImpacto() {
+        return impacto;
+    }
+
+    public void setImpacto(Impacto impacto) {
+        this.impacto = impacto;
+    }
+
+    public NivelRiesgo getNivelRiesgo() {
+        return nivelRiesgo;
+    }
+
+    public void setNivelRiesgo(NivelRiesgo nivelRiesgo) {
+        this.nivelRiesgo = nivelRiesgo;
+    }
+
+    public Evento getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Evento evento) {
+        this.evento = evento;
+    }
+
+    public EstadoBitacoraProyecto getEstadoBitacoraProyecto() {
+        return estadoBitacoraProyecto;
+    }
+
+    public void setEstadoBitacoraProyecto(EstadoBitacoraProyecto estadoBitacoraProyecto) {
+        this.estadoBitacoraProyecto = estadoBitacoraProyecto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getUsuarioReporte() {
+        return usuarioReporte;
+    }
+
+    public void setUsuarioReporte(String usuarioReporte) {
+        this.usuarioReporte = usuarioReporte;
+    }
+
+    public String getUsuarioAsignado() {
+        return usuarioAsignado;
+    }
+
+    public void setUsuarioAsignado(String usuarioAsignado) {
+        this.usuarioAsignado = usuarioAsignado;
+    }
+
+    public Date getFechaAtencion() {
+        return fechaAtencion;
+    }
+
+    public void setFechaAtencion(Date fechaAtencion) {
+        this.fechaAtencion = fechaAtencion;
+    }
+
+    public String getAcciones() {
+        return acciones;
+    }
+
+    public void setAcciones(String acciones) {
+        this.acciones = acciones;
+    }
 
     public Set<Archivo> getArchivo() {
         return archivo;
@@ -110,8 +221,12 @@ public class BitacoraProyecto implements Serializable {
     @Override
     public String toString() {
         return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", proyecto=" + proyecto
-                + ", fechaBitacora=" + fechaBitacora + ", revision=" + revision + /* ", estatus=" + estatus + */ ", archivo="
-                + archivo + ", comentario=" + comentario + "]";
+                + ", fechaBitacora=" + fechaBitacora + ", revision=" + revision + ", prioridad=" + prioridad
+                + ", impacto=" + impacto + ", nivelRiesgo=" + nivelRiesgo + ", evento=" + evento
+                + ", estadoBitacoraProyecto=" + estadoBitacoraProyecto + ", descripcion=" + descripcion
+                + ", usuarioReporte=" + usuarioReporte + ", usuarioAsignado=" + usuarioAsignado + ", fechaAtencion="
+                + fechaAtencion + ", acciones=" + acciones + ", archivo=" + archivo + ", comentario=" + comentario
+                + "]";
     }
     
 }

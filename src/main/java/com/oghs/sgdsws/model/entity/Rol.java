@@ -1,12 +1,7 @@
 package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.oghs.sgdsws.model.Estatus;
 
@@ -26,11 +21,15 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "ROL")
-public class Rol implements Serializable {
+public class Rol extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_ROL")
     private Long idRol;
+
+    @Column(name = "CODIGO")
+    @NotEmpty
+    private String codigo;
 
     @Column(name = "DESCRIPCION")
     @NotEmpty
@@ -39,16 +38,6 @@ public class Rol implements Serializable {
     @Column(name = "ESTATUS")
     @NotNull
     private Estatus estatus;
-
-    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaCreacion;
-
-    @Column(name = "FECHA_MODIFICACION")
-    @UpdateTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fechaModificacion;
 
     @OneToMany(mappedBy = "rol")
     private Set<Usuario> usuario;
@@ -59,6 +48,14 @@ public class Rol implements Serializable {
 
     public void setIdRol(Long idRol) {
         this.idRol = idRol;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getDescripcion() {
@@ -77,22 +74,6 @@ public class Rol implements Serializable {
         this.estatus = estatus;
     }
 
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
     public Set<Usuario> getUsuario() {
         return usuario;
     }
@@ -103,8 +84,8 @@ public class Rol implements Serializable {
 
     @Override
     public String toString() {
-        return "Rol [idRol=" + idRol + ", descripcion=" + descripcion + ", estatus=" + estatus + ", fechaCreacion="
-                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", usuario=" + usuario + "]";
+        return "Rol [idRol=" + idRol + ", codigo=" + codigo + ", descripcion=" + descripcion + ", estatus=" + estatus
+                + ", usuario=" + usuario + "]";
     }
-    
+
 }

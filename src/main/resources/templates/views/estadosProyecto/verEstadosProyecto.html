@@ -25,9 +25,12 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col">ID</th>
+                                    <th scope="col">Código</th>
                                     <th scope="col">Descripción</th>
                                     <th scope="col">Estatus</th>
+                                    <th scope="col">Usuario Creación</th>
                                     <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Usuario Modificación</th>
                                     <th scope="col">Fecha Modificación</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
@@ -36,17 +39,20 @@
                             <tbody>
                                 <tr th:each="ep : ${estadosProyecto.page}">
                                     <th scope="row" th:text="${ep.idEstadoProyecto}"></th>
+                                    <td th:text="${ep.codigo}"></td>
                                     <td th:text="${ep.descripcion}"></td>
                                     <td th:text="${ep.estatus}"></td>
+                                    <td th:text="${ep.usuarioCreacion}"></td>
                                     <td th:text="${#dates.format(ep.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${ep.usuarioModificacion}"></td>
                                     <td th:text="${#dates.format(ep.fechaModificacion, 'dd/MM/yyyy')}"></td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                                        <a class="btn btn-warning" th:href="@{/views/estadosProyecto/editar/} + ${ep.idEstadoProyecto}" title="Editar Estados Proyecto">
+                                        <a class="btn btn-warning" th:href="@{/views/estadosProyecto/editar/} + ${ep.idEstadoProyecto}" title="Editar Estado Proyecto">
                                             <i class="bi-pencil-square"></i>
                                         </a>
                                     </td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                                        <a class="btn btn-danger" th:href="@{/views/estadosProyecto/eliminar/} + ${ep.idEstadoProyecto}" title="Eliminar Estados Proyecto" onclick="return confirm('Eliminar este estados proyecto?');">
+                                        <a class="btn btn-danger" th:href="@{/views/estadosProyecto/eliminar/} + ${ep.idEstadoProyecto}" title="Eliminar Estado Proyecto" onclick="return confirm('Eliminar este estado proyecto?');">
                                             <i class="bi-trash"></i>
                                         </a>
                                     </td>

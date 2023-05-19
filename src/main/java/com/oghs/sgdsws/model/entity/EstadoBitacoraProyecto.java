@@ -1,11 +1,7 @@
 package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.util.Set;
 
 import com.oghs.sgdsws.model.Estatus;
 
@@ -14,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,11 +21,15 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "ESTADO_BITACORA_PROYECTO")
-public class EstadoBitacoraProyecto implements Serializable {
+public class EstadoBitacoraProyecto extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_ESTADO_BITACORA_PROYECTO")
     private Long idEstadoBitacoraProyecto;
+
+    @Column(name = "CODIGO")
+    @NotEmpty
+    private String codigo;
 
     @Column(name = "DESCRIPCION")
     @NotEmpty
@@ -38,15 +39,8 @@ public class EstadoBitacoraProyecto implements Serializable {
     @NotNull
     private Estatus estatus;
 
-    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaCreacion;
-
-    @Column(name = "FECHA_MODIFICACION")
-    @UpdateTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fechaModificacion;
+    @OneToMany(mappedBy = "estadoBitacoraProyecto")
+    private Set<BitacoraProyecto> bitacoraProyecto;
 
     public Long getIdEstadoBitacoraProyecto() {
         return idEstadoBitacoraProyecto;
@@ -54,6 +48,14 @@ public class EstadoBitacoraProyecto implements Serializable {
 
     public void setIdEstadoBitacoraProyecto(Long idEstadoBitacoraProyecto) {
         this.idEstadoBitacoraProyecto = idEstadoBitacoraProyecto;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getDescripcion() {
@@ -72,27 +74,19 @@ public class EstadoBitacoraProyecto implements Serializable {
         this.estatus = estatus;
     }
 
-    public Date getFechaCreacion() {
-        return fechaCreacion;
+    public Set<BitacoraProyecto> getBitacoraProyecto() {
+        return bitacoraProyecto;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
+    public void setBitacoraProyecto(Set<BitacoraProyecto> bitacoraProyecto) {
+        this.bitacoraProyecto = bitacoraProyecto;
     }
 
     @Override
     public String toString() {
-        return "EstadoBitacoraProyecto [idEstadoBitacoraProyecto=" + idEstadoBitacoraProyecto + ", descripcion="
-                + descripcion + ", estatus=" + estatus + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion="
-                + fechaModificacion + "]";
+        return "EstadoBitacoraProyecto [idEstadoBitacoraProyecto=" + idEstadoBitacoraProyecto + ", codigo=" + codigo
+                + ", descripcion=" + descripcion + ", estatus=" + estatus + ", bitacoraProyecto=" + bitacoraProyecto
+                + "]";
     }
-    
+
 }

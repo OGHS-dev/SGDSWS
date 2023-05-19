@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
@@ -49,7 +50,7 @@ public class Proyecto implements Serializable {
     private Date fechaCreacion;
 
     @Column(name = "USUARIO_CREADO")
-    @NotEmpty
+    @CreatedBy
     private String usuarioCreado;
 
     @Column(name = "USUARIO_ASIGNADO")

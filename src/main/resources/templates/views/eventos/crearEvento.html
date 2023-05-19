@@ -17,6 +17,13 @@
                     <div class="card-body">
                         <input type="hidden" th:field="*{idEvento}">
                         <div class="mb-3">
+                            <label for="codigo" class="form-label">Código del evento:</label>
+                            <input type="text" class="form-control" id="codigo" placeholder="Descripción del evento" th:field="*{codigo}" required>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></small> -->
+                            <div class="valid-feedback">Correcto</div>
+                            <div class="invalid-feedback">Requerido</div>
+                        </div>
+                        <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción del evento:</label>
                             <input type="text" class="form-control" id="descripcion" placeholder="Descripción del evento" th:field="*{descripcion}" required>
                             <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></small> -->
@@ -32,8 +39,6 @@
                             <div class="valid-feedback">Correcto</div>
                             <div class="invalid-feedback">Requerido</div>
                         </div>
-                        <input type="hidden" th:field="*{fechaCreacion}">
-                        <input type="hidden" th:field="*{fechaModificacion}">
                     </div>
                     <div class="card-footer bg-dark text-white">
                         <button type="submit" class="btn btn-primary">

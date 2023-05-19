@@ -62,9 +62,11 @@ public class ProyectoServiceImpl implements ProyectoService {
         bitacoraProyecto.setProyecto(proyectoDTO.getProyecto());
         if (listaBitacoraProyecto.isEmpty()) {
             bitacoraProyecto.setRevision(1L);
+            bitacoraProyecto.setPrioridad(null);
             // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Creado);
         } else {
             bitacoraProyecto.setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
+            bitacoraProyecto.setPrioridad(null);
             // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Modificado);
         }
         bitacoraProyectoRepository.save(bitacoraProyecto);
