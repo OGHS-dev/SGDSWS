@@ -26,6 +26,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/nivelesRiesgo")
 public class NivelRiesgoController {
 
+    private final String RUTA_VISTA = "/views/nivelesRiesgo/";
+
     @Autowired
     private NivelRiesgoService nivelRiesgoService;
 
@@ -35,7 +37,7 @@ public class NivelRiesgoController {
         model.addAttribute("titulo", "Niveles de Riesgo");
         model.addAttribute("nivelesRiesgo", nivelRiesgoService.obtenerNivelesRiesgoPaginado(numeroPagina, tamano));
 
-        return "/views/nivelesRiesgo/verNivelesRiesgo";
+        return RUTA_VISTA + "verNivelesRiesgo";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class NivelRiesgoController {
         model.addAttribute("titulo", "Nuevo Nivel de Riesgo");
         model.addAttribute("nivelRiesgo", new NivelRiesgo());
 
-        return "/views/nivelesRiesgo/crearNivelRiesgo";
+        return RUTA_VISTA + "crearNivelRiesgo";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class NivelRiesgoController {
     public String guardarNivelRiesgo(@Valid @ModelAttribute NivelRiesgo nivelRiesgo, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Nivel de Riesgo");
+            model.addAttribute("titulo", "Crear/Editar Nivel de Riesgo");
             model.addAttribute("nivelRiesgo", nivelRiesgo);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/nivelesRiesgo/crearNivelRiesgo";
+
+            return RUTA_VISTA + "crearNivelRiesgo";
         }
 
         nivelRiesgoService.guardarNivelRiesgo(nivelRiesgo);
 
-        redirectAttributes.addFlashAttribute("success", "Nivel de Riesgo: " + nivelRiesgo.getIdNivelRiesgo() + " guardado exitosamente");
-        return "redirect:/views/nivelesRiesgo/";
+        redirectAttributes.addFlashAttribute("success", "Nivel de Riesgo: " + nivelRiesgo.getCodigo() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class NivelRiesgoController {
 
             if (nivelRiesgo == null) {
                 redirectAttributes.addFlashAttribute("error", "El nivel de riesgo: " + idNivelRiesgo + " no existe");
-                return "redirect:/views/nivelesRiesgo/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el nivel de riesgo: " + idNivelRiesgo);
-            return "redirect:/views/nivelesRiesgo/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Nivel de Riesgo");
         model.addAttribute("nivelRiesgo", nivelRiesgo);
 
-        return "/views/nivelesRiesgo/crearNivelRiesgo";
+        return RUTA_VISTA + "crearNivelRiesgo";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,17 +110,20 @@ public class NivelRiesgoController {
 
             if (nivelRiesgo == null) {
                 redirectAttributes.addFlashAttribute("error", "El nivel de riesgo: " + idNivelRiesgo + " no existe");
-                return "redirect:/views/nivelesRiesgo/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el nivel de riesgo: " + idNivelRiesgo);
-            return "redirect:/views/nivelesRiesgo/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         nivelRiesgoService.eliminarNivelRiesgo(nivelRiesgo);
 
-        redirectAttributes.addFlashAttribute("success", "Nivel de Riesgo: " + nivelRiesgo.getIdNivelRiesgo() + " eliminado exitosamente");
-        return "redirect:/views/nivelesRiesgo/";
+        redirectAttributes.addFlashAttribute("success", "Nivel de Riesgo: " + nivelRiesgo.getCodigo() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
     
 }

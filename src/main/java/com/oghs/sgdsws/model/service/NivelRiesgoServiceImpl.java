@@ -32,11 +32,14 @@ public class NivelRiesgoServiceImpl implements NivelRiesgoService {
     public Paginado<NivelRiesgo> obtenerNivelesRiesgoPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idNivelRiesgo"));
         Page<NivelRiesgo> nivelesRiesgoPage = (Page<NivelRiesgo>) nivelRiesgoRepository.findAll(pageRequest);
+        
         return new Paginado<>(nivelesRiesgoPage, Paginando.of(nivelesRiesgoPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarNivelRiesgo(NivelRiesgo nivelRiesgo) {
+        nivelRiesgo.setCodigo(nivelRiesgo.getCodigo().toUpperCase());
+
         nivelRiesgoRepository.save(nivelRiesgo);
     }
 

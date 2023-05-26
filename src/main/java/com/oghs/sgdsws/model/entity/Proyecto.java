@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
@@ -18,7 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -26,44 +25,37 @@ import org.hibernate.annotations.CreationTimestamp;
  */
 @Entity
 @Table(name = "PROYECTO")
-public class Proyecto implements Serializable {
+public class Proyecto extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PROYECTO")
     private Long idProyecto;
 
     @Column(name = "NOMBRE")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Proyecto.nombre}")
+    @Size(min = 1, max = 100, message = "{Size.Proyecto.nombre}")
     private String nombre;
 
     @Column(name = "DESCRIPCION")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Proyecto.descripcion}")
+    @Size(min = 1, max = 200, message = "{Size.Proyecto.descripcion}")
     private String descripcion;
 
     @ManyToOne
     @JoinColumn(name = "ID_ESTADO_PROYECTO")
     private EstadoProyecto estadoProyecto;
 
-    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaCreacion;
-
-    @Column(name = "USUARIO_CREADO")
-    @CreatedBy
-    private String usuarioCreado;
-
     @Column(name = "USUARIO_ASIGNADO")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Proyecto.usuarioAsignado}")
     private String usuarioAsignado;
 
     @Column(name = "FECHA_INICIO")
-    @NotNull
+    @NotNull(message = "{NotNull.Proyecto.fechaInicio}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaInicio;
     
     @Column(name = "FECHA_FIN")
-    @NotNull
+    @NotNull(message = "{NotNull.Proyecto.fechaFin}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaFin;
 
@@ -105,30 +97,6 @@ public class Proyecto implements Serializable {
         this.estadoProyecto = estadoProyecto;
     }
 
-    public Set<UsuarioProyecto> getUsuarioProyecto() {
-        return usuarioProyecto;
-    }
-
-    public void setUsuarioProyecto(Set<UsuarioProyecto> usuarioProyecto) {
-        this.usuarioProyecto = usuarioProyecto;
-    }
-
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public String getUsuarioCreado() {
-        return usuarioCreado;
-    }
-
-    public void setUsuarioCreado(String usuarioCreado) {
-        this.usuarioCreado = usuarioCreado;
-    }
-
     public String getUsuarioAsignado() {
         return usuarioAsignado;
     }
@@ -153,6 +121,14 @@ public class Proyecto implements Serializable {
         this.fechaFin = fechaFin;
     }
 
+    public Set<UsuarioProyecto> getUsuarioProyecto() {
+        return usuarioProyecto;
+    }
+
+    public void setUsuarioProyecto(Set<UsuarioProyecto> usuarioProyecto) {
+        this.usuarioProyecto = usuarioProyecto;
+    }
+
     public Set<BitacoraProyecto> getBitacoraProyecto() {
         return bitacoraProyecto;
     }
@@ -164,10 +140,8 @@ public class Proyecto implements Serializable {
     @Override
     public String toString() {
         return "Proyecto [idProyecto=" + idProyecto + ", nombre=" + nombre + ", descripcion=" + descripcion
-                + ", estadoProyecto=" + estadoProyecto + ", fechaCreacion=" + fechaCreacion + ", usuarioCreado="
-                + usuarioCreado + ", usuarioAsignado=" + usuarioAsignado + ", fechaInicio=" + fechaInicio
-                + ", fechaFin=" + fechaFin + ", usuarioProyecto=" + usuarioProyecto + ", bitacoraProyecto="
-                + bitacoraProyecto + "]";
+                + ", usuarioAsignado=" + usuarioAsignado + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
+                + ", usuarioProyecto=" + usuarioProyecto + "]";
     }
-    
+
 }

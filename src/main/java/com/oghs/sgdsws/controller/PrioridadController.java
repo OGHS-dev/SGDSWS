@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/views/prioridades")
 public class PrioridadController {
+
+    private final String RUTA_VISTA = "/views/prioridades/";
     
     @Autowired
     private PrioridadService prioridadService;
@@ -35,7 +37,7 @@ public class PrioridadController {
         model.addAttribute("titulo", "Prioridades");
         model.addAttribute("prioridades", prioridadService.obtenerPrioridadesPaginado(numeroPagina, tamano));
 
-        return "/views/prioridades/verPrioridades";
+        return RUTA_VISTA + "verPrioridades";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class PrioridadController {
         model.addAttribute("titulo", "Nueva Prioridad");
         model.addAttribute("prioridad", new Prioridad());
 
-        return "/views/prioridades/crearPrioridad";
+        return RUTA_VISTA + "crearPrioridad";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class PrioridadController {
     public String guardarPrioridad(@Valid @ModelAttribute Prioridad prioridad, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Prioridad");
+            model.addAttribute("titulo", "Crear/Editar Prioridad");
             model.addAttribute("prioridad", prioridad);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/prioridades/crearPrioridad";
+            
+            return RUTA_VISTA + "crearPrioridad";
         }
 
         prioridadService.guardarPrioridad(prioridad);
 
-        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getIdPrioridad() + " guardada exitosamente");
-        return "redirect:/views/prioridades/";
+        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getCodigo() + " guardada exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class PrioridadController {
 
             if (prioridad == null) {
                 redirectAttributes.addFlashAttribute("error", "La prioridad: " + idPrioridad + " no existe");
-                return "redirect:/views/prioridades/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró la prioridad: " + idPrioridad);
-            return "redirect:/views/prioridades/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Prioridad");
         model.addAttribute("prioridad", prioridad);
 
-        return "/views/prioridades/crearPrioridad";
+        return RUTA_VISTA + "crearPrioridad";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,16 +110,19 @@ public class PrioridadController {
 
             if (prioridad == null) {
                 redirectAttributes.addFlashAttribute("error", "La prioridad: " + idPrioridad + " no existe");
-                return "redirect:/views/prioridades/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró la prioridad: " + idPrioridad);
-            return "redirect:/views/prioridades/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         prioridadService.eliminarPrioridad(prioridad);
 
-        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getIdPrioridad() + " eliminada exitosamente");
-        return "redirect:/views/prioridades/";
+        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getCodigo() + " eliminada exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 }

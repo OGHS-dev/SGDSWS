@@ -10,7 +10,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -35,12 +36,10 @@ public class BitacoraProyecto implements Serializable {
     private Proyecto proyecto;
     
     @Column(name = "FECHA_BITACORA", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date fechaBitacora;
     
     @Column(name = "REVISION")
-    @NotNull
     private Long revision;
     
     @ManyToOne
@@ -64,7 +63,8 @@ public class BitacoraProyecto implements Serializable {
     private EstadoBitacoraProyecto estadoBitacoraProyecto;
 
     @Column(name = "DESCRIPCION")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.BitacoraProyecto.descripcion}")
+    @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.descripcion}")
     private String descripcion;
 
     @Column(name = "USUARIO_REPORTE")
@@ -72,16 +72,14 @@ public class BitacoraProyecto implements Serializable {
     private String usuarioReporte;
 
     @Column(name = "USUARIO_ASIGNADO")
-    @NotEmpty
     private String usuarioAsignado;
 
     @Column(name = "FECHA_ATENCION")
-    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaAtencion;
 
     @Column(name = "ACCIONES")
-    @NotEmpty
+    @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.acciones}")
     private String acciones;
     
     @OneToMany(mappedBy = "bitacoraProyecto")

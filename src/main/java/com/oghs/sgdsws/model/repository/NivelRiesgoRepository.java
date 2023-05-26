@@ -11,4 +11,6 @@ import com.oghs.sgdsws.model.entity.NivelRiesgo;
  */
 public interface NivelRiesgoRepository extends PagingAndSortingRepository<NivelRiesgo, Long>, CrudRepository<NivelRiesgo, Long> {
     
+    NivelRiesgo findByCodigo(String codigo);
+    
 }

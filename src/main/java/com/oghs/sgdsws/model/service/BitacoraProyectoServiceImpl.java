@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.oghs.sgdsws.model.ProyectoDTO;
 import com.oghs.sgdsws.model.entity.BitacoraProyecto;
 import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.repository.BitacoraProyectoRepository;
@@ -33,7 +34,16 @@ public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
     public Paginado<BitacoraProyecto> obtenerBitacoraProyectoPorProyectoPaginado(Proyecto proyecto, int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idBitacoraProyecto"));
         Page<BitacoraProyecto> bitacoraProyectoPage = (Page<BitacoraProyecto>) bitacoraProyectoRepository.findByProyecto(proyecto, pageRequest);
+        
         return new Paginado<>(bitacoraProyectoPage, Paginando.of(bitacoraProyectoPage.getTotalPages(), numeroPagina, tamano));
+    }
+
+    @Override
+    public void guardarBitacoraProyecto(ProyectoDTO proyectoDTO) {
+        List<BitacoraProyecto> listaBitacoraProyecto = bitacoraProyectoRepository.findByProyecto(proyectoDTO.getProyecto());
+        
+        proyectoDTO.getBitacoraProyecto().setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
+        bitacoraProyectoRepository.save(proyectoDTO.getBitacoraProyecto());
     }
     
 }

@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -28,15 +29,17 @@ public class NivelRiesgo extends Auditable implements Serializable {
     private Long idNivelRiesgo;
 
     @Column(name = "CODIGO")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.NivelRiesgo.codigo}")
+    @Size(min = 1, max = 4, message = "{Size.NivelRiesgo.codigo}")
     private String codigo;
 
     @Column(name = "DESCRIPCION")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.NivelRiesgo.descripcion}")
+    @Size(min = 1, max = 20, message = "{Size.NivelRiesgo.descripcion}")
     private String descripcion;
 
     @Column(name = "ESTATUS")
-    @NotNull
+    @NotNull(message = "{NotNull.NivelRiesgo.estatus}")
     private Estatus estatus;
 
     @OneToMany(mappedBy = "nivelRiesgo")

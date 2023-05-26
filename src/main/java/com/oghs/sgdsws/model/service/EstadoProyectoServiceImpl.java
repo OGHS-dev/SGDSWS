@@ -32,11 +32,14 @@ public class EstadoProyectoServiceImpl implements EstadoProyectoService {
     public Paginado<EstadoProyecto> obtenerEstadosProyectoPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idEstadoProyecto"));
         Page<EstadoProyecto> estadosProyectoPage = (Page<EstadoProyecto>) estadoProyectoRepository.findAll(pageRequest);
+        
         return new Paginado<>(estadosProyectoPage, Paginando.of(estadosProyectoPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarEstadoProyecto(EstadoProyecto estadoProyecto) {
+        estadoProyecto.setCodigo(estadoProyecto.getCodigo().toUpperCase());
+
         estadoProyectoRepository.save(estadoProyecto);
     }
 

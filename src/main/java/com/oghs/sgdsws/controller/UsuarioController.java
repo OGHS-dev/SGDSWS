@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/views/usuarios")
 public class UsuarioController {
 
+    private final String RUTA_VISTA = "/views/usuarios/";
+
     @Autowired
     private UsuarioService usuarioService;
 
@@ -41,7 +43,7 @@ public class UsuarioController {
         model.addAttribute("titulo", "Usuarios");
         model.addAttribute("usuarios", usuarioService.obtenerUsuariosPaginado(numeroPagina, tamano));
 
-        return "/views/usuarios/verUsuarios";
+        return RUTA_VISTA + "verUsuarios";
     }
 
     @Secured("ROLE_ADMIN")
@@ -51,7 +53,7 @@ public class UsuarioController {
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("listaRoles", rolService.obtenerRoles());
 
-        return "/views/usuarios/crearUsuario";
+        return RUTA_VISTA + "crearUsuario";
     }
 
     @Secured("ROLE_ADMIN")
@@ -59,17 +61,20 @@ public class UsuarioController {
     public String guardarUsuario(@Valid @ModelAttribute Usuario usuario, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Usuario");
+            model.addAttribute("titulo", "Crear/Editar Usuario");
             model.addAttribute("usuario", usuario);
+            model.addAttribute("listaRoles", rolService.obtenerRoles());
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/usuarios/crearUsuario";
+            
+            return RUTA_VISTA + "crearUsuario";
         }
 
         usuarioService.guardarUsuario(usuario);
 
-        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getIdUsuario() + " guardado exitosamente");
-        return "redirect:/views/usuarios/";
+        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getNombreUsuario() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
     
     @Secured("ROLE_ADMIN")
@@ -85,18 +90,20 @@ public class UsuarioController {
 
             if (usuario == null) {
                 redirectAttributes.addFlashAttribute("error", "El usuario: " + idUsuario + " no existe");
-                return "redirect:/views/usuarios/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el usuario: " + idUsuario);
-            return "redirect:/views/usuarios/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Usuario");
         model.addAttribute("usuario", usuario);
         model.addAttribute("listaRoles", rolService.obtenerRoles());
 
-        return "/views/usuarios/crearUsuario";
+        return RUTA_VISTA + "crearUsuario";
     }
 
     @Secured("ROLE_ADMIN")
@@ -112,16 +119,19 @@ public class UsuarioController {
 
             if (usuario == null) {
                 redirectAttributes.addFlashAttribute("error", "El usuario: " + idUsuario + " no existe");
-                return "redirect:/views/usuarios/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el usuario: " + idUsuario);
-            return "redirect:/views/usuarios/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         usuarioService.eliminarUsuario(usuario);
 
-        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getIdUsuario() + " eliminado exitosamente");
-        return "redirect:/views/usuarios/";
+        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getNombreUsuario() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 }

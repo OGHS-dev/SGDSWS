@@ -16,52 +16,101 @@
                     </div>
                     <div class="card-body">
                         <input type="hidden" th:field="*{idUsuario}">
-                        <div class="mb-3">
-                            <label for="nombreUsuario" class="form-label">Nombre de usuario:</label>
-                            <input type="text" class="form-control" id="nombreUsuario" placeholder="Nombre de usuario" th:field="*{nombreUsuario}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nombreUsuario" placeholder="Nombre de usuario..." th:field="*{nombreUsuario}" aria-describedby="nombreUsuario" aria-label="nombreUsuario">
+                                        <label for="nombreUsuario">Nombre de usuario:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Nombre de usuario asignado.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="contrasena" class="form-label">Contraseña del usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control" id="contrasena" placeholder="Contraseña..." th:field="*{contrasena}" aria-describedby="contrasena" aria-label="contrasena">
+                                        <label for="contrasena">Contraseña:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Contraseña asignada al usuario.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="contrasena" class="form-label">Contraseña:</label>
-                            <input type="password" class="form-control" id="contrasena" placeholder="Contraseña" th:field="*{contrasena}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="correo" class="form-label">Correo electrónico del usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="correo" placeholder="Correo electrónico..." th:field="*{correo}" aria-describedby="correo" aria-label="correo">
+                                        <label for="correo">Correo electrónico:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Correo electrónico asociado al usuario.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="rol" class="form-label">Rol del usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <select class="form-select selectpicker" id="rol" th:field="*{rol.idRol}" aria-describedby="rol" aria-label="rol">
+                                            <option selected disabled value="">Seleccionar rol...</option>
+                                            <option th:each="lr : ${listaRoles}" th:value="${lr.idRol}" th:text="${lr.descripcion}"></option>
+                                        </select>
+                                        <label for="rol">Rol:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Rol asignado al usuario.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('rol.idRol')}" th:errors="*{rol.idRol}"></div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="correo" class="form-label">Correo electrónico:</label>
-                            <input type="text" class="form-control" id="correo" placeholder="Correo electrónico" th:field="*{correo}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="rol" class="form-label">Rol:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{rol}" id="rol" required>
-                                <option selected disabled value="">Seleccionar rol...</option>
-                                <option th:each="lr : ${listaRoles}" th:value="${lr.idRol}" th:text="${lr.descripcion}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estatus" class="form-label">Estatus del usuario:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{estatus}" id="estatus" required>
-                                <option selected disabled value="">Seleccionar estatus...</option>
-                                <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <input type="hidden" th:field="*{fechaCreacion}">
-                        <input type="hidden" th:field="*{fechaModificacion}">
-                        <div class="mb-3">
-                            <label for="fechaVigencia" class="form-label">Fecha de vigencia de usuario:</label>
-                            <input type="date" class="form-control" id="fechaVigencia" placeholder="Fecha de vigencia de usuario" th:field="*{fechaVigencia}" required>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="estatus" class="form-label">Estatus del usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <select class="form-select selectpicker" id="estatus" th:field="*{estatus}" aria-describedby="estatus" aria-label="estatus">
+                                            <option selected disabled value="">Seleccionar estatus...</option>
+                                            <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
+                                        </select>
+                                        <label for="estatus">Estatus:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Estatus asignado al usuario.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('estatus')}" th:errors="*{estatus}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="fechaVigencia" class="form-label">Fecha de vigencia del usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-calendar"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fechaVigencia" placeholder="Fecha..." th:field="*{fechaVigencia}" aria-describedby="fechaVigencia" aria-label="fechaVigencia">
+                                        <label for="fechaVigencia">Fecha:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Fecha de atención asignada a la bitácora del proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('fechaVigencia')}" th:errors="*{fechaVigencia}"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

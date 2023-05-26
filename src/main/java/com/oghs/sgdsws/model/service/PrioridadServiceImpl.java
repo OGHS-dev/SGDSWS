@@ -32,11 +32,14 @@ public class PrioridadServiceImpl implements PrioridadService {
     public Paginado<Prioridad> obtenerPrioridadesPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idPrioridad"));
         Page<Prioridad> prioridadesPage = (Page<Prioridad>) prioridadRepository.findAll(pageRequest);
+        
         return new Paginado<>(prioridadesPage, Paginando.of(prioridadesPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarPrioridad(Prioridad prioridad) {
+        prioridad.setCodigo(prioridad.getCodigo().toUpperCase());
+
         prioridadRepository.save(prioridad);
     }
 

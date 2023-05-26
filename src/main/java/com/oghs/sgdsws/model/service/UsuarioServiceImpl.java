@@ -43,6 +43,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Paginado<Usuario> obtenerUsuariosPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idUsuario"));
         Page<Usuario> usuariosPage = (Page<Usuario>) usuarioRepository.findAll(pageRequest);
+        
         return new Paginado<>(usuariosPage, Paginando.of(usuariosPage.getTotalPages(), numeroPagina, tamano));
     }
 

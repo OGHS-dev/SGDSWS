@@ -10,5 +10,7 @@ import com.oghs.sgdsws.model.entity.Impacto;
  * @author oghs
  */
 public interface ImpactoRepository extends PagingAndSortingRepository<Impacto, Long>, CrudRepository<Impacto, Long> {
+
+    Impacto findByCodigo(String codigo);
     
 }

@@ -37,6 +37,9 @@ public class RolServiceImpl implements RolService {
 
     @Override
     public void guardarRol(Rol rol) {
+        rol.setCodigo(rol.getCodigo().toUpperCase());
+        rol.setDescripcion("ROLE_".concat(rol.getDescripcion()).toUpperCase());
+        
         rolRepository.save(rol);
     }
 

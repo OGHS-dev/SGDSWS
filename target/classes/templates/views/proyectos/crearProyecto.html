@@ -6,7 +6,7 @@
         <header th:replace="~{template :: header}"></header>
 
         <div class="container" data-bs-spy="scroll">
-            <form th:action="@{/views/proyectos/guardar}" th:object="${proyectoDTO}" method="post" class="needs-validation" novalidate>
+            <form th:action="@{/views/proyectos/guardar}" th:object="${proyectoDTO}" method="post">
                 <div class="card">
                     <div class="card-header bg-dark text-white">
                         <h4 class="card-title">
@@ -16,82 +16,122 @@
                     </div>
                     <div class="card-body">
                         <input type="hidden" th:field="*{proyecto.idProyecto}">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del proyecto:</label>
-                            <input type="text" class="form-control" id="nombre" placeholder="Nombre del proyecto" th:field="*{proyecto.nombre}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('proyecto.nombre')}" th:errors="*{proyecto.nombre}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción del proyecto:</label>
-                            <input type="text" class="form-control" id="descripcion" placeholder="Descripción del proyecto" th:field="*{proyecto.descripcion}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('proyecto.descripcion')}" th:errors="*{proyecto.descripcion}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estadoProyecto" class="form-label">Estado del proyecto:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{proyecto.estadoProyecto}" id="estadoProyecto" required>
-                                <option selected disabled value="">Seleccionar estado...</option>
-                                <option th:each="lep : ${listaEstadosProyecto}" th:value="${lep.idEstadoProyecto}" th:text="${lep.descripcion}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <input type="hidden" th:field="*{proyecto.fechaCreacion}">
-                        <input type="hidden" th:field="*{proyecto.usuarioCreado}">
-                        <div class="mb-3">
-                            <label for="listaUsuarios" class="form-label">Asignar usuario responsable al proyecto:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{proyecto.usuarioAsignado}" id="listaUsuarios" required>
-                                <option selected disabled value="">Seleccionar usuario...</option>
-                                <option th:each="lu : ${listaUsuarios}" th:value="${lu.idUsuario}" th:text="${lu.nombreUsuario}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaInicio" class="form-label">Fecha de inicio del proyecto:</label>
-                            <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha de inicio del proyecto" th:field="*{proyecto.fechaInicio}" required>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaFin" class="form-label">Fecha de fin del proyecto:</label>
-                            <input type="date" class="form-control" id="fechaFin" placeholder="Fecha de fin del proyecto" th:field="*{proyecto.fechaFin}" required>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-
-                        <!-- <div class="mb-3">
-                            <label for="usuarios" class="form-label">Usuarios asignados al proyecto:</label>
-                            <select class="form-control selectpicker" aria-label="multiple select example" th:field="*{listaUsuariosProyecto}" id="usuariosProyecto" multiple required>
-                                <option selected disabled value="">Seleccionar usuario(s)...</option>
-                                <option th:each="u : ${usuarios}" th:value="${u.idUsuario}" th:text="${u.nombreUsuario}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div> -->
-
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="col">
-                                <label for="listaUsuarios" class="form-label">Asignar usuarios al proyecto:</label>
-                                <select class="form-select" aria-label="multiple select example" id="listaUsuarios" multiple="multiple" required>
-                                    <option selected disabled value="">Seleccionar usuario(s)...</option>
-                                    <option th:each="lu : ${listaUsuarios}" th:value="${lu.idUsuario}" th:text="${lu.nombreUsuario}"></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-1">
-
+                                <label for="nombre" class="form-label">Nombre del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nombre" placeholder="Nombre..." th:field="*{proyecto.nombre}" aria-describedby="nombre" aria-label="nombre" >
+                                        <label for="nombre">Nombre:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Nombre asignado al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.nombre')}" th:errors="*{proyecto.nombre}"></div>
                             </div>
                             <div class="col">
-                                <label for="listaUsuariosProyecto" class="form-label">Usuarios asignados al proyecto:</label>
-                                <select class="form-select" aria-label="multiple select example" th:field="*{listaUsuariosProyecto}" id="listaUsuariosProyecto" multiple="multiple" required>
-                                    <option selected disabled value="">Seleccionar usuario(s)...</option>
-                                    <option th:each="lup : ${proyectoDTO.listaUsuariosProyecto}" th:value="${lup.idUsuario}" th:text="${lup.nombreUsuario}"></option>
-                                </select>
-                                <div class="valid-feedback">Correcto</div>
-                                <div class="invalid-feedback">Requerido</div>
+                                <label for="descripcion" class="form-label">Descripción del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="descripcion" placeholder="Descripción..." th:field="*{proyecto.descripcion}" aria-describedby="descripcion" aria-label="descripcion">
+                                        <label for="descripcion">Descripción:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Descripción asignada al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.descripcion')}" th:errors="*{proyecto.descripcion}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="estadoProyecto" class="form-label">Estado del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <select class="form-select selectpicker" id="estadoProyecto" th:field="*{proyecto.estadoProyecto.idEstadoProyecto}" aria-describedby="estadoProyecto" aria-label="estadoProyecto">
+                                            <option selected disabled value="">Seleccionar estado...</option>
+                                            <option th:each="lep : ${listaEstadosProyecto}" th:value="${lep.idEstadoProyecto}" th:text="${lep.descripcion}"></option>
+                                        </select>
+                                        <label for="estadoProyecto">Estado:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Estado asignado al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.estadoProyecto.idEstadoProyecto')}" th:errors="*{proyecto.estadoProyecto.idEstadoProyecto}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="usuarioAsignado" class="form-label">Usuario responsable del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <select class="form-select selectpicker" id="usuarioAsignado" th:field="*{proyecto.usuarioAsignado}" aria-describedby="usuarioAsignado" aria-label="usuarioAsignado">
+                                            <option selected disabled value="">Seleccionar usuario...</option>
+                                            <option th:each="lu : ${listaUsuarios}" th:value="${lu.nombreUsuario}" th:text="${lu.nombreUsuario}"></option>
+                                        </select>
+                                        <label for="usuarioAsignado">Usuario:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Usuario responsable asignado al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.usuarioAsignado')}" th:errors="*{proyecto.usuarioAsignado}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="fechaInicio" class="form-label">Fecha de inicio del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-calendar"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fechaInicio" placeholder="Fecha..." th:field="*{proyecto.fechaInicio}" aria-describedby="fechaInicio" aria-label="fechaInicio">
+                                        <label for="fechaInicio">Fecha:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Fecha de inicio asignada al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.fechaInicio')}" th:errors="*{proyecto.fechaInicio}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="fechaFin" class="form-label">Fecha de fin del proyecto</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-calendar"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fechaFin" placeholder="Fecha..." th:field="*{proyecto.fechaFin}" aria-describedby="fechaFin" aria-label="fechaFin">
+                                        <label for="fechaFin">Fecha:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Fecha de fin asignada al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('proyecto.fechaFin')}" th:errors="*{proyecto.fechaFin}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="listaUsuariosAsignar" class="form-label">Asignar usuarios al proyecto:</label>
+                                <div class="input-group">
+                                    <!-- <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span> -->
+                                    <div class="form-floating">
+                                        <select class="form-control" id="listaUsuariosAsignar" name="listaUsuariosProyecto[]" th:field="*{listaUsuariosProyecto}" multiple="multiple" aria-describedby="listaUsuariosAsignar" aria-label="listaUsuariosAsignar">
+                                            <option selected disabled value="">Seleccionar usuario(s)...</option>
+                                            <option th:each="lu : ${listaUsuarios}" th:value="${lu.idUsuario}" th:text="${lu.nombreUsuario}"></option>
+                                        </select>
+                                        <!-- <label for="listaUsuariosAsignar">Usuario(s)</label> -->
+                                    </div>
+                                </div>
+                                <span class="form-text">Usuario(s) asignado(s) al proyecto.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('listaUsuariosProyecto')}" th:errors="*{listaUsuariosProyecto}"></div>
+                            </div>
+                            <div class="col">
+                                
                             </div>
                         </div>
                     </div>
@@ -120,6 +160,6 @@
                 let fechaFinVal = e.target.value
                 console.log(fechaFinVal)
             }) */
-        // </script>
+        </script>
     </footer>
 </html>

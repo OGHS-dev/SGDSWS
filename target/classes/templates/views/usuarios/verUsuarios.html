@@ -29,7 +29,9 @@
                                     <th scope="col">Correo</th>
                                     <th scope="col">Rol</th>
                                     <th scope="col">Estatus</th>
+                                    <th scope="col">Usuario Creación</th>
                                     <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Usuario Modificación</th>
                                     <th scope="col">Fecha Modificación</th>
                                     <th scope="col">Fecha Vigencia</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
@@ -43,7 +45,9 @@
                                     <td th:text="${u.correo}"></td>
                                     <td th:text="${u.rol.descripcion}"></td>
                                     <td th:text="${u.estatus}"></td>
+                                    <td th:text="${u.usuarioModificacion}"></td>
                                     <td th:text="${#dates.format(u.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${u.usuarioModificacion}"></td>
                                     <td th:text="${#dates.format(u.fechaModificacion, 'dd/MM/yyyy')}"></td>
                                     <td th:text="${#dates.format(u.fechaVigencia, 'dd/MM/yyyy')}"></td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">

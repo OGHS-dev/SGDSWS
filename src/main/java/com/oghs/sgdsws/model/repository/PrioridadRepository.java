@@ -11,4 +11,6 @@ import com.oghs.sgdsws.model.entity.Prioridad;
  */
 public interface PrioridadRepository extends PagingAndSortingRepository<Prioridad, Long>, CrudRepository<Prioridad, Long> {
     
+    Prioridad findByCodigo(String codigo);
+    
 }

@@ -10,6 +10,9 @@
         <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" type="text/css"/>
         <!-- Bootstrap icons -->
         <link th:rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"/>
+
+        <!-- <link th:rel="stylesheet" th:href="@{/webjars/npm/bootstrap4-duallistbox/4.0.2/dist/bootstrap-duallistbox.min.css}" type="text/css"/> -->
+        <link th:rel="stylesheet" th:href="@{/css/bootstrap-duallistbox.min.css}"/>
     </head>
 
     <!-- <body th:fragment="body"> -->
@@ -65,7 +68,7 @@
                             <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
                             <button class="btn btn-outline-success" type="submit">
                                 <!-- <i class="bi-search"></i>&nbsp; -->
-                                Buscar
+                                <span>Buscar</span>
                             </button>
                         </form>
                     </div>
@@ -177,32 +180,51 @@
         <!-- <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.esm.min.js}"></script> -->
         <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
         <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
-        <!-- <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script> -->
+        <!-- <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script> -->
+
+        <!-- <script th:src="@{/assets/bootstrap-dual-listbox/jquery.bootstrap-duallistbox.min.js}"></script> -->
+        <!-- <script th:src="@{/webjars/npm/bootstrap4-duallistbox/4.0.2/dist/jquery.bootstrap-duallistbox.min.js}"></script> -->
+        <script th:src="@{/js/jquery.bootstrap-duallistbox.min.js}"></script>
 
         <script>
             // Example starter JavaScript for disabling form submissions if there are invalid fields
-            (() => {
-                'use strict'
+            // (() => {
+            //     'use strict'
 
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
+            //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            //     const forms = document.querySelectorAll('.needs-validation')
 
-                // Loop over them and prevent submission
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
+            //     // Loop over them and prevent submission
+            //     Array.from(forms).forEach(form => {
+            //         form.addEventListener('submit', event => {
+            //             if (!form.checkValidity()) {
+            //                 event.preventDefault()
+            //                 event.stopPropagation()
+            //             }
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-            })()
+            //             form.classList.add('was-validated')
+            //         }, false)
+            //     })
+            // })()
 
             function goBack() {
                 window.history.back();
             }
+
+            // Inicializar plugin bootstrapDualListbox
+            $('#listaUsuariosAsignar').bootstrapDualListbox({
+                filterTextClear: 'Mostrar todos',
+                filterPlaceHolder: 'Filtrar',
+                moveSelectedLabel: 'Mover seleccionados',
+                moveAllLabel: 'Mover todos',
+                removeSelectedLabel: 'Quitar seleccionados',
+                removeAllLabel: 'Quitar todos',
+                moveOnSelect: true,
+                selectedListLabel: false,
+                infoText: 'Mostrando {0} usuarios',
+                infoTextEmpty: 'Vacio',
+                selectorMinimalHeight: 256
+            });
         </script>
     </footer>
 </html>

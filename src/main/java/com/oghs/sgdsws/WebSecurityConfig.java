@@ -11,12 +11,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 import com.oghs.sgdsws.util.LoginSuccessMesage;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+// @EnableWebMvc
 public class WebSecurityConfig {
 
     private final String QUERY_USERS_BY_USERNAME = "SELECT u.NOMBRE_USUARIO, u.CONTRASENA, u.ESTATUS FROM USUARIO u WHERE NOMBRE_USUARIO = ? AND ESTATUS = 1";
@@ -31,23 +31,35 @@ public class WebSecurityConfig {
     @Autowired
     private LoginSuccessMesage loginSuccessMesage;
 
+    // @Override
+    // public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    //     registry
+    //         .addResourceHandler("/webjars/**")
+    //         .addResourceLocations("/webjars/");
+    // }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().disable().authorizeHttpRequests()
-        .requestMatchers("/", "/index", "/home", "/img/**", "/webjars/**").permitAll()
-        .requestMatchers("/views/proyectos/").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR", "DESARROLLO")
-        .requestMatchers("/views/proyectos/crear").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
-        .requestMatchers("/views/proyectos/guardar").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
-        .requestMatchers("/views/proyectos/editar/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
-        .requestMatchers("/views/proyectos/eliminar/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
-        .requestMatchers("/views/proyectos/detalle/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR", "DESARROLLO")
-        .anyRequest().authenticated()
-        .and()
-        .formLogin().successHandler(loginSuccessMesage).loginPage("/login").permitAll()
-        .and()
-        .logout().permitAll();
-
-        return http.build();
+        return http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
+            .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                .requestMatchers("/login", "/", "/index", "/home", "/img/**", "/webjars/**").permitAll()
+                .requestMatchers("/views/proyectos/").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR", "DESARROLLO")
+                .requestMatchers("/views/proyectos/crear").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
+                .requestMatchers("/views/proyectos/guardar").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
+                .requestMatchers("/views/proyectos/editar/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
+                .requestMatchers("/views/proyectos/eliminar/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
+                .requestMatchers("/views/proyectos/detalle/**").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR", "DESARROLLO")
+                .anyRequest().authenticated()
+            )
+            .formLogin(formLogin -> formLogin
+                .successHandler(loginSuccessMesage)
+                .loginPage("/login")
+                .permitAll()
+            )
+            .logout(logout -> logout.permitAll())
+            .build();
     }
 
     @Autowired

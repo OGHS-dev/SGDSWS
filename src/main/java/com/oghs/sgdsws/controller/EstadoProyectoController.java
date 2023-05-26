@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/views/estadosProyecto")
 public class EstadoProyectoController {
+
+    private final String RUTA_VISTA = "/views/estadosProyecto/";
     
     @Autowired
     private EstadoProyectoService estadoProyectoService;
@@ -35,7 +37,7 @@ public class EstadoProyectoController {
         model.addAttribute("titulo", "Estados Proyecto");
         model.addAttribute("estadosProyecto", estadoProyectoService.obtenerEstadosProyectoPaginado(numeroPagina, tamano));
 
-        return "/views/estadosProyecto/verEstadosProyecto";
+        return RUTA_VISTA + "verEstadosProyecto";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class EstadoProyectoController {
         model.addAttribute("titulo", "Nuevo Estado Proyecto");
         model.addAttribute("estadoProyecto", new EstadoProyecto());
 
-        return "/views/estadosProyecto/crearEstadoProyecto";
+        return RUTA_VISTA + "crearEstadoProyecto";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class EstadoProyectoController {
     public String guardarEstadoProyecto(@Valid @ModelAttribute EstadoProyecto estadoProyecto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Estado Proyecto");
+            model.addAttribute("titulo", "Crear/Editar Estado Proyecto");
             model.addAttribute("estadoProyecto", estadoProyecto);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/estadosProyecto/crearEstadoProyecto";
+
+            return RUTA_VISTA + "crearEstadoProyecto";
         }
 
         estadoProyectoService.guardarEstadoProyecto(estadoProyecto);
 
-        redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getIdEstadoProyecto() + " guardado exitosamente");
-        return "redirect:/views/estadosProyecto/";
+        redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " guardado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class EstadoProyectoController {
 
             if (estadoProyecto == null) {
                 redirectAttributes.addFlashAttribute("error", "El estado proyecto: " + idEstadoProyecto + " no existe");
-                return "redirect:/views/estadosProyecto/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el estado proyecto: " + idEstadoProyecto);
-            return "redirect:/views/estadosProyecto/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Estado Proyecto");
         model.addAttribute("estadoProyecto", estadoProyecto);
 
-        return "/views/estadosProyecto/crearEstadoProyecto";
+        return RUTA_VISTA + "crearEstadoProyecto";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,17 +110,20 @@ public class EstadoProyectoController {
 
             if (estadoProyecto == null) {
                 redirectAttributes.addFlashAttribute("error", "El estado proyecto: " + idEstadoProyecto + " no existe");
-                return "redirect:/views/estadosProyecto/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el estado proyecto: " + idEstadoProyecto);
-            return "redirect:/views/estadosProyecto/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         estadoProyectoService.eliminarEstadoProyecto(estadoProyecto);
 
-        redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getIdEstadoProyecto() + " eliminado exitosamente");
-        return "redirect:/views/estadosProyecto/";
+        redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
     
 }

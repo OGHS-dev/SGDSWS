@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.oghs.sgdsws.model.Estatus;
@@ -19,8 +17,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -28,22 +28,25 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "USUARIO")
-public class Usuario implements Serializable {
+public class Usuario extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_USUARIO")
     private Long idUsuario;
 
     @Column(name = "NOMBRE_USUARIO")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Usuario.nombreUsuario}")
+    @Size(min = 1, max = 20, message = "{Size.Usuario.nombreUsuario}")
     private String nombreUsuario;
 
     @Column(name = "CONTRASENA")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Usuario.contrasena}")
+    @Size(min = 1, max = 100, message = "{Size.Usuario.contrasena}")
     private String contrasena;
 
     @Column(name = "CORREO")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Usuario.correo}")
+    @Email(message = "{Email.Usuario.correo}")
     private String correo;
 
     @ManyToOne
@@ -51,21 +54,11 @@ public class Usuario implements Serializable {
     private Rol rol;
 
     @Column(name = "ESTATUS")
-    @NotNull
+    @NotNull(message = "{NotNull.Usuario.estatus}")
     private Estatus estatus;
 
-    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaCreacion;
-
-    @Column(name = "FECHA_MODIFICACION")
-    @UpdateTimestamp
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fechaModificacion;
-
     @Column(name = "FECHA_VIGENCIA")
-    @NotNull
+    @NotNull(message = "{NotNull.Usuario.fechaVigencia}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaVigencia;
 
@@ -120,22 +113,6 @@ public class Usuario implements Serializable {
         this.estatus = estatus;
     }
 
-    public Date getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Date getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(Date fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
     public Date getFechaVigencia() {
         return fechaVigencia;
     }
@@ -155,9 +132,8 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "Usuario [idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", contrasena=" + contrasena
-                + ", correo=" + correo + ", rol=" + rol + ", estatus=" + estatus + ", fechaCreacion=" + fechaCreacion
-                + ", fechaModificacion=" + fechaModificacion + ", fechaVigencia=" + fechaVigencia + ", usuarioProyecto="
-                + usuarioProyecto + "]";
+                + ", correo=" + correo + ", estatus=" + estatus + ", fechaVigencia=" + fechaVigencia
+                + ", usuarioProyecto=" + usuarioProyecto + "]";
     }
-    
+
 }

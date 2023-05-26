@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -28,15 +29,17 @@ public class Prioridad extends Auditable implements Serializable {
     private Long idPrioridad;
 
     @Column(name = "CODIGO")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Prioridad.codigo}")
+    @Size(min = 1, max = 4, message = "{Size.Prioridad.codigo}")
     private String codigo;
 
     @Column(name = "DESCRIPCION")
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.Prioridad.descripcion}")
+    @Size(min = 1, max = 20, message = "{Size.Prioridad.descripcion}")
     private String descripcion;
 
     @Column(name = "ESTATUS")
-    @NotNull
+    @NotNull(message = "{NotNull.Prioridad.estatus}")
     private Estatus estatus;
 
     @OneToMany(mappedBy = "prioridad")

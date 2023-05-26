@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/views/roles")
 public class RolController {
+
+    private final String RUTA_VISTA = "/views/roles/";
     
     @Autowired
     private RolService rolService;
@@ -35,7 +37,7 @@ public class RolController {
         model.addAttribute("titulo", "Roles");
         model.addAttribute("roles", rolService.obtenerRolesPaginado(numeroPagina, tamano));
 
-        return "/views/roles/verRoles";
+        return RUTA_VISTA + "verRoles";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class RolController {
         model.addAttribute("titulo", "Nuevo Rol");
         model.addAttribute("rol", new Rol());
 
-        return "/views/roles/crearRol";
+        return RUTA_VISTA + "crearRol";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class RolController {
     public String guardarRol(@Valid @ModelAttribute Rol rol, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Rol");
+            model.addAttribute("titulo", "Crear/Editar Rol");
             model.addAttribute("rol", rol);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/roles/crearRol";
+            
+            return RUTA_VISTA + "crearRol";
         }
 
         rolService.guardarRol(rol);
 
-        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getIdRol() + " guardado exitosamente");
-        return "redirect:/views/roles/";
+        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getCodigo() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class RolController {
 
             if (rol == null) {
                 redirectAttributes.addFlashAttribute("error", "El rol: " + idRol + " no existe");
-                return "redirect:/views/roles/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el rol: " + idRol);
-            return "redirect:/views/roles/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Rol");
         model.addAttribute("rol", rol);
 
-        return "/views/roles/crearRol";
+        return RUTA_VISTA + "crearRol";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,16 +110,19 @@ public class RolController {
 
             if (rol == null) {
                 redirectAttributes.addFlashAttribute("error", "El rol: " + idRol + " no existe");
-                return "redirect:/views/roles/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el rol: " + idRol);
-            return "redirect:/views/roles/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         rolService.eliminarRol(rol);
 
-        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getIdRol() + " eliminado exitosamente");
-        return "redirect:/views/roles/";
+        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getCodigo() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 }

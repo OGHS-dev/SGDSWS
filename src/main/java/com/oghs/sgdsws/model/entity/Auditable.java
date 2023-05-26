@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -28,6 +29,7 @@ public class Auditable {
 
     @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     protected Date fechaCreacion;
 
@@ -37,6 +39,7 @@ public class Auditable {
 
     @Column(name = "FECHA_MODIFICACION")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @LastModifiedDate
     protected Date fechaModificacion;
 

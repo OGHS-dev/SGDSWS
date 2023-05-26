@@ -28,11 +28,13 @@
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Descripción</th>
                                     <th scope="col">Estado</th>
-                                    <th scope="col">Fecha Creación</th>
                                     <th scope="col">Usuario Creación</th>
+                                    <th scope="col">Fecha Creación</th>
                                     <th scope="col">Usuario Asignado</th>
                                     <th scope="col">Fecha Inicio</th>
                                     <th scope="col">Fecha Fin</th>
+                                    <th scope="col">Usuario Modificación</th>
+                                    <th scope="col">Fecha Modificación</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR', 'ROLE_DESARROLLO')">Detalle</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')">Editar</th>
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')">Eliminar</th>
@@ -44,11 +46,13 @@
                                     <td th:text="${p.nombre}"></td>
                                     <td th:text="${p.descripcion}"></td>
                                     <td th:text="${p.estadoProyecto.descripcion}"></td>
+                                    <td th:text="${p.usuarioCreacion}"></td>
                                     <td th:text="${#dates.format(p.fechaCreacion, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${p.usuarioCreado}"></td>
                                     <td th:text="${p.usuarioAsignado}"></td>
                                     <td th:text="${#dates.format(p.fechaInicio, 'dd/MM/yyyy')}"></td>
                                     <td th:text="${#dates.format(p.fechaFin, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${p.usuarioModificacion}"></td>
+                                    <td th:text="${#dates.format(p.fechaModificacion, 'dd/MM/yyyy')}"></td>
                                     <td>
                                         <a class="btn btn-success" th:href="@{/views/proyectos/detalle/} + ${p.idProyecto}" title="Detalle Proyecto">
                                             <i class="bi-card-list"></i>

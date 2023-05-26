@@ -23,6 +23,7 @@ public class LoginController {
         }
         if (principal != null) {
             redirectAttributes.addFlashAttribute("warning", "Atención: Sesión ya iniciada previamente");
+            
             return "redirect:/index";
         }
         if (logout != null) {

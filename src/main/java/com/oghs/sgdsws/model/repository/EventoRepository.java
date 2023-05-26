@@ -11,4 +11,6 @@ import com.oghs.sgdsws.model.entity.Evento;
  */
 public interface EventoRepository extends PagingAndSortingRepository<Evento, Long>, CrudRepository<Evento, Long> {
     
+    Evento findByCodigo(String codigo);
+    
 }

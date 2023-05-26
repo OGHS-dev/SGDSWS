@@ -32,11 +32,14 @@ public class ImpactoServiceImpl implements ImpactoService {
     public Paginado<Impacto> obtenerImpactosPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idImpacto"));
         Page<Impacto> impactosPage = (Page<Impacto>) impactoRepository.findAll(pageRequest);
+        
         return new Paginado<>(impactosPage, Paginando.of(impactosPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarImpacto(Impacto impacto) {
+        impacto.setCodigo(impacto.getCodigo().toUpperCase());
+
         impactoRepository.save(impacto);
     }
 

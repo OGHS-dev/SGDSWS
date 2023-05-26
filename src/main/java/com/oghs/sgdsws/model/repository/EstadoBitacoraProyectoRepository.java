@@ -11,4 +11,6 @@ import com.oghs.sgdsws.model.entity.EstadoBitacoraProyecto;
  */
 public interface EstadoBitacoraProyectoRepository extends PagingAndSortingRepository<EstadoBitacoraProyecto, Long>, CrudRepository<EstadoBitacoraProyecto, Long> {
     
+    EstadoBitacoraProyecto findByCodigo(String codigo);
+    
 }

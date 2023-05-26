@@ -4,18 +4,20 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.oghs.sgdsws.model.entity.BitacoraProyecto;
-import com.oghs.sgdsws.model.entity.EstadoProyecto;
 import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.entity.Usuario;
 import com.oghs.sgdsws.util.Paginado;
+
+import jakarta.validation.Valid;
 
 /**
  *
  * @author oghs
  */
 public class ProyectoDTO implements Serializable {
-    private Proyecto proyecto;
-    private List<EstadoProyecto> listaEstadosProyecto;
+    
+    private @Valid Proyecto proyecto;
+    private @Valid BitacoraProyecto bitacoraProyecto;
     private List<Usuario> listaUsuariosProyecto;
     private Paginado<BitacoraProyecto> listaBitacoraProyectoPaginado;
 
@@ -25,11 +27,11 @@ public class ProyectoDTO implements Serializable {
     public void setProyecto(Proyecto proyecto) {
         this.proyecto = proyecto;
     }
-    public List<EstadoProyecto> getListaEstadosProyecto() {
-        return listaEstadosProyecto;
+    public BitacoraProyecto getBitacoraProyecto() {
+        return bitacoraProyecto;
     }
-    public void setListaEstadosProyecto(List<EstadoProyecto> listaEstadosProyecto) {
-        this.listaEstadosProyecto = listaEstadosProyecto;
+    public void setBitacoraProyecto(BitacoraProyecto bitacoraProyecto) {
+        this.bitacoraProyecto = bitacoraProyecto;
     }
     public List<Usuario> getListaUsuariosProyecto() {
         return listaUsuariosProyecto;

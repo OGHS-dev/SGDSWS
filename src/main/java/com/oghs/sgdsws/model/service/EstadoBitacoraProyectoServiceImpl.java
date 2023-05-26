@@ -32,11 +32,14 @@ public class EstadoBitacoraProyectoServiceImpl implements EstadoBitacoraProyecto
     public Paginado<EstadoBitacoraProyecto> obtenerEstadosBitacoraProyectoPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idEstadoBitacoraProyecto"));
         Page<EstadoBitacoraProyecto> estadosBitacoraProyectoPage = (Page<EstadoBitacoraProyecto>) estadoBitacoraProyectoRepository.findAll(pageRequest);
+        
         return new Paginado<>(estadosBitacoraProyectoPage, Paginando.of(estadosBitacoraProyectoPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarEstadoBitacoraProyecto(EstadoBitacoraProyecto estadoBitacoraProyecto) {
+        estadoBitacoraProyecto.setCodigo(estadoBitacoraProyecto.getCodigo().toUpperCase());
+
         estadoBitacoraProyectoRepository.save(estadoBitacoraProyecto);
     }
 

@@ -16,28 +16,57 @@
                     </div>
                     <div class="card-body">
                         <input type="hidden" th:field="*{idNivelRiesgo}">
-                        <div class="mb-3">
-                            <label for="codigo" class="form-label">Código del nivel de riesgo:</label>
-                            <input type="text" class="form-control" id="codigo" placeholder="Código del nivel de riesgo" th:field="*{codigo}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="codigo" class="form-label">Código del nivel de riesgo</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="codigo" placeholder="Código..." th:field="*{codigo}" aria-describedby="codigo" aria-label="codigo">
+                                        <label for="codigo">Código:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Código asignado al nivel de riesgo.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></div>
+                            </div>
+                            <div class="col">
+                                <label for="descripcion" class="form-label">Descripción del nivel de riesgo</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="descripcion" placeholder="Descripción..." th:field="*{descripcion}" aria-describedby="descripcion" aria-label="descripcion">
+                                        <label for="descripcion">Descripción:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Descripción asignada al nivel de riesgo.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción del nivel de riesgo:</label>
-                            <input type="text" class="form-control" id="descripcion" placeholder="Descripción del nivel de riesgo" th:field="*{descripcion}" required>
-                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></small> -->
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estatus" class="form-label">Estatus del nivel de riesgo:</label>
-                            <select class="form-select selectpicker" aria-label="Default select example" th:field="*{estatus}" id="estatus" required>
-                                <option selected disabled value="">Seleccionar estatus...</option>
-                                <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
-                            </select>
-                            <div class="valid-feedback">Correcto</div>
-                            <div class="invalid-feedback">Requerido</div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="estatus" class="form-label">Estatus del nivel de riesgo</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-cursor"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <select class="form-select selectpicker" id="estatus" th:field="*{estatus}" aria-describedby="estatus" aria-label="estatus">
+                                            <option selected disabled value="">Seleccionar estatus...</option>
+                                            <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
+                                        </select>
+                                        <label for="estatus">Estatus:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Estatus asignado al nivel de riesgo.</span>
+                                <div class="alert alert-warning" th:if="${#fields.hasErrors('estatus')}" th:errors="*{estatus}"></div>
+                            </div>
+                            <div class="col">
+
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

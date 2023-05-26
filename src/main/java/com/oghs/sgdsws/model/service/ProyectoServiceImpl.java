@@ -15,6 +15,7 @@ import com.oghs.sgdsws.model.entity.Usuario;
 import com.oghs.sgdsws.model.entity.UsuarioProyecto;
 import com.oghs.sgdsws.model.entity.UsuarioProyectoId;
 import com.oghs.sgdsws.model.repository.BitacoraProyectoRepository;
+import com.oghs.sgdsws.model.repository.EstadoBitacoraProyectoRepository;
 import com.oghs.sgdsws.model.repository.ProyectoRepository;
 import com.oghs.sgdsws.model.repository.UsuarioProyectoRepository;
 import com.oghs.sgdsws.util.Paginado;
@@ -36,6 +37,9 @@ public class ProyectoServiceImpl implements ProyectoService {
     @Autowired
     private BitacoraProyectoRepository bitacoraProyectoRepository;
 
+    @Autowired
+    private EstadoBitacoraProyectoRepository estadoBitacoraProyectoRepository;
+
     @Override
     public List<Proyecto> obtenerProyectos() {
         return (List<Proyecto>) proyectoRepository.findAll();
@@ -45,6 +49,7 @@ public class ProyectoServiceImpl implements ProyectoService {
     public Paginado<Proyecto> obtenerProyectosPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idProyecto"));
         Page<Proyecto> proyectosPage = (Page<Proyecto>) proyectoRepository.findAll(pageRequest);
+
         return new Paginado<>(proyectosPage, Paginando.of(proyectosPage.getTotalPages(), numeroPagina, tamano));
     }
 
@@ -60,15 +65,17 @@ public class ProyectoServiceImpl implements ProyectoService {
 
         BitacoraProyecto bitacoraProyecto = new BitacoraProyecto();
         bitacoraProyecto.setProyecto(proyectoDTO.getProyecto());
+
         if (listaBitacoraProyecto.isEmpty()) {
             bitacoraProyecto.setRevision(1L);
-            bitacoraProyecto.setPrioridad(null);
-            // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Creado);
+            bitacoraProyecto.setEstadoBitacoraProyecto(estadoBitacoraProyectoRepository.findByCodigo("ECRE"));
+            bitacoraProyecto.setDescripcion("Proyecto creado");
         } else {
             bitacoraProyecto.setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
-            bitacoraProyecto.setPrioridad(null);
-            // bitacoraProyecto.setEstatus(EstatusBitacoraProyecto.Modificado);
+            bitacoraProyecto.setDescripcion("Proyecto modificado");
+            bitacoraProyecto.setEstadoBitacoraProyecto(estadoBitacoraProyectoRepository.findByCodigo("EMOD"));
         }
+
         bitacoraProyectoRepository.save(bitacoraProyecto);
     }
 
@@ -80,6 +87,7 @@ public class ProyectoServiceImpl implements ProyectoService {
     @Override
     public void eliminarProyecto(Proyecto proyecto) {
         usuarioProyectoRepository.deleteAll(usuarioProyectoRepository.findByProyecto(proyecto));
+        bitacoraProyectoRepository.deleteAll(bitacoraProyectoRepository.findByProyecto(proyecto));
         proyectoRepository.deleteById(proyecto.getIdProyecto());
     }
 

@@ -32,11 +32,14 @@ public class EventoServiceImpl implements EventoService {
     public Paginado<Evento> obtenerEventosPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idEvento"));
         Page<Evento> eventosPage = (Page<Evento>) eventoRepository.findAll(pageRequest);
+        
         return new Paginado<>(eventosPage, Paginando.of(eventosPage.getTotalPages(), numeroPagina, tamano));
     }
 
     @Override
     public void guardarEvento(Evento evento) {
+        evento.setCodigo(evento.getCodigo().toUpperCase());
+
         eventoRepository.save(evento);
     }
 

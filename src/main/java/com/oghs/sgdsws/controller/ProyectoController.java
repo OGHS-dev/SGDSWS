@@ -14,9 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.ProyectoDTO;
+import com.oghs.sgdsws.model.entity.BitacoraProyecto;
 import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.service.BitacoraProyectoService;
+import com.oghs.sgdsws.model.service.EstadoBitacoraProyectoService;
 import com.oghs.sgdsws.model.service.EstadoProyectoService;
+import com.oghs.sgdsws.model.service.EventoService;
+import com.oghs.sgdsws.model.service.ImpactoService;
+import com.oghs.sgdsws.model.service.NivelRiesgoService;
+import com.oghs.sgdsws.model.service.PrioridadService;
 import com.oghs.sgdsws.model.service.ProyectoService;
 import com.oghs.sgdsws.model.service.UsuarioService;
 
@@ -30,6 +36,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/proyectos")
 public class ProyectoController {
 
+    private final String RUTA_VISTA = "/views/proyectos/";
+
     @Autowired
     private ProyectoService proyectoService;
 
@@ -42,13 +50,28 @@ public class ProyectoController {
     @Autowired
     private BitacoraProyectoService bitacoraProyectoService;
 
+    @Autowired
+    private PrioridadService prioridadService;
+
+    @Autowired
+    private ImpactoService impactoService;
+
+    @Autowired
+    private NivelRiesgoService nivelRiesgoService;
+
+    @Autowired
+    private EventoService eventoService;
+
+    @Autowired
+    private EstadoBitacoraProyectoService estadoBitacoraProyectoService;
+
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR", "ROLE_DESARROLLO"})
     @GetMapping("/")
     public String verProyectos(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Proyectos");
         model.addAttribute("proyectos", proyectoService.obtenerProyectosPaginado(numeroPagina, tamano));
 
-        return "/views/proyectos/verProyectos";
+        return RUTA_VISTA + "verProyectos";
     }
     
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
@@ -59,7 +82,7 @@ public class ProyectoController {
         model.addAttribute("listaUsuarios", usuarioService.obtenerUsuarios());
         model.addAttribute("listaEstadosProyecto", estadoProyectoService.obtenerEstadosProyecto());
         
-        return "/views/proyectos/crearProyecto";
+        return RUTA_VISTA + "crearProyecto";
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
@@ -67,17 +90,21 @@ public class ProyectoController {
     public String guardarProyecto(@Valid @ModelAttribute ProyectoDTO proyectoDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Proyecto");
+            model.addAttribute("titulo", "Crear/Editar Proyecto");
             model.addAttribute("proyectoDTO", proyectoDTO);
+            model.addAttribute("listaUsuarios", usuarioService.obtenerUsuarios());
+            model.addAttribute("listaEstadosProyecto", estadoProyectoService.obtenerEstadosProyecto());
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/proyectos/crearProyecto";
+            
+            return RUTA_VISTA + "crearProyecto";
         }
 
         proyectoService.guardarProyecto(proyectoDTO);
         
-        redirectAttributes.addFlashAttribute("success", "Proyecto: " + proyectoDTO.getProyecto().getIdProyecto() + " guardado exitosamente");
-        return "redirect:/views/proyectos/";
+        redirectAttributes.addFlashAttribute("success", "Proyecto: " + proyectoDTO.getProyecto().getNombre() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
@@ -93,11 +120,13 @@ public class ProyectoController {
 
             if (proyecto == null) {
                 redirectAttributes.addFlashAttribute("error", "El proyecto: " + idProyecto + " no existe");
-                return "redirect:/views/proyectos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el proyecto: " + idProyecto);
-            return "redirect:/views/proyectos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         ProyectoDTO proyectoDTO = new ProyectoDTO();
@@ -107,8 +136,9 @@ public class ProyectoController {
         model.addAttribute("titulo", "Editar Proyecto");
         model.addAttribute("proyectoDTO", proyectoDTO);
         model.addAttribute("listaUsuarios", usuarioService.obtenerUsuarios());
+        model.addAttribute("listaEstadosProyecto", estadoProyectoService.obtenerEstadosProyecto());
 
-        return "/views/proyectos/crearProyecto";
+        return RUTA_VISTA + "crearProyecto";
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
@@ -124,17 +154,20 @@ public class ProyectoController {
 
             if (proyecto == null) {
                 redirectAttributes.addFlashAttribute("error", "El proyecto: " + idProyecto + " no existe");
-                return "redirect:/views/proyectos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el proyecto: " + idProyecto);
-            return "redirect:/views/proyectos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         proyectoService.eliminarProyecto(proyecto);
 
-        redirectAttributes.addFlashAttribute("success", "Proyecto: " + proyecto.getIdProyecto() + " eliminado exitosamente");
-        return "redirect:/views/proyectos/";
+        redirectAttributes.addFlashAttribute("success", "Proyecto: " + proyecto.getNombre() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR", "ROLE_DESARROLLO"})
@@ -150,21 +183,33 @@ public class ProyectoController {
 
             if (proyecto == null) {
                 redirectAttributes.addFlashAttribute("error", "El proyecto: " + idProyecto + " no existe");
-                return "redirect:/views/proyectos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el proyecto: " + idProyecto);
-            return "redirect:/views/proyectos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
+
+        BitacoraProyecto bitacoraProyecto = new BitacoraProyecto();
+        bitacoraProyecto.setProyecto(proyecto);
 
         ProyectoDTO proyectoDTO = new ProyectoDTO();
         proyectoDTO.setProyecto(proyecto);
-        proyectoDTO.setListaUsuariosProyecto(usuarioService.obtenerUsuarios());
+        proyectoDTO.setBitacoraProyecto(bitacoraProyecto);
+        proyectoDTO.setListaUsuariosProyecto(usuarioService.obtenerUsuariosPorProyecto(proyecto));
         proyectoDTO.setListaBitacoraProyectoPaginado(bitacoraProyectoService.obtenerBitacoraProyectoPorProyectoPaginado(proyecto, numeroPagina, tamano));
 
         model.addAttribute("titulo", "Detalle de Proyecto");
         model.addAttribute("proyectoDTO", proyectoDTO);
+        model.addAttribute("listaEstadosProyecto", estadoProyectoService.obtenerEstadosProyecto());
+        model.addAttribute("listaPrioridades", prioridadService.obtenerPrioridades());
+        model.addAttribute("listaImpactos", impactoService.obtenerImpactos());
+        model.addAttribute("listaNivelesRiesgo", nivelRiesgoService.obtenerNivelesRiesgo());
+        model.addAttribute("listaEventos", eventoService.obtenerEventos());
+        model.addAttribute("listaEstadosBitacoraProyecto", estadoBitacoraProyectoService.obtenerEstadosBitacoraProyecto());
 
-        return "/views/proyectos/detalleProyecto";
+        return RUTA_VISTA + "detalleProyecto";
     }
 }

@@ -26,6 +26,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/impactos")
 public class ImpactoController {
 
+    private final String RUTA_VISTA = "/views/impactos/";
+
     @Autowired
     private ImpactoService impactoService;
 
@@ -35,7 +37,7 @@ public class ImpactoController {
         model.addAttribute("titulo", "Impactos");
         model.addAttribute("impactos", impactoService.obtenerImpactosPaginado(numeroPagina, tamano));
 
-        return "/views/impactos/verImpactos";
+        return RUTA_VISTA + "verImpactos";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class ImpactoController {
         model.addAttribute("titulo", "Nuevo Impacto");
         model.addAttribute("impacto", new Impacto());
 
-        return "/views/impactos/crearImpacto";
+        return RUTA_VISTA + "crearImpacto";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class ImpactoController {
     public String guardarImpacto(@Valid @ModelAttribute Impacto impacto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Impacto");
+            model.addAttribute("titulo", "Crear/Editar Impacto");
             model.addAttribute("impacto", impacto);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/impactos/crearImpacto";
+
+            return RUTA_VISTA + "crearImpacto";
         }
 
         impactoService.guardarImpacto(impacto);
 
-        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getIdImpacto() + " guardado exitosamente");
-        return "redirect:/views/impactos/";
+        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getCodigo() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class ImpactoController {
 
             if (impacto == null) {
                 redirectAttributes.addFlashAttribute("error", "El impacto: " + idImpacto + " no existe");
-                return "redirect:/views/impactos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el impacto: " + idImpacto);
-            return "redirect:/views/impactos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Impacto");
         model.addAttribute("impacto", impacto);
 
-        return "/views/impactos/crearImpacto";
+        return RUTA_VISTA + "crearImpacto";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,17 +110,20 @@ public class ImpactoController {
 
             if (impacto == null) {
                 redirectAttributes.addFlashAttribute("error", "El impacto: " + idImpacto + " no existe");
-                return "redirect:/views/impactos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el impacto: " + idImpacto);
-            return "redirect:/views/impactos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         impactoService.eliminarImpacto(impacto);
 
-        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getIdImpacto() + " eliminado exitosamente");
-        return "redirect:/views/impactos/";
+        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getCodigo() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
     
 }

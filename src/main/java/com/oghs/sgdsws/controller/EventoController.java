@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/views/eventos")
 public class EventoController {
+
+    private final String RUTA_VISTA = "/views/eventos/";
     
     @Autowired
     private EventoService eventoService;
@@ -35,7 +37,7 @@ public class EventoController {
         model.addAttribute("titulo", "Eventos");
         model.addAttribute("eventos", eventoService.obtenerEventosPaginado(numeroPagina, tamano));
 
-        return "/views/eventos/verEventos";
+        return RUTA_VISTA + "verEventos";
     }
 
     @Secured("ROLE_ADMIN")
@@ -44,7 +46,7 @@ public class EventoController {
         model.addAttribute("titulo", "Nuevo Evento");
         model.addAttribute("evento", new Evento());
 
-        return "/views/eventos/crearEvento";
+        return RUTA_VISTA + "crearEvento";
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,17 +54,19 @@ public class EventoController {
     public String guardarEvento(@Valid @ModelAttribute Evento evento, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Editar Evento");
+            model.addAttribute("titulo", "Crear/Editar Evento");
             model.addAttribute("evento", evento);
 
             System.err.println("Error en los datos proporcionados");
-            return "/views/eventos/crearEvento";
+
+            return RUTA_VISTA + "crearEvento";
         }
 
         eventoService.guardarEvento(evento);
 
-        redirectAttributes.addFlashAttribute("success", "Evento: " + evento.getIdEvento() + " guardado exitosamente");
-        return "redirect:/views/eventos/";
+        redirectAttributes.addFlashAttribute("success", "Evento: " + evento.getCodigo() + " guardado exitosamente");
+
+        return "redirect:" + RUTA_VISTA;
     }
 
     @Secured("ROLE_ADMIN")
@@ -78,17 +82,19 @@ public class EventoController {
 
             if (evento == null) {
                 redirectAttributes.addFlashAttribute("error", "El evento: " + idEvento + " no existe");
-                return "redirect:/views/eventos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el evento: " + idEvento);
-            return "redirect:/views/eventos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         model.addAttribute("titulo", "Editar Evento");
         model.addAttribute("evento", evento);
 
-        return "/views/eventos/crearEvento";
+        return RUTA_VISTA + "crearEvento";
     }
 
     @Secured("ROLE_ADMIN")
@@ -104,16 +110,19 @@ public class EventoController {
 
             if (evento == null) {
                 redirectAttributes.addFlashAttribute("error", "El evento: " + idEvento + " no existe");
-                return "redirect:/views/eventos/";
+                
+                return "redirect:" + RUTA_VISTA;
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "No se encontró el evento: " + idEvento);
-            return "redirect:/views/eventos/";
+            
+            return "redirect:" + RUTA_VISTA;
         }
 
         eventoService.eliminarEvento(evento);
 
-        redirectAttributes.addFlashAttribute("success", "Evento: " + evento.getIdEvento() + " eliminado exitosamente");
-        return "redirect:/views/eventos/";
+        redirectAttributes.addFlashAttribute("success", "Evento: " + evento.getCodigo() + " eliminado exitosamente");
+        
+        return "redirect:" + RUTA_VISTA;
     }
 }
