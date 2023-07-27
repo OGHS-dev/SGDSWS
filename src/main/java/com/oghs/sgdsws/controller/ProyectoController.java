@@ -19,7 +19,7 @@ import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.service.BitacoraProyectoService;
 import com.oghs.sgdsws.model.service.EstadoBitacoraProyectoService;
 import com.oghs.sgdsws.model.service.EstadoProyectoService;
-import com.oghs.sgdsws.model.service.EventoService;
+import com.oghs.sgdsws.model.service.CategoriaService;
 import com.oghs.sgdsws.model.service.ImpactoService;
 import com.oghs.sgdsws.model.service.NivelRiesgoService;
 import com.oghs.sgdsws.model.service.PrioridadService;
@@ -60,7 +60,7 @@ public class ProyectoController {
     private NivelRiesgoService nivelRiesgoService;
 
     @Autowired
-    private EventoService eventoService;
+    private CategoriaService categoriaService;
 
     @Autowired
     private EstadoBitacoraProyectoService estadoBitacoraProyectoService;
@@ -207,7 +207,7 @@ public class ProyectoController {
         model.addAttribute("listaPrioridades", prioridadService.obtenerPrioridades());
         model.addAttribute("listaImpactos", impactoService.obtenerImpactos());
         model.addAttribute("listaNivelesRiesgo", nivelRiesgoService.obtenerNivelesRiesgo());
-        model.addAttribute("listaEventos", eventoService.obtenerEventos());
+        model.addAttribute("listaCategorias", categoriaService.obtenerCategorias());
         model.addAttribute("listaEstadosBitacoraProyecto", estadoBitacoraProyectoService.obtenerEstadosBitacoraProyecto());
 
         return RUTA_VISTA + "detalleProyecto";

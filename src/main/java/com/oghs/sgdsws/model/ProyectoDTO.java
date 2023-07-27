@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.oghs.sgdsws.model.entity.BitacoraProyecto;
+import com.oghs.sgdsws.model.entity.Comentario;
 import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.model.entity.Usuario;
 import com.oghs.sgdsws.util.Paginado;
@@ -17,9 +18,14 @@ import jakarta.validation.Valid;
 public class ProyectoDTO implements Serializable {
     
     private @Valid Proyecto proyecto;
+    
     private @Valid BitacoraProyecto bitacoraProyecto;
+    
     private List<Usuario> listaUsuariosProyecto;
+    
     private Paginado<BitacoraProyecto> listaBitacoraProyectoPaginado;
+
+    private Comentario comentario;
 
     public Proyecto getProyecto() {
         return proyecto;
@@ -44,6 +50,12 @@ public class ProyectoDTO implements Serializable {
     }
     public void setListaBitacoraProyectoPaginado(Paginado<BitacoraProyecto> listaBitacoraProyectoPaginado) {
         this.listaBitacoraProyectoPaginado = listaBitacoraProyectoPaginado;
+    }
+    public Comentario getComentario() {
+        return comentario;
+    }
+    public void setComentario(Comentario comentario) {
+        this.comentario = comentario;
     }
     
 }

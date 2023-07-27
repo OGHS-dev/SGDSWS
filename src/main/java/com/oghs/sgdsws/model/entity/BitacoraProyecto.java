@@ -16,8 +16,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  *
@@ -33,9 +35,11 @@ public class BitacoraProyecto implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "ID_PROYECTO")
+    @JsonIgnoreProperties({"estadoProyecto", "usuarioProyecto", "bitacoraProyecto"})
     private Proyecto proyecto;
     
     @Column(name = "FECHA_BITACORA", nullable = false, updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date fechaBitacora;
     
@@ -44,22 +48,27 @@ public class BitacoraProyecto implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "ID_PRIORIDAD")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
     private Prioridad prioridad;
 
     @ManyToOne
     @JoinColumn(name = "ID_IMPACTO")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
     private Impacto impacto;
 
     @ManyToOne
     @JoinColumn(name = "ID_NIVEL_RIESGO")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
     private NivelRiesgo  nivelRiesgo;
 
     @ManyToOne
-    @JoinColumn(name = "ID_EVENTO")
-    private Evento evento;
+    @JoinColumn(name = "ID_CATEGORIA")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
+    private Categoria categoria;
 
     @ManyToOne
     @JoinColumn(name = "ID_ESTADO_BITACORA_PROYECTO")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
     private EstadoBitacoraProyecto estadoBitacoraProyecto;
 
     @Column(name = "DESCRIPCION")
@@ -68,7 +77,6 @@ public class BitacoraProyecto implements Serializable {
     private String descripcion;
 
     @Column(name = "USUARIO_REPORTE")
-    @CreatedBy
     private String usuarioReporte;
 
     @Column(name = "USUARIO_ASIGNADO")
@@ -79,13 +87,16 @@ public class BitacoraProyecto implements Serializable {
     private Date fechaAtencion;
 
     @Column(name = "ACCIONES")
+    @NotEmpty(message = "{NotEmpty.BitacoraProyecto.acciones}")
     @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.acciones}")
     private String acciones;
     
     @OneToMany(mappedBy = "bitacoraProyecto")
+    @JsonManagedReference
     private Set<Archivo> archivo;
     
     @OneToMany(mappedBy = "bitacoraProyecto")
+    @JsonManagedReference
     private Set<Comentario> comentario;
 
     public Long getIdBitacoraProyecto() {
@@ -144,12 +155,12 @@ public class BitacoraProyecto implements Serializable {
         this.nivelRiesgo = nivelRiesgo;
     }
 
-    public Evento getEvento() {
-        return evento;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setEvento(Evento evento) {
-        this.evento = evento;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public EstadoBitacoraProyecto getEstadoBitacoraProyecto() {
@@ -218,12 +229,9 @@ public class BitacoraProyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", proyecto=" + proyecto
-                + ", fechaBitacora=" + fechaBitacora + ", revision=" + revision + ", prioridad=" + prioridad
-                + ", impacto=" + impacto + ", nivelRiesgo=" + nivelRiesgo + ", evento=" + evento
-                + ", estadoBitacoraProyecto=" + estadoBitacoraProyecto + ", descripcion=" + descripcion
-                + ", usuarioReporte=" + usuarioReporte + ", usuarioAsignado=" + usuarioAsignado + ", fechaAtencion="
-                + fechaAtencion + ", acciones=" + acciones + ", archivo=" + archivo + ", comentario=" + comentario
+        return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", fechaBitacora=" + fechaBitacora
+                + ", revision=" + revision + ", descripcion=" + descripcion + ", usuarioReporte=" + usuarioReporte
+                + ", usuarioAsignado=" + usuarioAsignado + ", fechaAtencion=" + fechaAtencion + ", acciones=" + acciones
                 + "]";
     }
     

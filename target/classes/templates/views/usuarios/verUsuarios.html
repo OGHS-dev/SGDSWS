@@ -5,13 +5,10 @@
     <body>
         <header th:replace="~{template :: header}"></header>
         
-        <div class="container">
+        <div class="container" data-bs-spy="scroll">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h4 class="card-title">
-                        <i class="bi-person-circle"></i>
-                        <span th:text="${titulo}"></span>
-                    </h4>
+                    <h2 th:replace="~{template :: encabezadoCard (icono='person-circle', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
                     <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/usuarios/crear}" title="Crear Nuevo Usuario">
@@ -63,24 +60,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation" class="paging">
-                            <ul class="pagination" th:if="${usuarios.page.totalPages > 1}">
-                                <li class="page-item" th:classappend="${!usuarios.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${usuarios.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
-                                </li>
-                                <th:block th:each="item : ${usuarios.paginando.getElementos()}">
-                                    <li class="page-item" th:classappend="${item.indice == usuarios.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
-                                        <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
-                                    </li>
-                                    <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                </th:block>
-                                <li class="page-item" th:classappend="${!usuarios.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/usuarios/?numeroPagina=' + ${usuarios.paginando.numeroPagina + 1}}">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='usuarios')}"></nav>
                     </div>
                 </div>
                 <div class="card-footer bg-dark text-white">
@@ -89,6 +69,6 @@
             </div>
         </div>
         
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

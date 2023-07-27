@@ -44,7 +44,7 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers("/login", "/", "/index", "/home", "/img/**", "/webjars/**").permitAll()
+                .requestMatchers("/login", "/", "/home", "/index", "/img/**", "/webjars/**").permitAll()
                 .requestMatchers("/views/proyectos/").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR", "DESARROLLO")
                 .requestMatchers("/views/proyectos/crear").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")
                 .requestMatchers("/views/proyectos/guardar").hasAnyRole("ADMIN", "SUPERVISOR", "AUDITOR", "REVISOR")

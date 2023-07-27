@@ -17,25 +17,47 @@
                     <form th:action="@{/login}" method="post">
                         <div class="card">
                             <div class="card-header bg-dark text-white">
-                                <h4 class="card-title">
-                                    <!-- <i class="bi-clipboard-plus"></i> -->
-                                    <span>Iniciar Sesión</span>
-                                </h4>
+                                <h2 th:replace="~{template :: encabezadoCard (icono='door-open', texto='Iniciar Sesión')}"></h2>
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label class="form-label sr-only" for="username">Usuario:</label>
                                     <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" aria-describedby="Usuario" required autofocus>
                                     <div id="ayuda" class="form-text">Para solicitar un usuario nuevo favor de comunicarse con el área de Seguridad de la Información.</div>
+
+                                    <!-- <label for="username" class="form-label">Usuario</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-person"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="username" placeholder="Usuario..." aria-describedby="username" aria-label="username" required autofocus>
+                                            <label for="username">Usuario:</label>
+                                        </div>
+                                    </div>
+                                    <span class="form-text">Para solicitar un usuario nuevo favor de comunicarse con el área de Seguridad de la Información.</span> -->
+                                    <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label sr-only" for="password">Contraseña:</label>
                                     <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" aria-describedby="Contraseña" required>
+
+                                    <!-- <label for="password" class="form-label">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-key"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="password" class="form-control" id="password" placeholder="Contraseña..." aria-describedby="password" aria-label="password" required>
+                                            <label for="password">Contraseña:</label>
+                                        </div>
+                                    </div>
+                                    <span class="form-text">Para solicitar reposición de contraseña favor de comunicarse con el área de Seguridad de la Información.</span> -->
+                                    <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
                                 </div>
                             </div>
                             <div class="card-footer bg-dark text-white">
-                                <!-- <button type="submit" class="btn btn-primary"><i class="bi-save"></i>&nbsp;Guardar</button> -->
-                                <button class="btn btn-primary" type="submit">Ingresar</button>
+                                <button th:replace="~{template :: boton (icono='save', texto='Ingresar', titulo='Iniciar Sección')}"></button>
                             </div>
                         </div>
                     </form>
@@ -43,7 +65,7 @@
                 <div class="col"></div>
             </div>
         </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    <!-- <footer th:replace="~{template :: footer}"></footer> -->
-    <div th:replace="~{template :: footer}"></div>
 </html>

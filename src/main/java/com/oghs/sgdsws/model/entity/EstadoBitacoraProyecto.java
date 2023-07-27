@@ -88,8 +88,7 @@ public class EstadoBitacoraProyecto extends Auditable implements Serializable {
     @Override
     public String toString() {
         return "EstadoBitacoraProyecto [idEstadoBitacoraProyecto=" + idEstadoBitacoraProyecto + ", codigo=" + codigo
-                + ", descripcion=" + descripcion + ", estatus=" + estatus + ", bitacoraProyecto=" + bitacoraProyecto
-                + "]";
+                + ", descripcion=" + descripcion + ", estatus=" + estatus + "]";
     }
-
+    
 }

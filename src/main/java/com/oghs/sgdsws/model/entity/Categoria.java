@@ -21,36 +21,36 @@ import jakarta.validation.constraints.Size;
  * @author oghs
  */
 @Entity
-@Table(name = "EVENTO")
-public class Evento extends Auditable implements Serializable {
+@Table(name = "CATEGORIA")
+public class Categoria extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_EVENTO")
-    private Long idEvento;
+    @Column(name = "ID_CATEGORIA")
+    private Long idCategoria;
 
     @Column(name = "CODIGO")
-    @NotEmpty(message = "{NotEmpty.Evento.codigo}")
-    @Size(min = 1, max = 4, message = "{Size.Evento.codigo}")
+    @NotEmpty(message = "{NotEmpty.Categoria.codigo}")
+    @Size(min = 1, max = 4, message = "{Size.Categoria.codigo}")
     private String codigo;
 
     @Column(name = "DESCRIPCION")
-    @NotEmpty(message = "{NotEmpty.Evento.descripcion}")
-    @Size(min = 1, max = 20, message = "{Size.Evento.descripcion}")
+    @NotEmpty(message = "{NotEmpty.Categoria.descripcion}")
+    @Size(min = 1, max = 20, message = "{Size.Categoria.descripcion}")
     private String descripcion;
 
     @Column(name = "ESTATUS")
-    @NotNull(message = "{NotNull.Evento.estatus}")
+    @NotNull(message = "{NotNull.Categoria.estatus}")
     private Estatus estatus;
 
-    @OneToMany(mappedBy = "evento")
+    @OneToMany(mappedBy = "categoria")
     private Set<BitacoraProyecto> bitacoraProyecto;
 
-    public Long getIdEvento() {
-        return idEvento;
+    public Long getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setIdEvento(Long idEvento) {
-        this.idEvento = idEvento;
+    public void setIdCategoria(Long idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     public String getCodigo() {
@@ -87,8 +87,8 @@ public class Evento extends Auditable implements Serializable {
 
     @Override
     public String toString() {
-        return "Evento [idEvento=" + idEvento + ", codigo=" + codigo + ", descripcion=" + descripcion + ", estatus="
-                + estatus + ", bitacoraProyecto=" + bitacoraProyecto + "]";
+        return "Categoria [idCategoria=" + idCategoria + ", codigo=" + codigo + ", descripcion=" + descripcion + ", estatus="
+                + estatus + "]";
     }
 
 }

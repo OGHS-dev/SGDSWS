@@ -88,7 +88,7 @@ public class Impacto extends Auditable implements Serializable {
     @Override
     public String toString() {
         return "Impacto [idImpacto=" + idImpacto + ", codigo=" + codigo + ", descripcion=" + descripcion + ", estatus="
-                + estatus + ", bitacoraProyecto=" + bitacoraProyecto + "]";
+                + estatus + "]";
     }
     
 }

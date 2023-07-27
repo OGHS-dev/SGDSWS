@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{template :: head}">
-        
-    </head>
+    <head th:replace="~{template :: head}"></head>
     <body>
+        <header th:replace="~{template :: header}"></header>
+
         <div class="container text-center py-3">
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title text-danger">
+                    <h1 class="panel-title text-danger">
                         <span th:text="${error}"></span> - <span th:text="${status}"></span>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="panel-body">
                     <!-- <img th:src="@{/img/error.png}" width="64" height="64"> -->
                     <br>
-                    <h4>La página solicitada no existe</h4>
+                    <h3>La página solicitada no existe</h3>
                     <br>
                     <button class="btn btn-primary" onclick="goBack()">Regresar</button>
                 </div>
             </div>
         </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    
-    <footer th:replace="~{template :: footer}">
-        
-    </footer>
 </html>

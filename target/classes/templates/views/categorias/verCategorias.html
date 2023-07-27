@@ -5,18 +5,15 @@
     <body>
         <header th:replace="~{template :: header}"></header>
         
-        <div class="container">
+        <div class="container" data-bs-spy="scroll">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h4 class="card-title">
-                        <i class="bi-info-square"></i>
-                        <span th:text="${titulo}"></span>
-                    </h4>
+                    <h2 th:replace="~{template :: encabezadoCard (icono='info-square', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/eventos/crear}" title="Crear Nuevo Evento">
+                    <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/categorias/crear}" title="Crear Nueva Categoría">
                         <i class="bi-plus-circle"></i>
-                        <span>Nuevo Evento</span>
+                        <span>Nueva Categoría</span>
                     </a>
                     <br>
                     <br>
@@ -37,8 +34,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="e : ${eventos.page}">
-                                    <th scope="row" th:text="${e.idEvento}"></th>
+                                <tr th:each="e : ${categorias.page}">
+                                    <th scope="row" th:text="${e.idCategoria}"></th>
                                     <td th:text="${e.codigo}"></td>
                                     <td th:text="${e.descripcion}"></td>
                                     <td th:text="${e.estatus}"></td>
@@ -47,36 +44,19 @@
                                     <td th:text="${e.usuarioModificacion}"></td>
                                     <td th:text="${#dates.format(e.fechaModificacion, 'dd/MM/yyyy')}"></td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                                        <a class="btn btn-warning" th:href="@{/views/eventos/editar/} + ${e.idEvento}" title="Editar Evento">
+                                        <a class="btn btn-warning" th:href="@{/views/categorias/editar/} + ${e.idCategoria}" title="Editar Categoría">
                                             <i class="bi-pencil-square"></i>
                                         </a>
                                     </td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                                        <a class="btn btn-danger" th:href="@{/views/eventos/eliminar/} + ${e.idEvento}" title="Eliminar Evento" onclick="return confirm('Eliminar este evento?');">
+                                        <a class="btn btn-danger" th:href="@{/views/categorias/eliminar/} + ${e.idCategoria}" title="Eliminar Categoría" onclick="return confirm('Eliminar esta categoría?');">
                                             <i class="bi-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation" class="paging">
-                            <ul class="pagination" th:if="${eventos.page.totalPages > 1}">
-                                <li class="page-item" th:classappend="${!eventos.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/eventos/?numeroPagina=' + ${eventos.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
-                                </li>
-                                <th:block th:each="item : ${eventos.paginando.getElementos()}">
-                                    <li class="page-item" th:classappend="${item.indice == eventos.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
-                                        <a class="page-link" th:href="@{'/views/eventos/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
-                                    </li>
-                                    <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                </th:block>
-                                <li class="page-item" th:classappend="${!eventos.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/eventos/?numeroPagina=' + ${eventos.paginando.numeroPagina + 1}}">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='categorias')}"></nav>
                     </div>
                 </div>
                 <div class="card-footer bg-dark text-white">
@@ -85,6 +65,6 @@
             </div>
         </div>
         
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

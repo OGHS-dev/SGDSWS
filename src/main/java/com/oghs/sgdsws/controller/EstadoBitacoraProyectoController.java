@@ -34,7 +34,7 @@ public class EstadoBitacoraProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/")
     public String verEstadosBitacoraProyecto(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
-        model.addAttribute("titulo", "Estados Bitácora Proyecto");
+        model.addAttribute("titulo", "Estados de Evento");
         model.addAttribute("estadosBitacoraProyecto", estadoBitacoraProyectoService.obtenerEstadosBitacoraProyectoPaginado(numeroPagina, tamano));
 
         return RUTA_VISTA + "verEstadosBitacoraProyecto";
@@ -43,7 +43,7 @@ public class EstadoBitacoraProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/crear")
     public String crearEstadoBitacoraProyecto(Model model) {
-        model.addAttribute("titulo", "Nuevo Estado Bitácora Proyecto");
+        model.addAttribute("titulo", "Nuevo Estado de Evento");
         model.addAttribute("estadoBitacoraProyecto", new EstadoBitacoraProyecto());
 
         return RUTA_VISTA + "crearEstadoBitacoraProyecto";
@@ -54,7 +54,7 @@ public class EstadoBitacoraProyectoController {
     public String guardarEstadoBitacoraProyecto(@Valid @ModelAttribute EstadoBitacoraProyecto estadoBitacoraProyecto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
-            model.addAttribute("titulo", "Crear/Editar Estado Bitácora Proyecto");
+            model.addAttribute("titulo", "Crear/Editar Estado de Evento");
             model.addAttribute("estadoBitacoraProyecto", estadoBitacoraProyecto);
 
             System.err.println("Error en los datos proporcionados");
@@ -64,7 +64,7 @@ public class EstadoBitacoraProyectoController {
 
         estadoBitacoraProyectoService.guardarEstadoBitacoraProyecto(estadoBitacoraProyecto);;
 
-        redirectAttributes.addFlashAttribute("success", "Estado Bitácora Proyecto: " + estadoBitacoraProyecto.getCodigo() + " guardado exitosamente");
+        redirectAttributes.addFlashAttribute("success", "Estado de Evento: " + estadoBitacoraProyecto.getCodigo() + " guardado exitosamente");
 
         return "redirect:" + RUTA_VISTA;
     }
@@ -91,7 +91,7 @@ public class EstadoBitacoraProyectoController {
             return "redirect:" + RUTA_VISTA;
         }
 
-        model.addAttribute("titulo", "Editar Estado Bitácora Proyecto");
+        model.addAttribute("titulo", "Editar Estado de Evento");
         model.addAttribute("estadoBitacoraProyecto", estadoBitacoraProyecto);
 
         return RUTA_VISTA + "crearEstadoBitacoraProyecto";
@@ -121,7 +121,7 @@ public class EstadoBitacoraProyectoController {
 
         estadoBitacoraProyectoService.eliminarEstadoBitacoraProyecto(estadoBitacoraProyecto);
 
-        redirectAttributes.addFlashAttribute("success", "Estado Bitácora Proyecto: " + estadoBitacoraProyecto.getCodigo() + " eliminado exitosamente");
+        redirectAttributes.addFlashAttribute("success", "Estado de Evento: " + estadoBitacoraProyecto.getCodigo() + " eliminado exitosamente");
 
         return "redirect:" + RUTA_VISTA;
     }

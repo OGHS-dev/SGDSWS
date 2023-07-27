@@ -55,7 +55,7 @@ public class Paginado<T> {
             return false;
         if (getClass() != object.getClass())
             return false;
-        Paginado otra = (Paginado) object;
+        var otra = (Paginado) object;
         if (page == null) {
             if (otra.page != null)
                 return false;

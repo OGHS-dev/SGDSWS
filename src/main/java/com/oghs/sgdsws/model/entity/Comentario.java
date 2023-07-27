@@ -2,6 +2,8 @@ package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class Comentario implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "ID_BITACORA_PROYECTO")
+    @JsonBackReference
     private BitacoraProyecto bitacoraProyecto;
 
     @Column(name = "COMENTARIO")

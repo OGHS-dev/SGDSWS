@@ -5,18 +5,14 @@
     <body>
         <header th:replace="~{template :: header}"></header>
         
-        <div class="container">
+        <div class="container" data-bs-spy="scroll">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h4 class="card-title">
-                        <i class="bi-person-badge"></i>
-                        <span th:text="${titulo}"></span>
-                    </h4>
+                    <h2 th:replace="~{template :: encabezadoCard (icono='person-badge', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
                     <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/roles/crear}" title="Crear Nuevo Rol">
                         <i class="bi-plus-circle"></i>
-                        <!-- <i class="bi-journal-plus"></i> -->
                         <span>Nuevo Rol</span>
                     </a>
                     <br>
@@ -60,24 +56,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation" class="paging">
-                            <ul class="pagination" th:if="${roles.page.totalPages > 1}">
-                                <li class="page-item" th:classappend="${!roles.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/roles/?numeroPagina=' + ${roles.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
-                                </li>
-                                <th:block th:each="item : ${roles.paginando.getElementos()}">
-                                    <li class="page-item" th:classappend="${item.indice == roles.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
-                                        <a class="page-link" th:href="@{'/views/roles/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
-                                    </li>
-                                    <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                </th:block>
-                                <li class="page-item" th:classappend="${!roles.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/roles/?numeroPagina=' + ${roles.paginando.numeroPagina + 1}}">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='roles')}"></nav>
                     </div>
                 </div>
                 <div class="card-footer bg-dark text-white">
@@ -86,6 +65,6 @@
             </div>
         </div>
         
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

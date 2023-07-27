@@ -11,8 +11,11 @@
         <!-- Bootstrap icons -->
         <link th:rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"/>
 
-        <!-- <link th:rel="stylesheet" th:href="@{/webjars/npm/bootstrap4-duallistbox/4.0.2/dist/bootstrap-duallistbox.min.css}" type="text/css"/> -->
-        <link th:rel="stylesheet" th:href="@{/css/bootstrap-duallistbox.min.css}"/>
+        <!-- <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script> -->
+        <!-- <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.esm.min.js}"></script> -->
+        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+        <!-- <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script> -->
     </head>
 
     <!-- <body th:fragment="body"> -->
@@ -24,7 +27,8 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top sticky-top">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
-                        <!-- <img src="..." class="rounded me-2" alt="..."> -->
+                        <img th:src="@{/img/sgdsws_logo.png}" class="rounded me-2" alt="..." viewBox="0 0 16 16" width="48" height="24">
+                        <!-- <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Bootstrap" width="30" height="24"> -->
                         <span>SGDSWS</span>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,10 +43,10 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li>
-                                        <a class="dropdown-item" href="#">Configuración</a>
+                                        <a class="dropdown-item" href="#">Perfil</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">Cambiar Contraseña</a>
+                                        <a class="dropdown-item" href="#">Configuración</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -55,14 +59,14 @@
                                 </ul>
                             </li>
                             <div class="vr"></div>
-                            <a class="btn btn-outline-light" data-bs-toggle="offcanvas" href="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                            <a class="btn btn-outline-light" data-bs-toggle="offcanvas" href="#menuLateral" aria-controls="menuLateral">
                                 <i class="bi-menu-button"></i>
                                 <span>Menú</span>
                             </a>
                             <div class="vr"></div>
-                            <!-- <li sec:authorize="!isAuthenticated()">
+                            <li sec:authorize="!isAuthenticated()">
                                 <a class="btn btn-outline-warning" th:href="@{/login}">Iniciar Sesión</a>
-                            </li> -->
+                            </li>
                         </ul>
                         <form class="d-flex">
                             <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
@@ -76,10 +80,10 @@
             </nav>
 
             <!-- Menu lateral -->
-            <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="static" tabindex="-1" id="menuLateral" aria-labelledby="menuLateralLabel">
                 <div class="offcanvas-header bg-dark text-white">
-                    <h3 class="offcanvas-title" id="offcanvasScrollingLabel">Módulos</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <h2 class="offcanvas-title" id="menuLateralLabel">Módulos</h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <div class="list-group" role="tablist">
@@ -117,114 +121,217 @@
                         </a>
                         <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/estadosProyecto/}" role="tab">
                             <i class="bi-bookmark"></i>
-                            <span>&nbsp;Estados Proyecto</span>
+                            <span>&nbsp;Estados de Proyecto</span>
                         </a>
                         <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/estadosBitacoraProyecto/}" role="tab">
                             <i class="bi-bookmark"></i>
-                            <span>&nbsp;Estados Bitácora Proyecto</span>
+                            <span>&nbsp;Estados de Evento</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/eventos/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/categorias/}" role="tab">
                             <i class="bi-info-square"></i>
-                            <span>&nbsp;Eventos</span>
+                            <span>&nbsp;Categorías</span>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Mensajes -->
-            <div class="alert alert-primary alert-dismissable fade show" role="alert" th:if="${info != null}">
-                <i class="bi-info-circle-fill"></i>
-                <label th:text="${info}"></label>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <!-- Notificaciones -->
+            <div class="toast-container top-0 end-0 p-3">
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${info != null}">
+                    <div class="toast-header text-bg-primary">
+                        <i class="bi-info-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Información</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${info}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${success != null}">
+                    <div class="toast-header text-bg-success">
+                        <i class="bi-check-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Notificación</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${success}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${warning != null}">
+                    <div class="toast-header text-bg-warning">
+                        <i class="bi-exclamation-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Advertencia</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${warning}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${error != null}">
+                    <div class="toast-header text-bg-danger">
+                        <i class="bi-exclamation-triangle-fill"></i>
+                        <strong class="me-auto">&nbsp;Error</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${error}"></div>
+                </div>
             </div>
-            <div class="alert alert-success alert-dismissable fade show" role="alert" th:if="${success != null}">
-                <i class="bi-check-circle-fill"></i>
-                <label th:text="${success}"></label>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-warning alert-dismissable fade show" role="alert" th:if="${warning != null}">
-                <i class="bi-exclamation-circle-fill"></i>
-                <label th:text="${warning}"></label>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div class="alert alert-danger alert-dismissable fade show" role="alert" th:if="${error != null}">
-                <i class="bi-exclamation-triangle-fill"></i>
-                <label th:text="${error}"></label>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-
+            
+            <script type="text/javascript" th:inline="javascript">
+                // Boton regresar página de error
+                function goBack() {
+                    window.history.back();
+                }
+                
+                // Inicializar notificaciones
+                if (document.getElementById('notificacionToast') != null) {
+                    bootstrap.Toast.getOrCreateInstance(document.getElementById('notificacionToast')).show();
+                }
+            </script>
         </header>
 
+        <!-- Encabezado card -->
+        <th:block th:fragment="encabezadoCard (icono, texto)">
+            <h2 class="card-title">
+                <i th:class="bi-__${icono}__"></i>
+                <span th:text="${texto}"></span>
+            </h2>
+        </th:block>
+
+        <!-- Campo input -->
+        <th:block th:fragment="campoInput (tipoCampo, campo, textoLabel, textoSpan, icono, objeto, soloLectura)">
+            <div class="col mb-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i th:class="bi-__${icono}__"></i>
+                    </span>
+                    <div class="form-floating">
+                        <input th:type="${tipoCampo}" class="form-control" th:id="${campo}" placeholder="..." th:field="*{__${objeto}__}" th:classappend="${#fields.hasErrors('__${objeto}__') ? 'is-invalid' : ''}" th:aria-describedby="${campo}" th:aria-label="${campo}" th:readonly="${__${soloLectura}__}">
+                        <label th:for="${campo}" class="form-label" th:text="${textoLabel}"></label>
+                    </div>
+                </div>
+                <span class="form-text" th:text="${textoSpan}"></span>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('__${objeto}__')}" th:errors="*{__${objeto}__}"></div>
+                <!-- <div class="invalid-feedback" th:each="e : ${#fields.errors('__${objeto}__')}" th:text="${e}"></div> -->
+            </div>
+        </th:block>
+        
+        <!-- Campo select -->
+        <th:block th:fragment="campoSelect (campo, textoLabel, textoSpan, textoSelect, objeto, lista, listaValue, listaText)">
+            <div class="col mb-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-cursor"></i>
+                    </span>
+                    <div class="form-floating">
+                        <select class="form-select selectpicker" th:id="${campo}" th:field="*{__${objeto}__}" th:classappend="${#fields.hasErrors('__${objeto}__') ? 'is-invalid' : ''}" th:aria-describedby="${campo}" th:aria-label="${campo}">
+                            <option selected disabled value="" th:text="${textoSelect}"></option>
+                            <option th:each="i : __${lista}__" th:value="${i__${listaValue}__}" th:text="${i__${listaText}__}"></option>
+                        </select>
+                        <label th:for="${campo}" class="form-label" th:text="${textoLabel}"></label>
+                    </div>
+                </div>
+                <span class="form-text" th:text="${textoSpan}"></span>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('__${objeto}__')}" th:errors="*{__${objeto}__}"></div>
+            </div>
+        </th:block>
+
+        <!-- Campo text area -->
+        <th:block th:fragment="campoTextArea (campo, objeto)">
+            <div class="col mb-2">
+                <label class="form-label">Comentarios a agregar al evento</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-input-cursor-text"></i>
+                    </span>
+                    <div class="form-floating">
+                        <textarea class="form-control" th:id="${campo}" placeholder="Comentarios..." th:field="*{__${objeto}__}" th:aria-describedby="${campo}" th:aria-label="${campo}" style="height: 116px"></textarea>
+                        <label th:for="${campo}" class="form-label" sec:authentication="name">Comentarios:</label>
+                    </div>
+                </div>
+                <span class="form-text">Comentarios para agregar al evento.</span>
+            </div>
+        </th:block>
+
+        <!-- Campo file chooser -->
+        <th:block th:fragment="campoFileChooser (texto)">
+            <div class="col mb-2">
+                <label class="form-label">Archivos a cargar al evento</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-files"></i>
+                    </span>
+                    <input type="file" class="form-control" id="archivos" name="archivos" placeholder="Archivos..." aria-describedby="archivos" aria-label="archivos" multiple>
+                </div>
+                <span class="form-text">Archivos para cargar al evento.</span>
+            </div>
+        </th:block>
+
+        <!-- Botón button -->
+        <th:block th:fragment="boton (icono, texto, titulo)">
+            <button type="submit" class="btn btn-primary" th:title="${titulo}">
+                <i th:class="bi-__${icono}__"></i>
+                <span th:text="${texto}"></span>
+            </button>
+        </th:block>
+
+        <!-- Paginación tabla -->
+        <th:block th:fragment="paginacionTabla (pagina)">
+            <nav aria-label="Page navigation" class="paging">
+                <ul class="pagination" th:if="${__${pagina}__.page.totalPages > 1}">
+                    <li class="page-item" th:classappend="${!__${pagina}__.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/views/__${pagina}__/?numeroPagina=' + ${__${pagina}__.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
+                    </li>
+                    <th:block th:each="item : ${__${pagina}__.paginando.getElementos()}">
+                        <li class="page-item" th:classappend="${item.indice == __${pagina}__.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
+                            <a class="page-link" th:href="@{'/views/__${pagina}__/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
+                        </li>
+                        <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!__${pagina}__.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/views/__${pagina}__/?numeroPagina=' + ${__${pagina}__.paginando.numeroPagina + 1}}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </th:block>
+
+        <!-- Modal confirmación -->
+        <!-- <div class="modal fade" th:id="confirmacionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true" th:fragment="confirmacionModal (idModal, texto, objeto)">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-white">
+                        <h3 class="modal-title" id="staticBackdropLabel">
+                            <i class="bi-question-circle"></i>
+                            <span>Confirmación</span>
+                        </h3>
+                    </div>
+                    <div class="modal-body" th:text="${texto}"></div>
+                    <div class="modal-footer bg-dark text-white">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <a type="button" class="btn btn-primary" th:href="${objeto}">Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Pie de página -->
+        <footer th:fragment="footer" class="footer-dark bg-dark text-white">
+            <div class="container">
+                <p>
+                    Copyright
+                    <br>
+                    Instituto Politécnico Nacional
+                    <br>
+                    Escuela Superior de Ingeniería Mecánica y Eléctrica Unidad Culhuacán
+                    <br>
+                    Sección de Estudios de Posgrado e Investigación
+                    <br>
+                    Maestría en Ingeniería en Seguridad y Tecnologías de la Información
+                    <br>
+                    MSI Pablo Ramón Mercado Hernández & Oscar Gabriel Hernández Santiesteban &copy; 2023
+                    <br>
+                </p>
+            </div>
+        </footer>
     <!-- </body> -->
-    
-    <!-- Pie de página -->
-    <footer th:fragment="footer" class="footer-dark bg-dark text-white">
-        <div class="container">
-            <p>
-                Copyright
-                <br>
-                Instituto Politécnico Nacional
-                <br>
-                Escuela Superior de Ingeniería Mecánica y Eléctrica Unidad Culhuacán
-                <br>
-                Sección de Estudios de Posgrado e Investigación
-                <br>
-                Maestría en Ingeniería en Seguridad y Tecnologías de la Información
-                <br>
-                MSI Pablo Ramón Mercado Hernández & Oscar Gabriel Hernández Santiesteban &copy; 2023
-                <br>
-            </p>
-        </div>
-
-        <!-- <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script> -->
-        <!-- <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.esm.min.js}"></script> -->
-        <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
-        <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
-        <!-- <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script> -->
-
-        <!-- <script th:src="@{/assets/bootstrap-dual-listbox/jquery.bootstrap-duallistbox.min.js}"></script> -->
-        <!-- <script th:src="@{/webjars/npm/bootstrap4-duallistbox/4.0.2/dist/jquery.bootstrap-duallistbox.min.js}"></script> -->
-        <script th:src="@{/js/jquery.bootstrap-duallistbox.min.js}"></script>
-
-        <script>
-            // Example starter JavaScript for disabling form submissions if there are invalid fields
-            // (() => {
-            //     'use strict'
-
-            //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            //     const forms = document.querySelectorAll('.needs-validation')
-
-            //     // Loop over them and prevent submission
-            //     Array.from(forms).forEach(form => {
-            //         form.addEventListener('submit', event => {
-            //             if (!form.checkValidity()) {
-            //                 event.preventDefault()
-            //                 event.stopPropagation()
-            //             }
-
-            //             form.classList.add('was-validated')
-            //         }, false)
-            //     })
-            // })()
-
-            function goBack() {
-                window.history.back();
-            }
-
-            // Inicializar plugin bootstrapDualListbox
-            $('#listaUsuariosAsignar').bootstrapDualListbox({
-                filterTextClear: 'Mostrar todos',
-                filterPlaceHolder: 'Filtrar',
-                moveSelectedLabel: 'Mover seleccionados',
-                moveAllLabel: 'Mover todos',
-                removeSelectedLabel: 'Quitar seleccionados',
-                removeAllLabel: 'Quitar todos',
-                moveOnSelect: true,
-                selectedListLabel: false,
-                infoText: 'Mostrando {0} usuarios',
-                infoTextEmpty: 'Vacio',
-                selectorMinimalHeight: 256
-            });
-        </script>
-    </footer>
 </html>

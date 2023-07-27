@@ -88,7 +88,7 @@ public class NivelRiesgo extends Auditable implements Serializable {
     @Override
     public String toString() {
         return "NivelRiesgo [idNivelRiesgo=" + idNivelRiesgo + ", codigo=" + codigo + ", descripcion=" + descripcion
-                + ", estatus=" + estatus + ", bitacoraProyecto=" + bitacoraProyecto + "]";
+                + ", estatus=" + estatus + "]";
     }
     
 }

@@ -6,123 +6,36 @@
         <header th:replace="~{template :: header}"></header>
         
         <div class="container" data-bs-spy="scroll">
-            <form th:action="@{/views/usuarios/guardar}" th:object="${usuario}" method="post" class="needs-validation" novalidate>
+            <form th:action="@{/views/usuarios/guardar}" th:object="${usuario}" method="post" novalidate>
                 <div class="card">
                     <div class="card-header bg-dark text-white">
-                        <h4 class="card-title">
-                            <i class="bi-person-add"></i>
-                            <span th:text="${titulo}"></span>
-                        </h4>
+                        <h2 th:replace="~{template :: encabezadoCard (icono='person-add', texto=${titulo})}"></h2>
                     </div>
                     <div class="card-body">
                         <input type="hidden" th:field="*{idUsuario}">
                         <div class="row">
-                            <div class="col">
-                                <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-input-cursor-text"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="nombreUsuario" placeholder="Nombre de usuario..." th:field="*{nombreUsuario}" aria-describedby="nombreUsuario" aria-label="nombreUsuario">
-                                        <label for="nombreUsuario">Nombre de usuario:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Nombre de usuario asignado.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}"></div>
-                            </div>
-                            <div class="col">
-                                <label for="contrasena" class="form-label">Contraseña del usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-input-cursor-text"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="password" class="form-control" id="contrasena" placeholder="Contraseña..." th:field="*{contrasena}" aria-describedby="contrasena" aria-label="contrasena">
-                                        <label for="contrasena">Contraseña:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Contraseña asignada al usuario.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
-                            </div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombreUsuario', textoLabel='Nombre de usuario:', textoSpan='Nombre de usuario asignado.', icono='input-cursor-text', objeto=nombreUsuario, soloLectura=false)}"></div>
+                            
+                            <div th:replace="~{template :: campoInput (tipoCampo='password', campo='contrasena', textoLabel='Contraseña del usuario:', textoSpan='Contraseña asignada al usuario.', icono='input-cursor-text', objeto=contrasena, soloLectura=false)}"></div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <label for="correo" class="form-label">Correo electrónico del usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-input-cursor-text"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="correo" placeholder="Correo electrónico..." th:field="*{correo}" aria-describedby="correo" aria-label="correo">
-                                        <label for="correo">Correo electrónico:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Correo electrónico asociado al usuario.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
-                            </div>
-                            <div class="col">
-                                <label for="rol" class="form-label">Rol del usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-cursor"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <select class="form-select selectpicker" id="rol" th:field="*{rol.idRol}" aria-describedby="rol" aria-label="rol">
-                                            <option selected disabled value="">Seleccionar rol...</option>
-                                            <option th:each="lr : ${listaRoles}" th:value="${lr.idRol}" th:text="${lr.descripcion}"></option>
-                                        </select>
-                                        <label for="rol">Rol:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Rol asignado al usuario.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('rol.idRol')}" th:errors="*{rol.idRol}"></div>
-                            </div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='correo', textoLabel='Correo electrónico del usuario:', textoSpan='Correo electrónico asociado al usuario.', icono='input-cursor-text', objeto=correo, soloLectura=false)}"></div>
+
+                            <div th:replace="~{template :: campoSelect (campo='rol', textoLabel='Rol del usuario:', textoSpan='Rol asignado al usuario.', textoSelect='Seleccionar rol...', objeto=rol.idRol, lista='${listaRoles}', listaValue='.idRol', listaText='.descripcion')}"></div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <label for="estatus" class="form-label">Estatus del usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-cursor"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <select class="form-select selectpicker" id="estatus" th:field="*{estatus}" aria-describedby="estatus" aria-label="estatus">
-                                            <option selected disabled value="">Seleccionar estatus...</option>
-                                            <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
-                                        </select>
-                                        <label for="estatus">Estatus:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Estatus asignado al usuario.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('estatus')}" th:errors="*{estatus}"></div>
-                            </div>
-                            <div class="col">
-                                <label for="fechaVigencia" class="form-label">Fecha de vigencia del usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-calendar"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaVigencia" placeholder="Fecha..." th:field="*{fechaVigencia}" aria-describedby="fechaVigencia" aria-label="fechaVigencia">
-                                        <label for="fechaVigencia">Fecha:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Fecha de atención asignada a la bitácora del proyecto.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('fechaVigencia')}" th:errors="*{fechaVigencia}"></div>
-                            </div>
+                            <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del usuario:', textoSpan='Estatus asignado al usuario.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
+                            
+                            <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaVigencia', textoLabel='Fecha de vigencia del usuario:', textoSpan='Fecha de vigencia asignada al usuario.', icono='calendar', objeto=fechaVigencia, soloLectura=false)}"></div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi-save"></i>
-                            <span>Guardar</span>
-                        </button>
+                        <button th:replace="~{template :: boton (icono='save', texto='Guardar', titulo='Guardar Usuario')}"></button>
                     </div>
                 </div>
             </form>
         </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

@@ -3,14 +3,14 @@ package com.oghs.sgdsws.model.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.oghs.sgdsws.model.entity.Evento;
+import com.oghs.sgdsws.model.entity.Categoria;
 
 /**
  *
  * @author oghs
  */
-public interface EventoRepository extends PagingAndSortingRepository<Evento, Long>, CrudRepository<Evento, Long> {
+public interface CategoriaRepository extends PagingAndSortingRepository<Categoria, Long>, CrudRepository<Categoria, Long> {
     
-    Evento findByCodigo(String codigo);
+    Categoria findByCodigo(String codigo);
     
 }

@@ -6,80 +6,33 @@
         <header th:replace="~{template :: header}"></header>
         
         <div class="container" data-bs-spy="scroll">
-            <form th:action="@{/views/roles/guardar}" th:object="${rol}" method="post" class="needs-validation" novalidate>
+            <form th:action="@{/views/roles/guardar}" th:object="${rol}" method="post" novalidate>
                 <div class="card">
                     <div class="card-header bg-dark text-white">
-                        <h4 class="card-title">
-                            <i class="bi-plus-circle"></i>
-                            <!-- <i class="bi-journal-plus"></i> -->
-                            <span th:text="${titulo}"></span>
-                        </h4>
+                        <h2 th:replace="~{template :: encabezadoCard (icono='plus-circle', texto=${titulo})}"></h2>
                     </div>
                     <div class="card-body">
                         <input type="hidden" th:field="*{idRol}">
                         <div class="row">
-                            <div class="col">
-                                <label for="codigo" class="form-label">Código del rol</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-input-cursor-text"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="codigo" placeholder="Código..." th:field="*{codigo}" aria-describedby="codigo" aria-label="codigo">
-                                        <label for="codigo">Código:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Código asignado al rol.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></div>
-                            </div>
-                            <div class="col">
-                                <label for="descripcion" class="form-label">Descripción del rol</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-input-cursor-text"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="descripcion" placeholder="Descripción..." th:field="*{descripcion}" aria-describedby="descripcion" aria-label="descripcion">
-                                        <label for="descripcion">Descripción:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Descripción asignada al rol.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
-                            </div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del rol:', textoSpan='Código asignado al rol.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
+                            
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del rol:', textoSpan='Descripción asignada al rol.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <label for="estatus" class="form-label">Estatus del rol</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi-cursor"></i>
-                                    </span>
-                                    <div class="form-floating">
-                                        <select class="form-select selectpicker" id="estatus" th:field="*{estatus}" aria-describedby="estatus" aria-label="estatus">
-                                            <option selected disabled value="">Seleccionar estatus...</option>
-                                            <option th:each="e : ${T(com.oghs.sgdsws.model.Estatus).values()}" th:value="${e}" th:text="${e}"></option>
-                                        </select>
-                                        <label for="estatus">Estatus:</label>
-                                    </div>
-                                </div>
-                                <span class="form-text">Estatus asignado al rol.</span>
-                                <div class="alert alert-warning" th:if="${#fields.hasErrors('estatus')}" th:errors="*{estatus}"></div>
-                            </div>
+                            <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del rol:', textoSpan='Estatus asignado al rol.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
+                            
                             <div class="col">
 
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi-save"></i>
-                            <span>Guardar</span>
-                        </button>
+                        <button th:replace="~{template :: boton (icono='save', texto='Guardar', titulo='Guardar Rol')}"></button>
                     </div>
                 </div>
             </form>
         </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

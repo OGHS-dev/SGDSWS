@@ -5,18 +5,15 @@
     <body>
         <header th:replace="~{template :: header}"></header>
         
-        <div class="container">
+        <div class="container" data-bs-spy="scroll">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h4 class="card-title">
-                        <i class="bi-bookmark"></i>
-                        <span th:text="${titulo}"></span>
-                    </h4>
+                    <h2 th:replace="~{template :: encabezadoCard (icono='bookmark', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
                     <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/estadosBitacoraProyecto/crear}" title="Crear Nuevo Estado Bitácora Proyecto">
                         <i class="bi-bookmark-plus"></i>
-                        <span>Nuevo Estado Bitácora Proyecto</span>
+                        <span>Nuevo Estado Evento</span>
                     </a>
                     <br>
                     <br>
@@ -59,24 +56,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation" class="paging">
-                            <ul class="pagination" th:if="${estadosBitacoraProyecto.page.totalPages > 1}">
-                                <li class="page-item" th:classappend="${!estadosBitacoraProyecto.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/estadosBitacoraProyecto/?numeroPagina=' + ${estadosBitacoraProyecto.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
-                                </li>
-                                <th:block th:each="item : ${estadosBitacoraProyecto.paginando.getElementos()}">
-                                    <li class="page-item" th:classappend="${item.indice == estadosBitacoraProyecto.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
-                                        <a class="page-link" th:href="@{'/views/estadosBitacoraProyecto/?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
-                                    </li>
-                                    <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
-                                        <a class="page-link" href="#">...</a>
-                                    </li>
-                                </th:block>
-                                <li class="page-item" th:classappend="${!estadosBitacoraProyecto.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{'/views/estadosBitacoraProyecto/?numeroPagina=' + ${estadosBitacoraProyecto.paginando.numeroPagina + 1}}">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='estadosBitacoraProyecto')}"></nav>
                     </div>
                 </div>
                 <div class="card-footer bg-dark text-white">
@@ -85,6 +65,6 @@
             </div>
         </div>
         
+        <footer th:replace="~{template :: footer}"></footer>
     </body>
-    <footer th:replace="~{template :: footer}"></footer>
 </html>

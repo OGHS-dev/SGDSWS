@@ -88,7 +88,7 @@ public class Prioridad extends Auditable implements Serializable {
     @Override
     public String toString() {
         return "Prioridad [idPrioridad=" + idPrioridad + ", codigo=" + codigo + ", descripcion=" + descripcion
-                + ", estatus=" + estatus + ", bitacoraProyecto=" + bitacoraProyecto + "]";
+                + ", estatus=" + estatus + "]";
     }
     
 }
