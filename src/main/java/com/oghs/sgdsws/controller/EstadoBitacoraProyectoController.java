@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.EstadoBitacoraProyecto;
-import com.oghs.sgdsws.model.service.EstadoBitacoraProyectoService;
+import com.oghs.sgdsws.service.EstadoBitacoraProyectoService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * EstadoBitacoraProyectoController es la clase controlador para ejecutar las
+ * operaciones CRUD de estados de bitácora de proyecto.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/estadosBitacoraProyecto")
@@ -57,7 +63,8 @@ public class EstadoBitacoraProyectoController {
             model.addAttribute("titulo", "Crear/Editar Estado de Evento");
             model.addAttribute("estadoBitacoraProyecto", estadoBitacoraProyecto);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
 
             return RUTA_VISTA + "crearEstadoBitacoraProyecto";
         }
@@ -72,25 +79,15 @@ public class EstadoBitacoraProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idEstadoBitacoraProyecto}")
     public String editarEstadoBitacoraProyecto(@PathVariable("idEstadoBitacoraProyecto") Long idEstadoBitacoraProyecto, Model model, RedirectAttributes redirectAttributes) {
-        EstadoBitacoraProyecto estadoBitacoraProyecto = null;
+        // Validar que exista el estado bitácora proyecto
+        EstadoBitacoraProyecto estadoBitacoraProyecto = this.validarEstadoBitacoraProyecto(idEstadoBitacoraProyecto);
 
-        // Validar que exista el estado bitacora proyecto
-        if (idEstadoBitacoraProyecto > 0) {
-            estadoBitacoraProyecto = new EstadoBitacoraProyecto();
-            estadoBitacoraProyecto.setIdEstadoBitacoraProyecto(idEstadoBitacoraProyecto);
-            estadoBitacoraProyecto = estadoBitacoraProyectoService.buscarEstadoBitacoraProyecto(estadoBitacoraProyecto);
+        if (Objects.isNull(estadoBitacoraProyecto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El estado de evento: %d no existe", idEstadoBitacoraProyecto));
 
-            if (estadoBitacoraProyecto == null) {
-                redirectAttributes.addFlashAttribute("error", "El estado bitácora servicio: " + idEstadoBitacoraProyecto + " no existe");
-
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el estado bitácora servicio: " + idEstadoBitacoraProyecto);
-            
             return "redirect:" + RUTA_VISTA;
         }
-
+        
         model.addAttribute("titulo", "Editar Estado de Evento");
         model.addAttribute("estadoBitacoraProyecto", estadoBitacoraProyecto);
 
@@ -100,30 +97,41 @@ public class EstadoBitacoraProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idEstadoBitacoraProyecto}")
     public String eliminarEstadoBitacoraProyecto(@PathVariable("idEstadoBitacoraProyecto") Long idEstadoBitacoraProyecto, RedirectAttributes redirectAttributes) {
+        // Validar que exista el estado bitácora proyecto
+        EstadoBitacoraProyecto estadoBitacoraProyecto = this.validarEstadoBitacoraProyecto(idEstadoBitacoraProyecto);
+
+        if (Objects.isNull(estadoBitacoraProyecto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El estado de evento: %d no existe", idEstadoBitacoraProyecto));
+        } else {
+            estadoBitacoraProyectoService.eliminarEstadoBitacoraProyecto(estadoBitacoraProyecto);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Estado de evento: %s eliminado exitosamente", estadoBitacoraProyecto.getCodigo()));
+        }
+
+        return "redirect:" + RUTA_VISTA;
+    }
+
+    /**
+     * Retorna un objeto EstadoBitacoraProyecto si éste existe y se encontró.
+     *
+     * @param idEstadoBitacoraProyecto el id del estado de bitácora de proyecto a buscar
+     * @return estadoBitacoraProyecto el objeto del estado de bitácora de proyecto encontrado
+     */
+    private EstadoBitacoraProyecto validarEstadoBitacoraProyecto(Long idEstadoBitacoraProyecto) {
         EstadoBitacoraProyecto estadoBitacoraProyecto = null;
 
-        // Validar que exista el estado bitacora proyecto
         if (idEstadoBitacoraProyecto > 0) {
             estadoBitacoraProyecto = new EstadoBitacoraProyecto();
             estadoBitacoraProyecto.setIdEstadoBitacoraProyecto(idEstadoBitacoraProyecto);
             estadoBitacoraProyecto = estadoBitacoraProyectoService.buscarEstadoBitacoraProyecto(estadoBitacoraProyecto);
 
-            if (estadoBitacoraProyecto == null) {
-                redirectAttributes.addFlashAttribute("error", "El estado bitácora servicio: " + idEstadoBitacoraProyecto + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró el estado de bitácora de proyecto
+            if (Objects.isNull(estadoBitacoraProyecto)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el estado bitácora servicio: " + idEstadoBitacoraProyecto);
-
-            return "redirect:" + RUTA_VISTA;
         }
 
-        estadoBitacoraProyectoService.eliminarEstadoBitacoraProyecto(estadoBitacoraProyecto);
-
-        redirectAttributes.addFlashAttribute("success", "Estado de Evento: " + estadoBitacoraProyecto.getCodigo() + " eliminado exitosamente");
-
-        return "redirect:" + RUTA_VISTA;
+        return estadoBitacoraProyecto;
     }
     
 }

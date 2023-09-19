@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <form th:action="@{/views/incidentes/guardar}" th:object="${incidente}" method="post" novalidate>
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h2 th:replace="~{template :: encabezadoCard (icono='plus-circle', texto=${titulo})}"></h2>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{idIncidente}">
+                        <div class="row">
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del incidente:', textoSpan='Código asignado al incidente.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del incidente:', textoSpan='Descripción asignada al incidente.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
+                            <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del incidente:', textoSpan='Estatus asignado al incidente.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-white">
+                        <button th:replace="~{template :: boton (icono='save', texto='Guardar', titulo='Guardar Incidente')}"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>

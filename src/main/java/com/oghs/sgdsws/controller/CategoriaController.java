@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.Categoria;
-import com.oghs.sgdsws.model.service.CategoriaService;
+import com.oghs.sgdsws.service.CategoriaService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * CategoriaController es la clase controlador para ejecutar las
+ * operaciones CRUD de categorías.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/categorias")
@@ -57,14 +63,15 @@ public class CategoriaController {
             model.addAttribute("titulo", "Crear/Editar Categoría");
             model.addAttribute("categoria", categoria);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
 
             return RUTA_VISTA + "crearCategoria";
         }
 
         categoriaService.guardarCategoria(categoria);
 
-        redirectAttributes.addFlashAttribute("success", "Categoría: " + categoria.getCodigo() + " guardada exitosamente");
+        redirectAttributes.addFlashAttribute("success", String.format("Categoría: %s guardada exitosamente", categoria.getCodigo()));
 
         return "redirect:" + RUTA_VISTA;
     }
@@ -72,25 +79,15 @@ public class CategoriaController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idCategoria}")
     public String editarCategoria(@PathVariable("idCategoria") Long idCategoria, Model model, RedirectAttributes redirectAttributes) {
-        Categoria categoria = null;
+        // Validar que exista la categoría
+        Categoria categoria = this.validarCategoria(idCategoria);
 
-        // Validar que exista la categoria
-        if (idCategoria > 0) {
-            categoria = new Categoria();
-            categoria.setIdCategoria(idCategoria);
-            categoria = categoriaService.buscarCategoria(categoria);
-
-            if (categoria == null) {
-                redirectAttributes.addFlashAttribute("error", "La categoría: " + idCategoria + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró la categoría: " + idCategoria);
+        if (Objects.isNull(categoria)) {
+            redirectAttributes.addFlashAttribute("error", String.format("La categoría: %d no existe", idCategoria));
             
             return "redirect:" + RUTA_VISTA;
         }
-
+        
         model.addAttribute("titulo", "Editar Categoría");
         model.addAttribute("categoria", categoria);
 
@@ -100,29 +97,40 @@ public class CategoriaController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idCategoria}")
     public String eliminarCategoria(@PathVariable("idCategoria") Long idCategoria, RedirectAttributes redirectAttributes) {
+        // Validar que exista la categoría
+        Categoria categoria = this.validarCategoria(idCategoria);
+
+        if (Objects.isNull(categoria)) {
+            redirectAttributes.addFlashAttribute("error", String.format("La categoría: %d no existe", idCategoria));
+        } else {
+            categoriaService.eliminarCategoria(categoria);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Categoría: %s eliminada exitosamente", categoria.getCodigo()));
+        }
+        
+        return "redirect:" + RUTA_VISTA;
+    }
+
+    /**
+     * Retorna un objeto Categoria si ésta existe y se encontró.
+     *
+     * @param idCategoria el id de la categoría a buscar
+     * @return categoria el objeto de la categoría encontrada
+     */
+    private Categoria validarCategoria(Long idCategoria) {
         Categoria categoria = null;
 
-        // Validar que exista la categoria
         if (idCategoria > 0) {
             categoria = new Categoria();
             categoria.setIdCategoria(idCategoria);
             categoria = categoriaService.buscarCategoria(categoria);
 
-            if (categoria == null) {
-                redirectAttributes.addFlashAttribute("error", "La categoría: " + idCategoria + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró la categoría
+            if (Objects.isNull(categoria)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró la categoría: " + idCategoria);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        categoriaService.eliminarCategoria(categoria);
-
-        redirectAttributes.addFlashAttribute("success", "Categoría: " + categoria.getCodigo() + " eliminada exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return categoria;
     }
 }

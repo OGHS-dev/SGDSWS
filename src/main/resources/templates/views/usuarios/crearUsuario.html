@@ -15,17 +15,10 @@
                         <input type="hidden" th:field="*{idUsuario}">
                         <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombreUsuario', textoLabel='Nombre de usuario:', textoSpan='Nombre de usuario asignado.', icono='input-cursor-text', objeto=nombreUsuario, soloLectura=false)}"></div>
-                            
                             <div th:replace="~{template :: campoInput (tipoCampo='password', campo='contrasena', textoLabel='Contraseña del usuario:', textoSpan='Contraseña asignada al usuario.', icono='input-cursor-text', objeto=contrasena, soloLectura=false)}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='correo', textoLabel='Correo electrónico del usuario:', textoSpan='Correo electrónico asociado al usuario.', icono='input-cursor-text', objeto=correo, soloLectura=false)}"></div>
-
                             <div th:replace="~{template :: campoSelect (campo='rol', textoLabel='Rol del usuario:', textoSpan='Rol asignado al usuario.', textoSelect='Seleccionar rol...', objeto=rol.idRol, lista='${listaRoles}', listaValue='.idRol', listaText='.descripcion')}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del usuario:', textoSpan='Estatus asignado al usuario.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
-                            
                             <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaVigencia', textoLabel='Fecha de vigencia del usuario:', textoSpan='Fecha de vigencia asignada al usuario.', icono='calendar', objeto=fechaVigencia, soloLectura=false)}"></div>
                         </div>
                     </div>

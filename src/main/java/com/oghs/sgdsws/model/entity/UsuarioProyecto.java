@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
  * @author oghs
  */
 @Entity
-@Table(name = "USUARIO_PROYECTO")
+@Table(name = "TBL_USUARIO_PROYECTO")
 public class UsuarioProyecto implements Serializable {
     @EmbeddedId
     private UsuarioProyectoId usuarioProyectoId;

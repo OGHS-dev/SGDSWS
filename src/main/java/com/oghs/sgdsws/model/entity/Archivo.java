@@ -2,6 +2,10 @@ package com.oghs.sgdsws.model.entity;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -20,7 +24,7 @@ import jakarta.persistence.Table;
  * @author oghs
  */
 @Entity
-@Table(name = "ARCHIVO")
+@Table(name = "TBL_ARCHIVO")
 public class Archivo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +45,14 @@ public class Archivo implements Serializable {
     @Lob
     @Column(name = "ARCHIVO")
     private byte[] archivo;
+
+    @Column(name = "FECHA_CREACION", nullable = false, updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @CreationTimestamp
+    private Date fechaCreacion;
+
+    @Column(name = "USUARIO_CREACION")
+    private String usuarioCreacion;
 
     public Long getIdArchivo() {
         return idArchivo;
@@ -82,10 +94,27 @@ public class Archivo implements Serializable {
         this.archivo = archivo;
     }
 
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getUsuarioCreacion() {
+        return usuarioCreacion;
+    }
+
+    public void setUsuarioCreacion(String usuarioCreacion) {
+        this.usuarioCreacion = usuarioCreacion;
+    }
+
     @Override
     public String toString() {
         return "Archivo [idArchivo=" + idArchivo + ", bitacoraProyecto=" + bitacoraProyecto + ", nombreArchivo="
-                + nombreArchivo + ", tamanoArchivo=" + tamanoArchivo + ", archivo=" + Arrays.toString(archivo) + "]";
+                + nombreArchivo + ", tamanoArchivo=" + tamanoArchivo + ", archivo=" + Arrays.toString(archivo)
+                + ", fechaCreacion=" + fechaCreacion + ", usuarioCreacion=" + usuarioCreacion + "]";
     }
     
 }

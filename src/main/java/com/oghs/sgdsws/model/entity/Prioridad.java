@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
  * @author oghs
  */
 @Entity
-@Table(name = "PRIORIDAD")
+@Table(name = "TBL_PRIORIDAD")
 public class Prioridad extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

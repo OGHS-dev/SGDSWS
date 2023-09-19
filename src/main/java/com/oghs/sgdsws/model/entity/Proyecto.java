@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Size;
  * @author oghs
  */
 @Entity
-@Table(name = "PROYECTO")
+@Table(name = "TBL_PROYECTO")
 public class Proyecto extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

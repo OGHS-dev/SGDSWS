@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
  * @author oghs
  */
 @Entity
-@Table(name = "NIVEL_RIESGO")
+@Table(name = "TBL_NIVEL_RIESGO")
 public class NivelRiesgo extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

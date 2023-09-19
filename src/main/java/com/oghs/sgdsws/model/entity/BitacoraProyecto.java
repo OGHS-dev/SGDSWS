@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * @author oghs
  */
 @Entity
-@Table(name = "BITACORA_PROYECTO")
+@Table(name = "TBL_BITACORA_PROYECTO")
 public class BitacoraProyecto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +37,27 @@ public class BitacoraProyecto implements Serializable {
     @JoinColumn(name = "ID_PROYECTO")
     @JsonIgnoreProperties({"estadoProyecto", "usuarioProyecto", "bitacoraProyecto"})
     private Proyecto proyecto;
-    
-    @Column(name = "FECHA_BITACORA", nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreationTimestamp
-    private Date fechaBitacora;
-    
-    @Column(name = "REVISION")
-    private Long revision;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "ID_MODULO")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
+    private Modulo modulo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_HALLAZGO")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
+    private Hallazgo hallazgo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_INCIDENTE")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
+    private Incidente incidente;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_CATEGORIA")
+    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
+    private Categoria categoria;
+
     @ManyToOne
     @JoinColumn(name = "ID_PRIORIDAD")
     @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
@@ -62,35 +74,55 @@ public class BitacoraProyecto implements Serializable {
     private NivelRiesgo  nivelRiesgo;
 
     @ManyToOne
-    @JoinColumn(name = "ID_CATEGORIA")
-    @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
-    private Categoria categoria;
-
-    @ManyToOne
     @JoinColumn(name = "ID_ESTADO_BITACORA_PROYECTO")
     @JsonIgnoreProperties({"estatus", "bitacoraProyecto"})
     private EstadoBitacoraProyecto estadoBitacoraProyecto;
+    
+    @Column(name = "FECHA_BITACORA", nullable = false, updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @CreationTimestamp
+    private Date fechaBitacora;
 
+    @Column(name = "USUARIO_REPORTE")
+    private String usuarioReporte;
+    
+    @Column(name = "REVISION")
+    private Long revision;
+    
     @Column(name = "DESCRIPCION")
     @NotEmpty(message = "{NotEmpty.BitacoraProyecto.descripcion}")
     @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.descripcion}")
     private String descripcion;
 
-    @Column(name = "USUARIO_REPORTE")
-    private String usuarioReporte;
+    @Column(name = "COMPONENTE")
+    @NotEmpty(message = "{NotEmpty.BitacoraProyecto.componente}")
+    @Size(min = 1, max = 20, message = "{Size.BitacoraProyecto.componente}")
+    private String componente;
+
+    @Column(name = "VERSION")
+    @NotEmpty(message = "{NotEmpty.BitacoraProyecto.version}")
+    @Size(min = 1, max = 20, message = "{Size.BitacoraProyecto.version}")
+    private String version;
+
+    @Column(name = "FRECUENCIA")
+    // @NotEmpty(message = "{NotEmpty.BitacoraProyecto.frecuencia}")
+    // @Size(min = 1, max = 20, message = "{Size.BitacoraProyecto.frecuencia}")
+    private String frecuencia;
+
+    @Column(name = "ACCIONES")
+    // @NotEmpty(message = "{NotEmpty.BitacoraProyecto.acciones}")
+    // @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.acciones}")
+    private String acciones;
 
     @Column(name = "USUARIO_ASIGNADO")
+    // @NotEmpty(message = "{NotEmpty.BitacoraProyecto.usuarioAsignado}")
     private String usuarioAsignado;
 
     @Column(name = "FECHA_ATENCION")
+    // @NotNull(message = "{NotNull.BitacoraProyecto.fechaAtencion}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaAtencion;
 
-    @Column(name = "ACCIONES")
-    @NotEmpty(message = "{NotEmpty.BitacoraProyecto.acciones}")
-    @Size(min = 1, max = 200, message = "{Size.BitacoraProyecto.acciones}")
-    private String acciones;
-    
     @OneToMany(mappedBy = "bitacoraProyecto")
     @JsonManagedReference
     private Set<Archivo> archivo;
@@ -115,20 +147,36 @@ public class BitacoraProyecto implements Serializable {
         this.proyecto = proyecto;
     }
 
-    public Date getFechaBitacora() {
-        return fechaBitacora;
+    public Modulo getModulo() {
+        return modulo;
     }
 
-    public void setFechaBitacora(Date fechaBitacora) {
-        this.fechaBitacora = fechaBitacora;
+    public void setModulo(Modulo modulo) {
+        this.modulo = modulo;
     }
 
-    public Long getRevision() {
-        return revision;
+    public Hallazgo getHallazgo() {
+        return hallazgo;
     }
 
-    public void setRevision(Long revision) {
-        this.revision = revision;
+    public void setHallazgo(Hallazgo hallazgo) {
+        this.hallazgo = hallazgo;
+    }
+
+    public Incidente getIncidente() {
+        return incidente;
+    }
+
+    public void setIncidente(Incidente incidente) {
+        this.incidente = incidente;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public Prioridad getPrioridad() {
@@ -155,20 +203,36 @@ public class BitacoraProyecto implements Serializable {
         this.nivelRiesgo = nivelRiesgo;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
     public EstadoBitacoraProyecto getEstadoBitacoraProyecto() {
         return estadoBitacoraProyecto;
     }
 
     public void setEstadoBitacoraProyecto(EstadoBitacoraProyecto estadoBitacoraProyecto) {
         this.estadoBitacoraProyecto = estadoBitacoraProyecto;
+    }
+
+    public Date getFechaBitacora() {
+        return fechaBitacora;
+    }
+
+    public void setFechaBitacora(Date fechaBitacora) {
+        this.fechaBitacora = fechaBitacora;
+    }
+
+    public String getUsuarioReporte() {
+        return usuarioReporte;
+    }
+
+    public void setUsuarioReporte(String usuarioReporte) {
+        this.usuarioReporte = usuarioReporte;
+    }
+
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
     }
 
     public String getDescripcion() {
@@ -179,12 +243,36 @@ public class BitacoraProyecto implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public String getUsuarioReporte() {
-        return usuarioReporte;
+    public String getComponente() {
+        return componente;
     }
 
-    public void setUsuarioReporte(String usuarioReporte) {
-        this.usuarioReporte = usuarioReporte;
+    public void setComponente(String componente) {
+        this.componente = componente;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getFrecuencia() {
+        return frecuencia;
+    }
+
+    public void setFrecuencia(String frecuencia) {
+        this.frecuencia = frecuencia;
+    }
+
+    public String getAcciones() {
+        return acciones;
+    }
+
+    public void setAcciones(String acciones) {
+        this.acciones = acciones;
     }
 
     public String getUsuarioAsignado() {
@@ -201,14 +289,6 @@ public class BitacoraProyecto implements Serializable {
 
     public void setFechaAtencion(Date fechaAtencion) {
         this.fechaAtencion = fechaAtencion;
-    }
-
-    public String getAcciones() {
-        return acciones;
-    }
-
-    public void setAcciones(String acciones) {
-        this.acciones = acciones;
     }
 
     public Set<Archivo> getArchivo() {
@@ -229,10 +309,13 @@ public class BitacoraProyecto implements Serializable {
 
     @Override
     public String toString() {
-        return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", fechaBitacora=" + fechaBitacora
-                + ", revision=" + revision + ", descripcion=" + descripcion + ", usuarioReporte=" + usuarioReporte
-                + ", usuarioAsignado=" + usuarioAsignado + ", fechaAtencion=" + fechaAtencion + ", acciones=" + acciones
-                + "]";
+        return "BitacoraProyecto [idBitacoraProyecto=" + idBitacoraProyecto + ", proyecto=" + proyecto + ", modulo="
+                + modulo + ", hallazgo=" + hallazgo + ", incidente=" + incidente + ", categoria=" + categoria
+                + ", prioridad=" + prioridad + ", impacto=" + impacto + ", nivelRiesgo=" + nivelRiesgo
+                + ", estadoBitacoraProyecto=" + estadoBitacoraProyecto + ", fechaBitacora=" + fechaBitacora
+                + ", usuarioReporte=" + usuarioReporte + ", revision=" + revision + ", descripcion=" + descripcion
+                + ", componente=" + componente + ", version=" + version + ", frecuencia=" + frecuencia + ", acciones="
+                + acciones + ", usuarioAsignado=" + usuarioAsignado + ", fechaAtencion=" + fechaAtencion + "]";
     }
     
 }

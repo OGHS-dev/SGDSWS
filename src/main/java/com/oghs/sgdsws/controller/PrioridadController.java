@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.Prioridad;
-import com.oghs.sgdsws.model.service.PrioridadService;
+import com.oghs.sgdsws.service.PrioridadService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * PrioridadController es la clase controlador para ejecutar las
+ * operaciones CRUD de prioridades.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/prioridades")
@@ -57,14 +63,15 @@ public class PrioridadController {
             model.addAttribute("titulo", "Crear/Editar Prioridad");
             model.addAttribute("prioridad", prioridad);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
             
             return RUTA_VISTA + "crearPrioridad";
         }
 
         prioridadService.guardarPrioridad(prioridad);
 
-        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getCodigo() + " guardada exitosamente");
+        redirectAttributes.addFlashAttribute("success", String.format("Prioridad: %s guardado exitosamente", prioridad.getCodigo()));
         
         return "redirect:" + RUTA_VISTA;
     }
@@ -72,21 +79,11 @@ public class PrioridadController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idPrioridad}")
     public String editarPrioridad(@PathVariable("idPrioridad") Long idPrioridad, Model model, RedirectAttributes redirectAttributes) {
-        Prioridad prioridad = null;
-
         // Validar que exista la prioridad
-        if (idPrioridad > 0) {
-            prioridad = new Prioridad();
-            prioridad.setIdPrioridad(idPrioridad);
-            prioridad = prioridadService.buscarPrioridad(prioridad);
+        Prioridad prioridad = this.validarPrioridad(idPrioridad);
 
-            if (prioridad == null) {
-                redirectAttributes.addFlashAttribute("error", "La prioridad: " + idPrioridad + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró la prioridad: " + idPrioridad);
+        if (Objects.isNull(prioridad)) {
+            redirectAttributes.addFlashAttribute("error", String.format("La prioridad: %d no existe", idPrioridad));
             
             return "redirect:" + RUTA_VISTA;
         }
@@ -100,29 +97,43 @@ public class PrioridadController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idPrioridad}")
     public String eliminarPrioridad(@PathVariable("idPrioridad") Long idPrioridad, RedirectAttributes redirectAttributes) {
+        // Validar que exista la prioridad
+        Prioridad prioridad = this.validarPrioridad(idPrioridad);
+        
+        if (Objects.isNull(prioridad)) {
+            redirectAttributes.addFlashAttribute("error", String.format("La prioridad: %d no existe", idPrioridad));
+            
+            return "redirect:" + RUTA_VISTA;
+        } else {
+            prioridadService.eliminarPrioridad(prioridad);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Prioridad: %s eliminada exitosamente", prioridad.getCodigo()));
+        }
+
+        return "redirect:" + RUTA_VISTA;
+    }
+
+    /**
+     * Retorna un objeto Prioridad si éste existe y se encontró.
+     *
+     * @param idPrioridad el id de la prioridad a buscar
+     * @return prioridad el objeto de la prioridad encontrado
+     */
+    private Prioridad validarPrioridad(Long idPrioridad) {
         Prioridad prioridad = null;
 
-        // Validar que exista la prioridad
         if (idPrioridad > 0) {
             prioridad = new Prioridad();
             prioridad.setIdPrioridad(idPrioridad);
             prioridad = prioridadService.buscarPrioridad(prioridad);
 
-            if (prioridad == null) {
-                redirectAttributes.addFlashAttribute("error", "La prioridad: " + idPrioridad + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró la prioridad
+            if (Objects.isNull(prioridad)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró la prioridad: " + idPrioridad);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        prioridadService.eliminarPrioridad(prioridad);
-
-        redirectAttributes.addFlashAttribute("success", "Prioridad: " + prioridad.getCodigo() + " eliminada exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return prioridad;
     }
+
 }

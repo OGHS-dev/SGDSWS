@@ -15,15 +15,8 @@
                         <input type="hidden" th:field="*{idEstadoBitacoraProyecto}">
                         <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del estado de evento:', textoSpan='Código asignado al estado de evento.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
-                            
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del estado de evento:', textoSpan='Descripción asignada al estado de evento.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del estado de evento:', textoSpan='Estatus asignado al estado de evento.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
-                            
-                            <div class="col">
-
-                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

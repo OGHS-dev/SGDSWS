@@ -15,15 +15,8 @@
                         <input type="hidden" th:field="*{idCategoria}">
                         <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código de la categoría:', textoSpan='Código asignado a la categoría.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
-                            
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción de la categoría:', textoSpan='Descripción asignada a la categoría.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus de la categoría:', textoSpan='Estatus asignado a la categoría.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
-                            
-                            <div class="col">
-
-                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

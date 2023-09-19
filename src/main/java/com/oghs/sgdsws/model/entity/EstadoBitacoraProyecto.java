@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
  * @author oghs
  */
 @Entity
-@Table(name = "ESTADO_BITACORA_PROYECTO")
+@Table(name = "TBL_ESTADO_BITACORA_PROYECTO")
 public class EstadoBitacoraProyecto extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

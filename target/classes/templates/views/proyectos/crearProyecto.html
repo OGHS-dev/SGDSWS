@@ -15,21 +15,14 @@
                         <input type="hidden" th:field="*{proyecto.idProyecto}">
                         <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombre', textoLabel='Nombre del proyecto:', textoSpan='Nombre asignado al proyecto.', icono='input-cursor-text', objeto=proyecto.nombre, soloLectura=false)}"></div>
-
                             <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del proyecto:', textoSpan='Descripción asignada al proyecto.', icono='input-cursor-text', objeto=proyecto.descripcion, soloLectura=false)}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoSelect (campo='estadoProyecto', textoLabel='Estado del proyecto:', textoSpan='Estado asignado al proyecto.', textoSelect='Seleccionar estado...', objeto=proyecto.estadoProyecto.idEstadoProyecto, lista='${listaEstadosProyecto}', listaValue='.idEstadoProyecto', listaText='.descripcion')}"></div>
-
                             <div th:replace="~{template :: campoSelect (campo='usuarioAsignado', textoLabel='Usuario responsable del proyecto:', textoSpan='Usuario responsable asignado al proyecto.', textoSelect='Seleccionar usuario...', objeto=proyecto.usuarioAsignado, lista='${listaUsuarios}', listaValue='.nombreUsuario', listaText='.nombreUsuario')}"></div>
-                        </div>
-                        <div class="row">
                             <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaInicio', textoLabel='Fecha de inicio del proyecto:', textoSpan='Fecha de inicio asignada al proyecto.', icono='calendar', objeto=proyecto.fechaInicio, soloLectura=false)}"></div>
-
                             <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaFin', textoLabel='Fecha de fin del proyecto:', textoSpan='Fecha de fin asignada al proyecto.', icono='calendar', objeto=proyecto.fechaFin, soloLectura=false)}"></div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
                                 <label for="listaUsuariosAsignar" class="form-label">Asignar usuarios al proyecto:</label>
                                 <div class="input-group">
                                     <!-- <span class="input-group-text">
@@ -45,9 +38,6 @@
                                 </div>
                                 <span class="form-text">Usuario(s) asignado(s) al proyecto.</span>
                                 <div class="alert alert-warning" th:if="${#fields.hasErrors('listaUsuariosProyecto')}" th:errors="*{listaUsuariosProyecto}"></div>
-                            </div>
-                            <div class="col">
-                                
                             </div>
                         </div>
                     </div>

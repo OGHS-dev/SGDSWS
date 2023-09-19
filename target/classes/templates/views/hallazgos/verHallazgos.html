@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2 th:replace="~{template :: encabezadoCard (icono='bug', texto=${titulo})}"></h2>
+                </div>
+                <div class="card-body">
+                    <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/hallazgos/crear}" title="Crear Nuevo Hallazgo">
+                        <i class="bi-plus-circle"></i>
+                        <span>Nuevo Hallazgo</span>
+                    </a>
+                    <br>
+                    <br>
+                    <div class="table-responsive" data-bs-spy="scroll">
+                        <table class="table table-striped table-hover" id="">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Estatus</th>
+                                    <th scope="col">Usuario Creación</th>
+                                    <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Usuario Modificación</th>
+                                    <th scope="col">Fecha Modificación</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="e : ${hallazgos.page}">
+                                    <th scope="row" th:text="${e.idHallazgo}"></th>
+                                    <td th:text="${e.codigo}"></td>
+                                    <td th:text="${e.descripcion}"></td>
+                                    <td th:text="${e.estatus}"></td>
+                                    <td th:text="${e.usuarioCreacion}"></td>
+                                    <td th:text="${#dates.format(e.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${e.usuarioModificacion}"></td>
+                                    <td th:text="${#dates.format(e.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <a class="btn btn-warning" th:href="@{/views/hallazgos/editar/} + ${e.idHallazgo}" title="Editar hallazgo">
+                                            <i class="bi-pencil-square"></i>
+                                        </a>
+                                    </td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <a class="btn btn-danger" th:href="@{/views/hallazgos/eliminar/} + ${e.idHallazgo}" title="Eliminar hallazgo" onclick="return confirm('Eliminar este hallazgo?');">
+                                            <i class="bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='hallazgos', ruta='hallazgos/')}"></nav>
+                    </div>
+                </div>
+                <div class="card-footer bg-dark text-white">
+                    
+                </div>
+            </div>
+        </div>
+        
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>

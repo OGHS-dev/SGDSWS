@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.Rol;
-import com.oghs.sgdsws.model.service.RolService;
+import com.oghs.sgdsws.service.RolService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * RolController es la clase controlador para ejecutar las
+ * operaciones CRUD de roles.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/roles")
@@ -57,14 +63,15 @@ public class RolController {
             model.addAttribute("titulo", "Crear/Editar Rol");
             model.addAttribute("rol", rol);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
             
             return RUTA_VISTA + "crearRol";
         }
 
         rolService.guardarRol(rol);
 
-        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getCodigo() + " guardado exitosamente");
+        redirectAttributes.addFlashAttribute("success", String.format("Rol: %s guardado exitosamente", rol.getCodigo()));
 
         return "redirect:" + RUTA_VISTA;
     }
@@ -72,21 +79,11 @@ public class RolController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idRol}")
     public String editarRol(@PathVariable("idRol") Long idRol, Model model, RedirectAttributes redirectAttributes) {
-        Rol rol = null;
-
         // Validar que exista el rol
-        if (idRol > 0) {
-            rol = new Rol();
-            rol.setIdRol(idRol);
-            rol = rolService.buscarRol(rol);
+        Rol rol = this.validaRol(idRol);
 
-            if (rol == null) {
-                redirectAttributes.addFlashAttribute("error", "El rol: " + idRol + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el rol: " + idRol);
+        if (Objects.isNull(rol)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El rol: %d no existe", idRol));
             
             return "redirect:" + RUTA_VISTA;
         }
@@ -100,29 +97,40 @@ public class RolController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idRol}")
     public String eliminarRol(@PathVariable("idRol") Long idRol, RedirectAttributes redirectAttributes) {
+        // Validar que exista el rol
+        Rol rol = this.validaRol(idRol);
+
+        if (Objects.isNull(rol)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El rol: %d no existe", idRol));
+        } else {
+            rolService.eliminarRol(rol);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Rol: %s eliminado exitosamente", rol.getCodigo()));
+        }
+        
+        return "redirect:" + RUTA_VISTA;
+    }
+
+    /**
+     * Retorna un objeto Rol si éste existe y se encontró.
+     *
+     * @param idRol el id del rol a buscar
+     * @return rol el objeto del rol encontrado
+     */
+    private Rol validaRol(Long idRol) {
         Rol rol = null;
 
-        // Validar que exista el rol
         if (idRol > 0) {
             rol = new Rol();
             rol.setIdRol(idRol);
             rol = rolService.buscarRol(rol);
 
-            if (rol == null) {
-                redirectAttributes.addFlashAttribute("error", "El rol: " + idRol + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró el rol
+            if (Objects.isNull(rol)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el rol: " + idRol);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        rolService.eliminarRol(rol);
-
-        redirectAttributes.addFlashAttribute("success", "Rol: " + rol.getCodigo() + " eliminado exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return rol;
     }
 }

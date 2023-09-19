@@ -1,29 +1,38 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.Usuario;
-import com.oghs.sgdsws.model.service.RolService;
-import com.oghs.sgdsws.model.service.UsuarioService;
+import com.oghs.sgdsws.service.BitacoraProyectoService;
+import com.oghs.sgdsws.service.ProyectoService;
+import com.oghs.sgdsws.service.RolService;
+import com.oghs.sgdsws.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.PostMapping;
-
-
 /**
- *
+ * UsuarioController es la clase controlador para ejecutar las
+ * operaciones CRUD de usuarios.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/usuarios")
@@ -36,6 +45,12 @@ public class UsuarioController {
 
     @Autowired
     private RolService rolService;
+
+    @Autowired
+    private ProyectoService proyectoService;
+
+    @Autowired
+    private BitacoraProyectoService bitacoraProyectoService;
     
     @Secured("ROLE_ADMIN")
     @GetMapping("/")
@@ -65,14 +80,15 @@ public class UsuarioController {
             model.addAttribute("usuario", usuario);
             model.addAttribute("listaRoles", rolService.obtenerRoles());
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
             
             return RUTA_VISTA + "crearUsuario";
         }
 
         usuarioService.guardarUsuario(usuario);
 
-        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getNombreUsuario() + " guardado exitosamente");
+        redirectAttributes.addFlashAttribute("success", String.format("Usuario: %s guardado exitosamente", usuario.getNombreUsuario()));
 
         return "redirect:" + RUTA_VISTA;
     }
@@ -80,25 +96,15 @@ public class UsuarioController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idUsuario}")
     public String editarUsuario(@PathVariable("idUsuario") Long idUsuario, Model model, RedirectAttributes redirectAttributes) {
-        Usuario usuario = null;
-
         // Validar que exista el usuario
-        if (idUsuario > 0) {
-            usuario = new Usuario();
-            usuario.setIdUsuario(idUsuario);
-            usuario = usuarioService.buscarUsuario(usuario);
+        Usuario usuario = this.validarUsuario(idUsuario);
 
-            if (usuario == null) {
-                redirectAttributes.addFlashAttribute("error", "El usuario: " + idUsuario + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el usuario: " + idUsuario);
-            
+        if (Objects.isNull(usuario)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El usuario: %d no existe", idUsuario));
+
             return "redirect:" + RUTA_VISTA;
         }
-
+        
         model.addAttribute("titulo", "Editar Usuario");
         model.addAttribute("usuario", usuario);
         model.addAttribute("listaRoles", rolService.obtenerRoles());
@@ -109,29 +115,79 @@ public class UsuarioController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idUsuario}")
     public String eliminarUsuario(@PathVariable("idUsuario") Long idUsuario, RedirectAttributes redirectAttributes) {
+        // Validar que exista el usuario
+        Usuario usuario = this.validarUsuario(idUsuario);
+
+        if (Objects.isNull(usuario)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El usuario: %d no existe", idUsuario));
+        } else {
+            usuarioService.eliminarUsuario(usuario);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Usuario: %s eliminado exitosamente", usuario.getNombreUsuario()));
+        }
+        
+        return "redirect:" + RUTA_VISTA;
+    }
+
+    /**
+     * Retorna una vista dependiendo si el usuario ya inició sesión o no al consultar el perfil del usuario.
+     *
+     * @param model el objeto para mandar atributos y valores a la vista
+     * @param redirectAttributes el objeto para mandar atributos flash
+     * @return la cadena con la ruta de la vista (HTML) a retornar
+     */
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR", "ROLE_DESARROLLO"})
+    @GetMapping("/perfil")
+    public String perfilUsuario(Model model, RedirectAttributes redirectAttributes) {
         Usuario usuario = null;
 
-        // Validar que exista el usuario
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String nombreUsuario = authentication.getName();
+            
+            usuario = new Usuario();
+            usuario.setNombreUsuario(nombreUsuario);
+            usuario = usuarioService.buscarUsuario(usuario);
+
+            if (Objects.isNull(usuario)) {
+                redirectAttributes.addFlashAttribute("success", String.format("El usuario: %s no existe", nombreUsuario));
+                
+                return "redirect:/home";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "No se ha iniciado sesión");
+            
+            return "redirect:/home";
+        }
+
+        model.addAttribute("titulo", "Perfil Usuario");
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("listaProyectosUsuario", proyectoService.obtenerProyectosPorUsuario(usuario));
+        model.addAttribute("listaBitcoraProyectoUsuario", bitacoraProyectoService.buscarBitacoraProyectoPorUsuarioAsignado(authentication.getName()));
+
+        return RUTA_VISTA + "perfilUsuario";
+    }
+
+    /**
+     * Retorna un objeto Usuario si éste existe y se encontró.
+     *
+     * @param idUsuario el id del usuario a buscar
+     * @return usuario el objeto del usuario encontrado
+     */
+    private Usuario validarUsuario(Long idUsuario) {
+        Usuario usuario = null;
+
         if (idUsuario > 0) {
             usuario = new Usuario();
             usuario.setIdUsuario(idUsuario);
             usuario = usuarioService.buscarUsuario(usuario);
 
-            if (usuario == null) {
-                redirectAttributes.addFlashAttribute("error", "El usuario: " + idUsuario + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró el usuario
+            if (Objects.isNull(usuario)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el usuario: " + idUsuario);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        usuarioService.eliminarUsuario(usuario);
-
-        redirectAttributes.addFlashAttribute("success", "Usuario: " + usuario.getNombreUsuario() + " eliminado exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return usuario;
     }
 }

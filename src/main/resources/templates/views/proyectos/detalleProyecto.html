@@ -9,7 +9,7 @@
         <div class="container" data-bs-spy="scroll">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h2 th:replace="~{template :: encabezadoCard (icono='card-list', texto=${titulo})}"></h2>
+                    <h2 th:replace="~{template :: encabezadoCard (icono='journal-text', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
                     <!-- Tabs navs -->
@@ -33,318 +33,293 @@
                     <!-- Tabs content -->
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="nav-informacion" role="tabpanel" aria-labelledby="nav-informacion-tab" tabindex="0">
-                            <form th:object="${proyectoDTO}">
-                                <input type="hidden" th:field="*{proyecto.idProyecto}">
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombre', textoLabel='Nombre:', textoSpan='Nombre asignado al proyecto.', icono='eye', objeto=proyecto.nombre, soloLectura=true)}"></div>
-                                    
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al proyecto.', icono='eye', objeto=proyecto.descripcion, soloLectura=true)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='estadoProyecto', textoLabel='Estado:', textoSpan='Estado asignado al proyecto.', icono='eye', objeto=proyecto.estadoProyecto.descripcion, soloLectura=true)}"></div>
-
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al proyecto.', icono='eye', objeto=proyecto.usuarioAsignado, soloLectura=true)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioCreacion', textoLabel='Usuario creación:', textoSpan='Usuario responsable de la creación del proyecto.', icono='eye', objeto=proyecto.usuarioCreacion, soloLectura=true)}"></div>
-                                    
-                                    <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaCreacion', textoLabel='Fecha creación:', textoSpan='Fecha de la creación del proyecto.', icono='eye', objeto=proyecto.fechaCreacion, soloLectura=true)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaInicio', textoLabel='Fecha inicio:', textoSpan='Fecha de inicio asignada al proyecto.', icono='eye', objeto=proyecto.fechaInicio, soloLectura=true)}"></div>
-                                    
-                                    <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaFin', textoLabel='Fecha fin:', textoSpan='Fecha de fin asignada al proyecto.', icono='eye', objeto=proyecto.fechaFin, soloLectura=true)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioModificacion', textoLabel='Usuario modificación:', textoSpan='Usuario de última modificación al proyecto.', icono='eye', objeto=proyecto.usuarioModificacion, soloLectura=true)}"></div>
-                                    
-                                    <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaModificacion', textoLabel='Fecha modificación:', textoSpan='Fecha de última modificación al proyecto.', icono='eye', objeto=proyecto.fechaModificacion, soloLectura=true)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col mb-2">
-                                        <label for="listaUsuariosProyecto" class="form-label">Usuarios asignados al proyecto</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">
-                                                <i class="bi-eye"></i>
-                                            </span>
-                                            <div class="form-floating">
-                                                <select class="form-select" id="listaUsuariosProyecto" th:field="*{listaUsuariosProyecto}" aria-describedby="listaUsuariosProyecto" aria-label="listaUsuariosProyecto" style="height: 116px" multiple readonly>
-                                                    <option selected disabled value="">Usuarios...</option>
-                                                    <option th:each="lup : *{listaUsuariosProyecto}" th:value="${lup.idUsuario}" th:text="${lup.nombreUsuario}"></option>
-                                                </select>
-                                                <!-- <label for="listaUsuariosProyecto">Usuarios:</label> -->
-                                            </div>
+                            <div class="card card-body">
+                                <form th:action="@{'/views/proyectos/detalle/actualizar/' + ${proyectoDTO.proyecto.idProyecto}}" method="post">
+                                    <div class="row d-flex align-items-center">
+                                        <div th:replace="~{template :: campoSelect (campo='estadoProyecto', textoLabel='Estado del proyecto:', textoSpan='Estado asignado al proyecto.', textoSelect='Seleccionar estado...', objeto=proyectoDTO.proyecto.estadoProyecto.idEstadoProyecto, lista='${listaEstadosProyecto}', listaValue='.idEstadoProyecto', listaText='.descripcion')}"></div>
+    
+                                        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                            <button th:replace="~{template :: boton (icono='arrow-clockwise', texto='Actualizar', titulo='Actualizar Estado')}"></button>
                                         </div>
-                                        <span class="form-text">Lista de usuarios asignados al proyecto.</span>
                                     </div>
-                                    <div class="col mb-2">
-
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="tab-pane fade" id="nav-bitacora" role="tabpanel" aria-labelledby="nav-bitacora-tab" tabindex="0">
-                            <form th:action="@{/views/proyectos/detalle/actualizar}" method="post">
-                                <div class="row d-flex align-items-center">
-                                    <div class="col mb-2">
-                                        <label for="estadoProyecto" class="form-label">Estado del proyecto</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">
-                                                <i class="bi-cursor"></i>
-                                            </span>
-                                            <div class="form-floating">
-                                                <select class="form-select selectpicker" id="estadoProyecto" th:field="${proyectoDTO.proyecto.estadoProyecto.idEstadoProyecto}" aria-describedby="estadoProyecto" aria-label="estadoProyecto">
-                                                    <option selected disabled value="">Seleccionar estado...</option>
-                                                    <option th:each="lep : ${listaEstadosProyecto}" th:value="${lep.idEstadoProyecto}" th:text="${lep.descripcion}"></option>
-                                                </select>
-                                                <label for="estadoProyecto">Estado:</label>
-                                            </div>
-                                        </div>
-                                        <span class="form-text">Estado asignado al proyecto.</span>
-                                        <div class="alert alert-warning" th:if="${#fields.hasErrors('proyectoDTO.proyecto.estadoProyecto.idEstadoProyecto')}" th:errors="${proyectoDTO.proyecto.estadoProyecto.descripcion}"></div>
-                                    </div>
-                                    <div class="col mb-2">
-                                        <a class="btn btn-primary" th:href="@{/views/proyectos/detalle/actualizar}" title="Actualizar estado del proyecto">
-                                            <i class="bi-arrow-clockwise"></i>
-                                            <span>Actualizar</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="row bg-dark text-white text-center" id="pipeline" th:data-pipeline="${proyectoDTO.proyecto.estadoProyecto.idEstadoProyecto}">
-                                <div class="row py-2">
-                                    <div class="col">
-                                        <i class="bi-calendar-range" id="iPlaneacion"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-file-earmark-code" id="iCodificacion"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-tools" id="iCompilacion"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-clipboard-check" id="iPruebas"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-calendar-check" id="iLiberacion"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-hdd-rack" id="iDespliegue"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-terminal" id="iOperacion"></i>
-                                    </div>
-                                    <div class="col">
-                                        <i class="bi-clipboard-pulse" id="iMonitoreo"></i>
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" th:style="'width:' + ( ${proyectoDTO.proyecto.estadoProyecto.idEstadoProyecto} * 12.5 ) + '%;'"></div>
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <div class="col">Planeación</div>
-                                    <div class="col">Codificación</div>
-                                    <div class="col">Compilación</div>
-                                    <div class="col">Pruebas</div>
-                                    <div class="col">Liberación</div>
-                                    <div class="col">Despliegue</div>
-                                    <div class="col">Operación</div>
-                                    <div class="col">Monitoreo</div>
-                                </div>
+                                </form>
                             </div>
                             <br>
-                            <div class="table-responsive" data-bs-spy="scroll">
-                                <div class="row d-flex align-items-center">
-                                    <div class="col mb-2">
-                                        <label for="buscar" class="form-label">Buscar evento</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">
-                                                <i class="bi-input-cursor-text"></i>
-                                            </span>
-                                            <div class="form-floating">
-                                                <input type="search" class="form-control" id="buscar" placeholder="Buscar..." aria-describedby="buscar" aria-label="buscar">
-                                                <label for="buscar">Buscar:</label>
+                            <div class="card card-body">
+                                <form th:object="${proyectoDTO}">
+                                    <div class="row py-2 bg-dark text-white" id="pipeline" th:data-pipeline="*{proyecto.estadoProyecto.idEstadoProyecto}">
+                                        <div class="row py-2">
+                                            <div class="progress-stacked">
+                                                <div class="progress" role="progressbar" aria-label="barraPipeline1" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" th:style="'width:' + ( (*{proyecto.estadoProyecto.idEstadoProyecto} - 1) * 12.5 ) + '%;'">
+                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"></div>
+                                                </div>
+                                                <div class="progress" role="progressbar" aria-label="barraPipeline2" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 12.5%">
+                                                    <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <span class="form-text">Buscar evento por prioridad, impacto, nivel de riesgo, categoria, estado o descripción.</span>
-                                        <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
+                                        <div class="row py-2">
+                                            <div th:each="lep : ${listaEstadosProyecto}" class="col justify-content-center align-items-center text-center">
+                                                <div class="btn btn-sm btn-light rounded-pill" style="width: 2rem; height:2rem;">
+                                                    <th:block th:switch="${lep.descripcion}">
+                                                        <i th:case="'Planeación'" class="bi-calendar-range" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Codificación'" class="bi-file-earmark-code" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Compilación'" class="bi-tools" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Pruebas'" class="bi-clipboard-check" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Liberación'" class="bi-calendar-check" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Despliegue'" class="bi-hdd-rack" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Operación'" class="bi-terminal" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="'Monitoreo'" class="bi-clipboard-pulse" id="lep__${i.descripcion}__"></i>
+                                                        <i th:case="*" class="bi-question" id="lep__${i.descripcion}__"></i>
+                                                    </th:block>
+                                                </div>
+                                                <span th:text="${lep.descripcion}"></span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col mb-2">
-                                        <a class="btn btn-primary" th:href="@{#}" title="Buscar evento">
-                                            <i class="bi-search"></i>
-                                            <span>Buscar</span>
-                                        </a>
+                                    <br>
+                                    <input type="hidden" th:field="*{proyecto.idProyecto}">
+                                    <div class="row">
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombre', textoLabel='Nombre:', textoSpan='Nombre asignado al proyecto.', icono='eye', objeto=proyecto.nombre, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al proyecto.', icono='eye', objeto=proyecto.descripcion, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='estadoProyecto', textoLabel='Estado:', textoSpan='Estado asignado al proyecto.', icono='eye', objeto=proyecto.estadoProyecto.descripcion, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al proyecto.', icono='eye', objeto=proyecto.usuarioAsignado, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioCreacion', textoLabel='Usuario creación:', textoSpan='Usuario responsable de la creación del proyecto.', icono='eye', objeto=proyecto.usuarioCreacion, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaCreacion', textoLabel='Fecha creación:', textoSpan='Fecha de la creación del proyecto.', icono='eye', objeto=proyecto.fechaCreacion, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaInicio', textoLabel='Fecha inicio:', textoSpan='Fecha de inicio asignada al proyecto.', icono='eye', objeto=proyecto.fechaInicio, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaFin', textoLabel='Fecha fin:', textoSpan='Fecha de fin asignada al proyecto.', icono='eye', objeto=proyecto.fechaFin, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioModificacion', textoLabel='Usuario modificación:', textoSpan='Usuario de última modificación al proyecto.', icono='eye', objeto=proyecto.usuarioModificacion, soloLectura=true)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaModificacion', textoLabel='Fecha modificación:', textoSpan='Fecha de última modificación al proyecto.', icono='eye', objeto=proyecto.fechaModificacion, soloLectura=true)}"></div>
                                     </div>
-                                </div>
-                                <table class="table table-striped table-hover" id="">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Fecha Bitácora</th>
-                                            <th scope="col">Revisión</th>
-                                            <th scope="col">Prioridad</th>
-                                            <th scope="col">Impacto</th>
-                                            <th scope="col">Nivel de Riesgo</th>
-                                            <th scope="col">Categoria</th>
-                                            <th scope="col">Estado</th>
-                                            <th scope="col">Descripción</th>
-                                            <th scope="col">Usuario de Reporte</th>
-                                            <th scope="col">Usuario Asignado</th>
-                                            <th scope="col">Fecha de Atención</th>
-                                            <th scope="col">Detalle</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="lbp, status : ${proyectoDTO.listaBitacoraProyectoPaginado.page}">
-                                            <th scope="row" th:text="${lbp.idBitacoraProyecto}"></th>
-                                            <td th:text="${#dates.format(lbp.fechaBitacora, 'dd/MM/yyyy')}"></td>
-                                            <td th:text="${lbp.revision}"></td>
-                                            <td th:text="${lbp.prioridad ne null} ? ${lbp.prioridad.descripcion} : 'N/A'"></td>
-                                            <td th:text="${lbp.impacto ne null} ? ${lbp.impacto.descripcion} : 'N/A'"></td>
-                                            <td th:text="${lbp.nivelRiesgo ne null} ? ${lbp.nivelRiesgo.descripcion} : 'N/A'"></td>
-                                            <td th:text="${lbp.categoria ne null} ? ${lbp.categoria.descripcion} : 'N/A'"></td>
-                                            <td th:text="${lbp.estadoBitacoraProyecto ne null} ? ${lbp.estadoBitacoraProyecto.descripcion} : 'N/A'"></td>
-                                            <td th:text="${lbp.descripcion} ?: 'N/A'"></td>
-                                            <td th:text="${lbp.usuarioReporte} ?: 'N/A'"></td>
-                                            <td th:text="${lbp.usuarioAsignado} ?: 'N/A'"></td>
-                                            <td th:text="${#dates.format(lbp.fechaAtencion, 'dd/MM/yyyy')} ?: 'N/A'"></td>
-                                            <td>
-                                                <a th:href="@{/views/proyectos/detalle/obtener(idBitacoraProyecto=${lbp.idBitacoraProyecto})}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bitacoraModal">
-                                                    <i class="bi-card-list"></i>
-                                                </a>
-                                                <form th:action="@{/views/proyectos/detalle/guardar}" th:object="${proyectoDTO}" method="post" enctype="multipart/form-data">
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="bitacoraModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header bg-dark text-white">
-                                                                    <h2 class="modal-title fs-5" id="staticBackdropLabel">
-                                                                        <i class="bi-card-list"></i>
-                                                                        <span>Evento (entregable/petición):</span>
-                                                                    </h2>
-                                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <input type="hidden" th:field="*{bitacoraProyecto.proyecto.idProyecto}">
-                                                                    <input type="hidden" id="idBitacoraProyecto" th:field="*{bitacoraProyecto.idBitacoraProyecto}">
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaBitacora', textoLabel='Fecha evento:', textoSpan='Fecha de la creación del evento.', icono='eye', objeto=bitacoraProyecto.fechaBitacora, soloLectura=true)}"></div>
-                                                                        
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='revision', textoLabel='Revisión:', textoSpan='Número de revisión del evento.', icono='eye', objeto=bitacoraProyecto.revision, soloLectura=true)}"></div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                            <label for="listaUsuariosProyecto" class="form-label">Usuarios asignados al proyecto</label>
+                                            <ul class="list-group" id="listaUsuariosProyecto">
+                                                <li th:each="lup : *{listaUsuariosProyecto}" class="input-group">
+                                                    <span class="input-group-text">
+                                                        <i class="bi-eye"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control" th:value="${lup.nombreUsuario}" readonly>
+                                                        <label class="form-label" th:text="${lup.rol.descripcion}"></label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <span class="form-text">Lista de usuarios asignados al proyecto.</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-bitacora" role="tabpanel" aria-labelledby="nav-bitacora-tab" tabindex="0">
+                            <div class="card card-body">
+                                <div class="table-responsive" data-bs-spy="scroll">
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                            <label for="buscar" class="form-label">Buscar evento</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="bi-input-cursor-text"></i>
+                                                </span>
+                                                <div class="form-floating">
+                                                    <input type="search" class="form-control" id="buscar" placeholder="Buscar..." aria-describedby="buscar" aria-label="buscar">
+                                                    <label for="buscar">Buscar:</label>
+                                                </div>
+                                            </div>
+                                            <span class="form-text">Buscar evento por prioridad, impacto, nivel de riesgo, categoria, estado o descripción.</span>
+                                            <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
+                                        </div>
+    
+                                        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                            <a class="btn btn-primary" th:href="@{#}" title="Buscar evento">
+                                                <i class="bi-search"></i>
+                                                <span>Buscar</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-hover">
+                                        <caption>Lista de proyectos</caption>
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Fecha Bitácora</th>
+                                                <th scope="col">Usuario de Reporte</th>
+                                                <th scope="col">Módulo</th>
+                                                <th scope="col">Hallazgo</th>
+                                                <th scope="col">Incidente</th>
+                                                <th scope="col">Categoría</th>
+                                                <th scope="col">Prioridad</th>
+                                                <th scope="col">Impacto</th>
+                                                <th scope="col">Nivel de Riesgo</th>
+                                                <th scope="col">Estado del Evento</th>
+                                                <th scope="col">Descripción</th>
+                                                <th scope="col">Usuario Asignado</th>
+                                                <th scope="col">Detalle</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <tr th:each="lbp, index : ${proyectoDTO.listaBitacoraProyectoPaginado.page}" data-bs-toggle="tooltip" data-bs-placement="bottom" th:data-bs-title="${#dates.format(lbp.fechaBitacora, 'dd/MM/yyyy')} + '' + ${lbp.usuarioReporte ?: 'N/A'}">
+                                                <th scope="row" th:text="${lbp.idBitacoraProyecto}"></th>
+                                                <td th:text="${#dates.format(lbp.fechaBitacora, 'dd/MM/yyyy')}"></td>
+                                                <td th:text="${lbp.usuarioReporte} ?: 'N/A'"></td>
+                                                <td th:text="${lbp.modulo ne null} ? ${lbp.modulo.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.hallazgo ne null} ? ${lbp.hallazgo.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.incidente ne null} ? ${lbp.incidente.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.categoria ne null} ? ${lbp.categoria.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.prioridad ne null} ? ${lbp.prioridad.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.impacto ne null} ? ${lbp.impacto.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.nivelRiesgo ne null} ? ${lbp.nivelRiesgo.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.estadoBitacoraProyecto ne null} ? ${lbp.estadoBitacoraProyecto.descripcion} : 'N/A'"></td>
+                                                <td th:text="${lbp.descripcion} ?: 'N/A'"></td>
+                                                <td th:text="${lbp.usuarioAsignado} ?: 'N/A'"></td>
+                                                <td>
+                                                    <a th:href="@{/views/proyectos/detalle/obtener(idBitacoraProyecto=${lbp.idBitacoraProyecto})}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bitacoraModal" title="Detalle Evento">
+                                                        <i class="bi-file-ruled"></i>
+                                                    </a>
+                                                    <form th:action="@{/views/proyectos/detalle/guardar}" th:object="${proyectoDTO}" method="post" enctype="multipart/form-data">
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="bitacoraModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header bg-dark text-white">
+                                                                        <h2 class="modal-title fs-5" id="staticBackdropLabel">
+                                                                            <i class="bi-file-ruled"></i>
+                                                                            <span>Evento (entregable/petición):</span>
+                                                                        </h2>
+                                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoSelect (campo='prioridad', textoLabel='Prioridad:', textoSpan='Prioridad asignada al evento.', textoSelect='Seleccionar prioridad...', objeto=bitacoraProyecto.prioridad.idPrioridad, lista='${listaPrioridades}', listaValue='.idPrioridad', listaText='.descripcion')}"></div>
-                                                                        
-                                                                        <div th:replace="~{template :: campoSelect (campo='impacto', textoLabel='Impacto:', textoSpan='Impacto asignado al evento.', textoSelect='Seleccionar impacto...', objeto=bitacoraProyecto.impacto.idImpacto, lista='${listaImpactos}', listaValue='.idImpacto', listaText='.descripcion')}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoSelect (campo='nivelRiesgo', textoLabel='Nivel de riesgo:', textoSpan='Nivel de riesgo asignado al evento.', textoSelect='Seleccionar nivel de riesgo...', objeto=bitacoraProyecto.nivelRiesgo.idNivelRiesgo, lista='${listaNivelesRiesgo}', listaValue='.idNivelRiesgo', listaText='.descripcion')}"></div>
-                                                                        
-                                                                        <div th:replace="~{template :: campoSelect (campo='categoria', textoLabel='Categoria:', textoSpan='Categoria asignada al evento.', textoSelect='Seleccionar categoria...', objeto=bitacoraProyecto.categoria.idCategoria, lista='${listaCategorias}', listaValue='.idCategoria', listaText='.descripcion')}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoSelect (campo='estadoBitacoraProyecto', textoLabel='Estado:', textoSpan='Estado asignado al evento.', textoSelect='Seleccionar estado...', objeto=bitacoraProyecto.estadoBitacoraProyecto.idEstadoBitacoraProyecto, lista='${listaEstadosBitacoraProyecto}', listaValue='.idEstadoBitacoraProyecto', listaText='.descripcion')}"></div>
-                                                                        
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.descripcion, soloLectura=false)}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioReporte', textoLabel='Usuario reporte:', textoSpan='Usuario de reporte del evento.', icono='eye', objeto=bitacoraProyecto.usuarioReporte, soloLectura=true)}"></div>
-                                                                        
-                                                                        <div th:replace="~{template :: campoSelect (campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al evento.', textoSelect='Seleccionar usuario...', objeto=bitacoraProyecto.usuarioAsignado, lista='*{listaUsuariosProyecto}', listaValue='.nombreUsuario', listaText='.nombreUsuario')}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaAtencion', textoLabel='Fecha atención:', textoSpan='Fecha de atención asignada al evento.', icono='calendar', objeto=bitacoraProyecto.fechaAtencion, soloLectura=false)}"></div>
-
-                                                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='acciones', textoLabel='Acciones a tomar:', textoSpan='Acciones a tomar asignadas al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.acciones, soloLectura=false)}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col mb-2">
-                                                                            <label for="recipient-name" class="form-label">Archivos cargados al evento</label>
-                                                                            <ul class="list-group" id="listaArchivos"></ul>
-                                                                            <span class="form-text">Archivos ya cargados en el evento.</span>
+                                                                    <div class="modal-body">
+                                                                        <input type="hidden" th:field="*{bitacoraProyecto.proyecto.idProyecto}">
+                                                                        <input type="hidden" id="idBitacoraProyecto" th:field="*{bitacoraProyecto.idBitacoraProyecto}">
+                                                                        <div class="row">
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaBitacora', textoLabel='Fecha evento:', textoSpan='Fecha de la creación del evento.', icono='eye', objeto=bitacoraProyecto.fechaBitacora, soloLectura=true)}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='usuarioReporte', textoLabel='Usuario reporte:', textoSpan='Usuario de reporte del evento.', icono='eye', objeto=bitacoraProyecto.usuarioReporte, soloLectura=true)}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='revision', textoLabel='Revisión:', textoSpan='Número de revisión del evento.', icono='eye', objeto=bitacoraProyecto.revision, soloLectura=true)}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='modulo', textoLabel='Módulo:', textoSpan='Módulo asignado al evento.', textoSelect='Seleccionar módulo...', objeto=bitacoraProyecto.modulo.idModulo, lista='${listaModulos}', listaValue='.idModulo', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='hallazgo', textoLabel='Hallazo:', textoSpan='Hallazgo asignado al evento.', textoSelect='Seleccionar hallazgo...', objeto=bitacoraProyecto.hallazgo.idHallazgo, lista='${listaHallazgos}', listaValue='.idHallazgo', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='incidente', textoLabel='Incidente:', textoSpan='Incidente asignado al evento.', textoSelect='Seleccionar incidente...', objeto=bitacoraProyecto.incidente.idIncidente, lista='${listaIncidentes}', listaValue='.idIncidente', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='categoria', textoLabel='Categoria:', textoSpan='Categoria asignada al evento.', textoSelect='Seleccionar categoria...', objeto=bitacoraProyecto.categoria.idCategoria, lista='${listaCategorias}', listaValue='.idCategoria', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='prioridad', textoLabel='Prioridad:', textoSpan='Prioridad asignada al evento.', textoSelect='Seleccionar prioridad...', objeto=bitacoraProyecto.prioridad.idPrioridad, lista='${listaPrioridades}', listaValue='.idPrioridad', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='impacto', textoLabel='Impacto:', textoSpan='Impacto asignado al evento.', textoSelect='Seleccionar impacto...', objeto=bitacoraProyecto.impacto.idImpacto, lista='${listaImpactos}', listaValue='.idImpacto', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='nivelRiesgo', textoLabel='Nivel de riesgo:', textoSpan='Nivel de riesgo asignado al evento.', textoSelect='Seleccionar nivel de riesgo...', objeto=bitacoraProyecto.nivelRiesgo.idNivelRiesgo, lista='${listaNivelesRiesgo}', listaValue='.idNivelRiesgo', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='estadoBitacoraProyecto', textoLabel='Estado:', textoSpan='Estado asignado al evento.', textoSelect='Seleccionar estado...', objeto=bitacoraProyecto.estadoBitacoraProyecto.idEstadoBitacoraProyecto, lista='${listaEstadosBitacoraProyecto}', listaValue='.idEstadoBitacoraProyecto', listaText='.descripcion')}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.descripcion, soloLectura=false)}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='componente', textoLabel='Componente:', textoSpan='Componente asignado al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.componente, soloLectura=false)}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='version', textoLabel='Versión:', textoSpan='Versión asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.version, soloLectura=false)}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='frecuencia', textoLabel='Frecuencia:', textoSpan='Frecuencia asignada al evento.', textoSelect='Seleccionar frecuencia...', objeto=bitacoraProyecto.frecuencia, lista='${T(com.oghs.sgdsws.model.Frecuencia).values()}', listaValue='.etiqueta', listaText='.etiqueta')}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='acciones', textoLabel='Acciones a tomar:', textoSpan='Acciones a tomar asignadas al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.acciones, soloLectura=false)}"></div>
+                                                                            <div th:replace="~{template :: campoSelect (campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al evento.', textoSelect='Seleccionar usuario...', objeto=bitacoraProyecto.usuarioAsignado, lista='*{listaUsuariosProyecto}', listaValue='.nombreUsuario', listaText='.nombreUsuario')}"></div>
+                                                                            <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaAtencion', textoLabel='Fecha atención:', textoSpan='Fecha de atención asignada al evento.', icono='calendar', objeto=bitacoraProyecto.fechaAtencion, soloLectura=false)}"></div>
                                                                         </div>
-
-                                                                        <div th:replace="~{template :: campoFileChooser (texto='')}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div th:replace="~{template :: campoTextArea (campo='comentarios', objeto=comentario.comentario)}"></div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col mb-2">
-                                                                            <label for="recipient-name" class="form-label">Comentarios cargados al evento</label>
-                                                                            <ul class="list-group" id="listaComentarios"></ul>
-                                                                            <span class="form-text">Comentarios ya cargados en el evento.</span>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                                                                <label for="archivos" class="form-label">Archivos cargados al evento</label>
+                                                                                <ul class="list-group" id="listaArchivos"></ul>
+                                                                                <span class="form-text">Archivos ya cargados en el evento.</span>
+                                                                            </div>
+                                                                            <div th:replace="~{template :: campoFileChooser (texto='')}"></div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div th:replace="~{template :: campoTextArea (campo='comentarios', objeto=comentario.comentario)}"></div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 ">
+                                                                                <label for="comentarios" class="form-label">Comentarios cargados al evento</label>
+                                                                                <ul class="list-group" id="listaComentarios"></ul>
+                                                                                <span class="form-text">Comentarios ya cargados en el evento.</span>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="modal-footer bg-dark text-white">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                    <button th:replace="~{template :: boton (icono='arrow-clockwise', texto='Actualizar', titulo='Actualizar Evento')}"></button>
+                                                                    <div class="modal-footer bg-dark text-white">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                        <button th:replace="~{template :: boton (icono='arrow-clockwise', texto='Actualizar', titulo='Actualizar Evento')}"></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <!-- <nav th:replace="~{template :: paginacionTabla (pagina='proyectoDTO.listaBitacoraProyectoPaginado')}"></nav> -->
-                                <nav aria-label="Page navigation" class="paging">
-                                    <ul class="pagination" th:if="${proyectoDTO.listaBitacoraProyectoPaginado.page.totalPages > 1}">
-                                        <li class="page-item" th:classappend="${!proyectoDTO.listaBitacoraProyectoPaginado.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
-                                            <a class="page-link" th:href="@{'/views/proyectos/detalle/' + ${proyectoDTO.proyecto.idProyecto} + '?numeroPagina=' + ${proyectoDTO.listaBitacoraProyectoPaginado.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
-                                        </li>
-                                        <th:block th:each="item : ${proyectoDTO.listaBitacoraProyectoPaginado.paginando.getElementos()}">
-                                            <li class="page-item" th:classappend="${item.indice == proyectoDTO.listaBitacoraProyectoPaginado.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
-                                                <a class="page-link" th:href="@{'/views/proyectos/detalle/' + ${proyectoDTO.proyecto.idProyecto} + '?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
-                                            </li>
-                                            <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
-                                                <a class="page-link" href="#">...</a>
-                                            </li>
-                                        </th:block>
-                                        <li class="page-item" th:classappend="${!proyectoDTO.listaBitacoraProyectoPaginado.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
-                                            <a class="page-link" th:href="@{'/views/proyectos/detalle/' + ${proyectoDTO.proyecto.idProyecto} + '?numeroPagina=' + ${proyectoDTO.listaBitacoraProyectoPaginado.paginando.numeroPagina + 1}}">Siguiente</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-group-divider">
+                                    
+                                        </tfoot>
+                                    </table>
+                                    <nav th:replace="~{template :: paginacionTabla (pagina='proyectoDTO.listaBitacoraProyectoPaginado', ruta='proyectos/detalle/' + ${proyectoDTO.proyecto.idProyecto})}"></nav>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="card card-body">
+                                <label for="reporteEventos" class="form-label">Reporte de Eventos de Proyecto</label>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <a class="btn btn-primary" th:href="@{#}" title="Generar Reporte">
+                                            <i class="bi-file-excel"></i>
+                                            <span>Generar Reporte</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosModulo" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosHallazgo" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosIncidente" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosCategoria" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosPrioridad" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosImpacto" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosNivelRiesgo" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                        <div id="reporteEventosEstadoBitacoraProyecto" class="card card-body"></div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 "></div>
+                                </div>
+                                <span class="form-text">Reporte del estado de eventos en este proyecto.</span>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-evento" role="tabpanel" aria-labelledby="nav-evento-tab" tabindex="0">
-                            <form th:action="@{/views/proyectos/detalle/guardar}" th:object="${proyectoDTO}" method="post" enctype="multipart/form-data">
-                                <input type="hidden" th:field="*{bitacoraProyecto.proyecto.idProyecto}">
-                                <div class="row">
-                                    <div th:replace="~{template :: campoSelect (campo='prioridad', textoLabel='Prioridad:', textoSpan='Prioridad asignada al evento.', textoSelect='Seleccionar prioridad...', objeto=bitacoraProyecto.prioridad.idPrioridad, lista='${listaPrioridades}', listaValue='.idPrioridad', listaText='.descripcion')}"></div>
-
-                                    <div th:replace="~{template :: campoSelect (campo='impacto', textoLabel='Impacto:', textoSpan='Impacto asignado al evento.', textoSelect='Seleccionar impacto...', objeto=bitacoraProyecto.impacto.idImpacto, lista='${listaImpactos}', listaValue='.idImpacto', listaText='.descripcion')}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoSelect (campo='nivelRiesgo', textoLabel='Nivel de riesgo:', textoSpan='Nivel de riesgo asignado al evento.', textoSelect='Seleccionar nivel de riesgo...', objeto=bitacoraProyecto.nivelRiesgo.idNivelRiesgo, lista='${listaNivelesRiesgo}', listaValue='.idNivelRiesgo', listaText='.descripcion')}"></div>
-                                    
-                                    <div th:replace="~{template :: campoSelect (campo='categoria', textoLabel='Categoria:', textoSpan='Categoria asignada al evento.', textoSelect='Seleccionar categoria...', objeto=bitacoraProyecto.categoria.idCategoria, lista='${listaCategorias}', listaValue='.idCategoria', listaText='.descripcion')}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoSelect (campo='estadoBitacoraProyecto', textoLabel='Estado:', textoSpan='Estado asignado al evento.', textoSelect='Seleccionar estado...', objeto=bitacoraProyecto.estadoBitacoraProyecto.idEstadoBitacoraProyecto, lista='${listaEstadosBitacoraProyecto}', listaValue='.idEstadoBitacoraProyecto', listaText='.descripcion')}"></div>
-
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.descripcion, soloLectura=false)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoSelect (campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al evento.', textoSelect='Seleccionar usuario...', objeto=bitacoraProyecto.usuarioAsignado, lista='*{listaUsuariosProyecto}', listaValue='.nombreUsuario', listaText='.nombreUsuario')}"></div>
-
-                                    <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaAtencion', textoLabel='Fecha atención:', textoSpan='Fecha de atención asignada al evento.', icono='calendar', objeto=bitacoraProyecto.fechaAtencion, soloLectura=false)}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoInput (tipoCampo='text', campo='acciones', textoLabel='Acciones a tomar:', textoSpan='Acciones a tomar asignadas al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.acciones, soloLectura=false)}"></div>
-
-                                    <div th:replace="~{template :: campoFileChooser (texto='')}"></div>
-                                </div>
-                                <div class="row">
-                                    <div th:replace="~{template :: campoTextArea (campo='comentarios', objeto=comentario.comentario)}"></div>
-                                </div>
-                                <button th:replace="~{template :: boton (icono='journal-plus', texto='Generar', titulo='Generar Evento')}"></button>
-                            </form>
+                            <div class="card card-body">
+                                <form th:action="@{/views/proyectos/detalle/guardar}" th:object="${proyectoDTO}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" th:field="*{bitacoraProyecto.proyecto.idProyecto}">
+                                    <div class="row">
+                                        <div th:replace="~{template :: campoSelect (campo='modulo', textoLabel='Módulo:', textoSpan='Módulo asignado al evento.', textoSelect='Seleccionar módulo...', objeto=bitacoraProyecto.modulo.idModulo, lista='${listaModulos}', listaValue='.idModulo', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='hallazgo', textoLabel='Hallazo:', textoSpan='Hallazgo asignado al evento.', textoSelect='Seleccionar hallazgo...', objeto=bitacoraProyecto.hallazgo.idHallazgo, lista='${listaHallazgos}', listaValue='.idHallazgo', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='incidente', textoLabel='Incidente:', textoSpan='Incidente asignado al evento.', textoSelect='Seleccionar incidente...', objeto=bitacoraProyecto.incidente.idIncidente, lista='${listaIncidentes}', listaValue='.idIncidente', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='categoria', textoLabel='Categoria:', textoSpan='Categoria asignada al evento.', textoSelect='Seleccionar categoria...', objeto=bitacoraProyecto.categoria.idCategoria, lista='${listaCategorias}', listaValue='.idCategoria', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='prioridad', textoLabel='Prioridad:', textoSpan='Prioridad asignada al evento.', textoSelect='Seleccionar prioridad...', objeto=bitacoraProyecto.prioridad.idPrioridad, lista='${listaPrioridades}', listaValue='.idPrioridad', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='impacto', textoLabel='Impacto:', textoSpan='Impacto asignado al evento.', textoSelect='Seleccionar impacto...', objeto=bitacoraProyecto.impacto.idImpacto, lista='${listaImpactos}', listaValue='.idImpacto', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='nivelRiesgo', textoLabel='Nivel de riesgo:', textoSpan='Nivel de riesgo asignado al evento.', textoSelect='Seleccionar nivel de riesgo...', objeto=bitacoraProyecto.nivelRiesgo.idNivelRiesgo, lista='${listaNivelesRiesgo}', listaValue='.idNivelRiesgo', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='estadoBitacoraProyecto', textoLabel='Estado:', textoSpan='Estado asignado al evento.', textoSelect='Seleccionar estado...', objeto=bitacoraProyecto.estadoBitacoraProyecto.idEstadoBitacoraProyecto, lista='${listaEstadosBitacoraProyecto}', listaValue='.idEstadoBitacoraProyecto', listaText='.descripcion')}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción:', textoSpan='Descripción asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.descripcion, soloLectura=false)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='componente', textoLabel='Componente:', textoSpan='Componente asignado al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.componente, soloLectura=false)}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='version', textoLabel='Versión:', textoSpan='Versión asignada al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.version, soloLectura=false)}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='frecuencia', textoLabel='Frecuencia:', textoSpan='Frecuencia asignada al evento.', textoSelect='Seleccionar frecuencia...', objeto=bitacoraProyecto.frecuencia, lista='${T(com.oghs.sgdsws.model.Frecuencia).values()}', listaValue='.etiqueta', listaText='.etiqueta')}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='text', campo='acciones', textoLabel='Acciones a tomar:', textoSpan='Acciones a tomar asignadas al evento.', icono='input-cursor-text', objeto=bitacoraProyecto.acciones, soloLectura=false)}"></div>
+                                        <div th:replace="~{template :: campoSelect (campo='usuarioAsignado', textoLabel='Usuario asignado:', textoSpan='Usuario responsable asignado al evento.', textoSelect='Seleccionar usuario...', objeto=bitacoraProyecto.usuarioAsignado, lista='*{listaUsuariosProyecto}', listaValue='.nombreUsuario', listaText='.nombreUsuario')}"></div>
+                                        <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaAtencion', textoLabel='Fecha atención:', textoSpan='Fecha de atención asignada al evento.', icono='calendar', objeto=bitacoraProyecto.fechaAtencion, soloLectura=false)}"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div th:replace="~{template :: campoFileChooser (texto='')}"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div th:replace="~{template :: campoTextArea (campo='comentarios', objeto=comentario.comentario)}"></div>
+                                    </div>
+                                    <button th:replace="~{template :: boton (icono='journal-plus', texto='Generar', titulo='Generar Evento')}"></button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -352,79 +327,17 @@
                     
                 </div>
             </div>
-
-            <!-- <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h2 class="card-title">Especificación de Requerimientos</h2>
-                </div>
-                <div class="card-body">
-                    <form>
-                        <div class="row align-items-start">
-                            <div class="col">
-                                <div class="mb-3">
-                                    <label for="servidor" class="form-label">Infraestructura Servidor:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="servidor">
-                                        <label class="form-check-label" for="servidor">IIS/Tomcat/Web Logic/Websphere</label>
-                                    </div>
-                                    <div class="form-text">Infraestructura física que alojará la totalidad o parcialidad del software.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="servidorweb" class="form-label">Servidor Web:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="servidorweb">
-                                        <label class="form-check-label" for="servidorweb">IIS/Tomcat/Web Logic/Websphere</label>
-                                    </div>
-                                    <div class="form-text">Tecnología de servidor web a utilizar.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="basededatos" class="form-label">Gestor de Base de Datos:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="basededatos">
-                                        <label class="form-check-label" for="basededatos">Oracle/MySQL/PostgreSQL/Websphere</label>
-                                    </div>
-                                    <div class="form-text">Tecnología de gestor de base de datos.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="lenguaje" class="form-label">Gestor de Base de Datos:</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="lenguaje">
-                                        <label class="form-check-label" for="lenguaje">Java/Python/Javascript/PLSQL</label>
-                                    </div>
-                                    <div class="form-text">Tecnología de desarrollo de software.</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h6>Recomendaciones OWASP</h6>
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea">Gestión de requerimientos y recursos
-                                        Recopile y negocie los requerimientos para la aplicación con el negocio, incluidos los requisitos de protección relacionados con la confidencialidad, integridad, disponibilidad y autenticidad de todos los activos de datos y la lógica de negocio esperada. Tenga en cuenta qué tan expuesta estará su aplicación y si necesita segregación de funcionalidades (además del control de acceso). Recopile los requerimientos técnicos, incluidos los funcionales de seguridad y los no funcionales. Planifique y negocie que el presupuesto cubra el diseño, construcción, prueba y operación, incluyendo las actividades de seguridad.
-                                    </textarea>
-                                    <label for="floatingTextarea">
-                                        A04:2021 – Diseño Inseguro
-                                    </label>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer bg-dark text-white">
-                    <form action="">
-                        
-                        <input type="submit" class="btn btn-primary" value="Guardar"/>
-                    </form>
-                </div>
-            </div> -->
         </div>
 
         <footer th:replace="~{template :: footer}"></footer>
 
+        <!--Load the AJAX API-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript" th:inline="javascript">
             $(document).ready(function() {
                 // Actualizar estado del pipeline del proyecto (azul: #0d6efd', verde: #198754')
-                $("#pipeline").find("i").eq($("#pipeline").attr('data-pipeline') - 1).css({"color": "#0d6efd"});
-                $("#pipeline").find("i").slice(0, $("#pipeline").attr('data-pipeline') - 1).css({"color": "#198754"});
+                $('#pipeline').find($('div.btn-sm')).eq($('#pipeline').attr('data-pipeline') - 1).removeClass('btn-light').addClass('btn-primary');
+                $('#pipeline').find($('div.btn-sm')).slice(0, $('#pipeline').attr('data-pipeline') - 1).removeClass('btn-light').addClass('btn-success');
 
                 // Mantener pestaña actual al recargar
                 $('button[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
@@ -459,13 +372,13 @@
                         if (!$.isEmptyObject(bitacoraProyecto.archivo)) {
                             $.each(bitacoraProyecto.archivo, function(key, value) {
                                 $('.modal #listaArchivos').append(
-                                    "<li class='input-group mb-2'>" + 
+                                    "<li class='input-group'>" + 
                                         "<span class='input-group-text'>" + 
                                             "<i class='bi-file'></i>" + 
                                         "</span>" + 
                                         "<div class='form-floating'>" + 
                                             "<input type='text' class='form-control' value='" + value.nombreArchivo + " (" + value.tamanoArchivo + " B)' readonly>" + 
-                                            "<label class='form-label'>Usuario: Fecha: dd/mm/aaaa</label>" + 
+                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 10) + "</label>" + 
                                         "</div>" + 
                                         "<a href='/views/proyectos/detalle/descargarArchivo?idArchivo=" + value.idArchivo + "' class='btn btn-primary d-flex justify-content-center align-items-center' title='Descargar'>" + 
                                             "<i class='bi-download'></i>" + 
@@ -476,28 +389,105 @@
                                     "</li>"
                                 );
                             });
+                        } else {
+                            $('.modal #listaArchivos').append("<caption>Sin archivos cargados al evento</caption>");
                         }
                         $('.modal #listaComentarios').empty();
                         if (!$.isEmptyObject(bitacoraProyecto.comentario)) {
                             $.each(bitacoraProyecto.comentario, function(key, value) {
                                 $('.modal #listaComentarios').append(
-                                    "<li class='input-group mb-2'>" + 
+                                    "<li class='input-group'>" + 
                                         "<span class='input-group-text'>" + 
                                             "<i class='bi-eye'></i>" + 
                                         "</span>" + 
                                         "<div class='form-floating'>" + 
                                             "<textarea class='form-control' style='height: 116px' readonly>" + value.comentario + "</textarea>" + 
-                                            "<label class='form-label'>Usuario: Fecha: dd/mm/aaaa</label>" + 
+                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 10) + "</label>" + 
                                         "</div>" + 
                                     "</li>"
                                 );
                             });
+                        } else {
+                            $('.modal #listaComentarios').append("<caption>Sin comentarios cargados al evento</caption>");
                         }
                     });
 
                     $('#bitacoraModal').modal();
                 });
             });
+
+            // Load the Visualization API and the corechart package.
+            google.charts.load('current', { 'packages': ['corechart'] });
+
+            // Set a callback to run when the Google Visualization API is loaded.
+            google.charts.setOnLoadCallback(graficaReporte);
+
+            // Callback that creates and populates a data table, instantiates the pie chart, passes in the data and draws it.
+            function graficaReporte() {
+                /*<![CDATA[*/
+                let listaGraficas = [
+                    {
+                        'columna': 'Módulo', 
+                        'vLista': /*[[${datosGraficas.listaModulos}]]*/ 'listaModulos',
+                        'titulo': 'Módulos de eventos',
+                        'elemento': 'reporteEventosModulo'
+                    }, {
+                        'columna': 'Hallazgo', 
+                        'vLista': /*[[${datosGraficas.listaHallazgos}]]*/ 'listaHallazgos',
+                        'titulo': 'Hallazgo de eventos',
+                        'elemento': 'reporteEventosHallazgo'
+                    }, {
+                        'columna': 'Incidente', 
+                        'vLista': /*[[${datosGraficas.listaIncidentes}]]*/ 'listaIncidentes',
+                        'titulo': 'Incidente de eventos',
+                        'elemento': 'reporteEventosIncidente'
+                    }, {
+                        'columna': 'Categoría', 
+                        'vLista': /*[[${datosGraficas.listaCategorias}]]*/ 'listaCategorias',
+                        'titulo': 'Categoría de eventos',
+                        'elemento': 'reporteEventosCategoria'
+                    }, {
+                        'columna': 'Prioridad', 
+                        'vLista': /*[[${datosGraficas.listaPrioridades}]]*/ 'listaPrioridades',
+                        'titulo': 'Prioridad de eventos',
+                        'elemento': 'reporteEventosPrioridad'
+                    }, {
+                        'columna': 'Impacto', 
+                        'vLista': /*[[${datosGraficas.listaImpactos}]]*/ 'listaImpactos',
+                        'titulo': 'Impacto de eventos',
+                        'elemento': 'reporteEventosImpacto'
+                    }, {
+                        'columna': 'NivelRiesgo', 
+                        'vLista': /*[[${datosGraficas.listaNivelesRiesgo}]]*/ 'listaNivelesRiesgo',
+                        'titulo': 'Nivel de riesgo de eventos',
+                        'elemento': 'reporteEventosNivelRiesgo'
+                    }, {
+                        'columna': 'Estado', 
+                        'vLista': /*[[${datosGraficas.listaEstadosBitacoraProyecto}]]*/ 'listaEstadosBitacoraProyecto',
+                        'titulo': 'Estado de eventos',
+                        'elemento': 'reporteEventosEstadoBitacoraProyecto'
+                    }
+                ];
+                /*]]>*/
+
+                $.each(listaGraficas, function(key, value) {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', value.columna);
+                    data.addColumn('number', 'Eventos');
+                    data.addRows(value.vLista);
+
+                    var options = {
+                        title: value.titulo,
+                        pieHole: 0.4,
+                        width: 512,
+                        height: 512
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.PieChart(document.getElementById(value.elemento));
+                    chart.draw(data, options);
+                });
+            }
         </script>
     </body>
 </html>

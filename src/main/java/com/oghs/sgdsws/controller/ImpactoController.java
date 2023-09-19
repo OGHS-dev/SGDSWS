@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.Impacto;
-import com.oghs.sgdsws.model.service.ImpactoService;
+import com.oghs.sgdsws.service.ImpactoService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * ImpactoController es la clase controlador para ejecutar las
+ * operaciones CRUD de impactos.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/impactos")
@@ -57,14 +63,15 @@ public class ImpactoController {
             model.addAttribute("titulo", "Crear/Editar Impacto");
             model.addAttribute("impacto", impacto);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
 
             return RUTA_VISTA + "crearImpacto";
         }
 
         impactoService.guardarImpacto(impacto);
 
-        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getCodigo() + " guardado exitosamente");
+        redirectAttributes.addFlashAttribute("success", String.format("Impacto: %s guardado exitosamente", impacto.getCodigo()));
 
         return "redirect:" + RUTA_VISTA;
     }
@@ -72,21 +79,11 @@ public class ImpactoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idImpacto}")
     public String editarImpacto(@PathVariable("idImpacto") Long idImpacto, Model model, RedirectAttributes redirectAttributes) {
-        Impacto impacto = null;
-
         // Validar que exista el impacto
-        if (idImpacto > 0) {
-            impacto = new Impacto();
-            impacto.setIdImpacto(idImpacto);
-            impacto = impactoService.buscarImpacto(impacto);
+        Impacto impacto = this.validarImpacto(idImpacto);
 
-            if (impacto == null) {
-                redirectAttributes.addFlashAttribute("error", "El impacto: " + idImpacto + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el impacto: " + idImpacto);
+        if (Objects.isNull(impacto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El impacto: %d no existe", idImpacto));
             
             return "redirect:" + RUTA_VISTA;
         }
@@ -100,30 +97,40 @@ public class ImpactoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idImpacto}")
     public String eliminarImpacto(@PathVariable("idImpacto") Long idImpacto, RedirectAttributes redirectAttributes) {
+        // Validar que exista el impacto
+        Impacto impacto = this.validarImpacto(idImpacto);
+
+        if (Objects.isNull(impacto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El impacto: %d no existe", idImpacto));
+        } else {
+            impactoService.eliminarImpacto(impacto);
+
+            redirectAttributes.addFlashAttribute("success", String.format("Impacto: %s eliminado exitosamente", impacto.getCodigo()));
+        }
+        
+        return "redirect:" + RUTA_VISTA;
+    }
+    
+    /**
+     * Retorna un objeto Impacto si éste existe y se encontró.
+     *
+     * @param idUsuario el id del impacto a buscar
+     * @return impacto el objeto del impacto encontrado
+     */
+    private Impacto validarImpacto(Long idImpacto) {
         Impacto impacto = null;
 
-        // Validar que exista el impacto
         if (idImpacto > 0) {
             impacto = new Impacto();
             impacto.setIdImpacto(idImpacto);
             impacto = impactoService.buscarImpacto(impacto);
 
-            if (impacto == null) {
-                redirectAttributes.addFlashAttribute("error", "El impacto: " + idImpacto + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró el impacto
+            if (Objects.isNull(impacto)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el impacto: " + idImpacto);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        impactoService.eliminarImpacto(impacto);
-
-        redirectAttributes.addFlashAttribute("success", "Impacto: " + impacto.getCodigo() + " eliminado exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return impacto;
     }
-    
 }

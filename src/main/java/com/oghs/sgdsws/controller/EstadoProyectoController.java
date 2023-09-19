@@ -1,5 +1,8 @@
 package com.oghs.sgdsws.controller;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -14,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oghs.sgdsws.model.entity.EstadoProyecto;
-import com.oghs.sgdsws.model.service.EstadoProyectoService;
+import com.oghs.sgdsws.service.EstadoProyectoService;
 
 import jakarta.validation.Valid;
 
 /**
- *
+ * EstadoProyectoController es la clase controlador para ejecutar las
+ * operaciones CRUD de estados de proyecto.
+ * 
  * @author oghs
+ * @version 1.0
  */
 @Controller
 @RequestMapping("/views/estadosProyecto")
@@ -57,7 +63,8 @@ public class EstadoProyectoController {
             model.addAttribute("titulo", "Crear/Editar Estado Proyecto");
             model.addAttribute("estadoProyecto", estadoProyecto);
 
-            System.err.println("Error en los datos proporcionados");
+            String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
+            model.addAttribute("warning", errores);
 
             return RUTA_VISTA + "crearEstadoProyecto";
         }
@@ -72,21 +79,11 @@ public class EstadoProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/editar/{idEstadoProyecto}")
     public String editarEstadoProyecto(@PathVariable("idEstadoProyecto") Long idEstadoProyecto, Model model, RedirectAttributes redirectAttributes) {
-        EstadoProyecto estadoProyecto = null;
+        // Validar que exista el estado de proyecto
+        EstadoProyecto estadoProyecto = this.validarEstadoProyecto(idEstadoProyecto);
 
-        // Validar que exista el estado proyecto
-        if (idEstadoProyecto > 0) {
-            estadoProyecto = new EstadoProyecto();
-            estadoProyecto.setIdEstadoProyecto(idEstadoProyecto);
-            estadoProyecto = estadoProyectoService.buscarEstadoProyecto(estadoProyecto);
-
-            if (estadoProyecto == null) {
-                redirectAttributes.addFlashAttribute("error", "El estado proyecto: " + idEstadoProyecto + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el estado proyecto: " + idEstadoProyecto);
+        if (Objects.isNull(estadoProyecto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El estado de proyecto: %d no existe", idEstadoProyecto));
             
             return "redirect:" + RUTA_VISTA;
         }
@@ -100,30 +97,40 @@ public class EstadoProyectoController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/eliminar/{idEstadoProyecto}")
     public String eliminarEstadoProyecto(@PathVariable("idEstadoProyecto") Long idEstadoProyecto, RedirectAttributes redirectAttributes) {
+        // Validar que exista el estado de proyecto
+        EstadoProyecto estadoProyecto = this.validarEstadoProyecto(idEstadoProyecto);
+
+        if (Objects.isNull(estadoProyecto)) {
+            redirectAttributes.addFlashAttribute("error", String.format("El estado de proyecto: %d no existe", idEstadoProyecto));
+        } else {
+            estadoProyectoService.eliminarEstadoProyecto(estadoProyecto);
+
+            redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " eliminado exitosamente");
+        }
+        
+        return "redirect:" + RUTA_VISTA;
+    }
+    
+    /**
+     * Retorna un objeto EstadoProyecto si éste existe y se encontró.
+     *
+     * @param idUsuario el id del estado de proyecto a buscar
+     * @return estadoProyecto el objeto del estado de proyecto encontrado
+     */
+    private EstadoProyecto validarEstadoProyecto(Long idEstadoProyecto) {
         EstadoProyecto estadoProyecto = null;
 
-        // Validar que exista el estado proyecto
         if (idEstadoProyecto > 0) {
             estadoProyecto = new EstadoProyecto();
             estadoProyecto.setIdEstadoProyecto(idEstadoProyecto);
             estadoProyecto = estadoProyectoService.buscarEstadoProyecto(estadoProyecto);
 
-            if (estadoProyecto == null) {
-                redirectAttributes.addFlashAttribute("error", "El estado proyecto: " + idEstadoProyecto + " no existe");
-                
-                return "redirect:" + RUTA_VISTA;
+            // No se encontró el estado de proyecto
+            if (Objects.isNull(estadoProyecto)) {
+                return null;
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No se encontró el estado proyecto: " + idEstadoProyecto);
-            
-            return "redirect:" + RUTA_VISTA;
         }
 
-        estadoProyectoService.eliminarEstadoProyecto(estadoProyecto);
-
-        redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " eliminado exitosamente");
-        
-        return "redirect:" + RUTA_VISTA;
+        return estadoProyecto;
     }
-    
 }
