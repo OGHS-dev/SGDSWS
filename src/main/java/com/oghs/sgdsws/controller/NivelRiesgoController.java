@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/nivelesRiesgo")
 public class NivelRiesgoController {
 
-    private final String RUTA_VISTA = "/views/nivelesRiesgo/";
+    private static final String RUTA_VISTA = "/views/nivelesRiesgo/";
 
-    @Autowired
-    private NivelRiesgoService nivelRiesgoService;
+    private final NivelRiesgoService nivelRiesgoService;
 
-    @Secured("ROLE_ADMIN")
+    public NivelRiesgoController(NivelRiesgoService nivelRiesgoService) {
+        this.nivelRiesgoService = nivelRiesgoService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verNivelesRiesgo(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Niveles de Riesgo");
@@ -46,7 +48,7 @@ public class NivelRiesgoController {
         return RUTA_VISTA + "verNivelesRiesgo";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearNivelRiesgo(Model model) {
         model.addAttribute("titulo", "Nuevo Nivel de Riesgo");
@@ -55,7 +57,7 @@ public class NivelRiesgoController {
         return RUTA_VISTA + "crearNivelRiesgo";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarNivelRiesgo(@Valid @ModelAttribute NivelRiesgo nivelRiesgo, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
@@ -76,7 +78,7 @@ public class NivelRiesgoController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idNivelRiesgo}")
     public String editarImpacto(@PathVariable("idNivelRiesgo") Long idNivelRiesgo, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el nivel de riesgo
@@ -103,9 +105,14 @@ public class NivelRiesgoController {
         if (Objects.isNull(nivelRiesgo)) {
             redirectAttributes.addFlashAttribute("error", String.format("El nivel de riesgo: %d no existe", idNivelRiesgo));
         } else {
-            nivelRiesgoService.eliminarNivelRiesgo(nivelRiesgo);
+            if (nivelRiesgo.getBitacoraProyecto().isEmpty()) {
+                nivelRiesgoService.eliminarNivelRiesgo(nivelRiesgo);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Nivel de riesgo: %s eliminado exitosamente", nivelRiesgo.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Nivel de riesgo: %s eliminado exitosamente", nivelRiesgo.getCodigo()));
+            } else {
+                String bitacoraProyecto = nivelRiesgo.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El nivel de riesgo: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", nivelRiesgo.getCodigo(), bitacoraProyecto));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

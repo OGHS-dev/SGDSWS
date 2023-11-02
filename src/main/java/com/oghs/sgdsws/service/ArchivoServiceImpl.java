@@ -1,6 +1,5 @@
 package com.oghs.sgdsws.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oghs.sgdsws.model.entity.Archivo;
@@ -13,8 +12,11 @@ import com.oghs.sgdsws.repository.ArchivoRepository;
 @Service
 public class ArchivoServiceImpl implements ArchivoService {
 
-    @Autowired
-    private ArchivoRepository archivoRepository;
+    private final ArchivoRepository archivoRepository;
+
+    public ArchivoServiceImpl(ArchivoRepository archivoRepository) {
+        this.archivoRepository = archivoRepository;
+    }
 
     @Override
     public Archivo buscarArchivo(Archivo archivo) {

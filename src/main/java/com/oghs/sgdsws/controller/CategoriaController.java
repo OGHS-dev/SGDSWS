@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/categorias")
 public class CategoriaController {
 
-    private final String RUTA_VISTA = "/views/categorias/";
+    private static final String RUTA_VISTA = "/views/categorias/";
     
-    @Autowired
-    private CategoriaService categoriaService;
-    
-    @Secured("ROLE_ADMIN")
+    private final CategoriaService categoriaService;
+
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verCategorias(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Categorías");
@@ -46,7 +48,7 @@ public class CategoriaController {
         return RUTA_VISTA + "verCategorias";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearCategoria(Model model) {
         model.addAttribute("titulo", "Nueva Categoría");
@@ -55,7 +57,7 @@ public class CategoriaController {
         return RUTA_VISTA + "crearCategoria";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarCategoria(@Valid @ModelAttribute Categoria categoria, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
@@ -76,7 +78,7 @@ public class CategoriaController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idCategoria}")
     public String editarCategoria(@PathVariable("idCategoria") Long idCategoria, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista la categoría
@@ -103,9 +105,14 @@ public class CategoriaController {
         if (Objects.isNull(categoria)) {
             redirectAttributes.addFlashAttribute("error", String.format("La categoría: %d no existe", idCategoria));
         } else {
-            categoriaService.eliminarCategoria(categoria);
+            if (categoria.getBitacoraProyecto().isEmpty()) {
+                categoriaService.eliminarCategoria(categoria);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Categoría: %s eliminada exitosamente", categoria.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Categoría: %s eliminada exitosamente", categoria.getCodigo()));
+            } else {
+                String bitacoraProyecto = categoria.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("La categoria: %s no se puede eliminar ya que se encuentra asociada a los siguientes eventos: %s", categoria.getCodigo(), bitacoraProyecto));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

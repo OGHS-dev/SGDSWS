@@ -6,17 +6,21 @@
         <header th:replace="~{template :: header}"></header>
         
         <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (elementos=${navegacion})}"></nav>
             <form th:action="@{/views/prioridades/guardar}" th:object="${prioridad}" method="post" novalidate>
                 <div class="card">
                     <div class="card-header bg-dark text-white">
                         <h2 th:replace="~{template :: encabezadoCard (icono='plus-circle', texto=${titulo})}"></h2>
                     </div>
                     <div class="card-body">
-                        <input type="hidden" th:field="*{idPrioridad}">
-                        <div class="row">
-                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código de la prioridad:', textoSpan='Código asignado a la prioridad.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
-                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción de la prioridad:', textoSpan='Descripción asignada a la prioridad.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
-                            <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus de la prioridad:', textoSpan='Estatus asignado a la prioridad.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
+                        <div class="card card-body">
+                            <label th:replace="~{template :: etiquetaForms (texto='Insertar datos de la prioridad:')}"></label>
+                            <div class="row">
+                                <input type="hidden" th:field="*{idPrioridad}">
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código de la prioridad:', textoSpan='Código asignado a la prioridad.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción de la prioridad:', textoSpan='Descripción asignada a la prioridad.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus de la prioridad:', textoSpan='Estatus asignado a la prioridad.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='.etiqueta')}"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

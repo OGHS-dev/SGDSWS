@@ -6,19 +6,49 @@
         <header th:replace="~{template :: header}"></header>
         
         <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (elementos=${navegacion})}"></nav>
             <div class="card">
                 <div class="card-header bg-dark text-white">
                     <h2 th:replace="~{template :: encabezadoCard (icono='person-badge', texto=${titulo})}"></h2>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/views/roles/crear}" title="Crear Nuevo Rol">
-                        <i class="bi-plus-circle"></i>
-                        <span>Nuevo Rol</span>
-                    </a>
+                    <div class="card card-body" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                        <label th:replace="~{template :: etiquetaForms (texto='Crear nuevo rol:')}"></label>
+                        <div class="card card-body">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <a class="btn btn-primary" th:href="@{/views/roles/crear}" title="Crear Nuevo Rol">
+                                    <i class="bi-plus-circle"></i>
+                                    <span>Nuevo Rol</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <br>
-                    <br>
-                    <div class="table-responsive" data-bs-spy="scroll">
-                        <table class="table table-striped table-hover" id="">
+                    <div class="card card-body table-responsive" data-bs-spy="scroll">
+                        <label th:replace="~{template :: etiquetaForms (texto='Listado de roles existentes:')}"></label>
+                        <div class="row d-flex align-items-center">
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="search" class="form-control" id="buscar" placeholder="Buscar..." aria-describedby="buscar" aria-label="buscar">
+                                        <label for="buscar">Buscar:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Buscar rol por código o descripción.</span>
+                                <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                                <a class="btn btn-primary" th:href="@{#}" title="Buscar Rol">
+                                    <i class="bi-search"></i>
+                                    <span>Buscar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover">
+                            <caption>Lista de roles</caption>
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col">ID</th>
@@ -33,12 +63,12 @@
                                     <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="table-group-divider">
                                 <tr th:each="r : ${roles.page}">
                                     <th scope="row" th:text="${r.idRol}"></th>
                                     <td th:text="${r.codigo}"></td>
                                     <td th:text="${r.descripcion}"></td>
-                                    <td th:text="${r.estatus}"></td>
+                                    <td th:text="${r.estatus.etiqueta}"></td>
                                     <td th:text="${r.usuarioCreacion}"></td>
                                     <td th:text="${#dates.format(r.fechaCreacion, 'dd/MM/yyyy')}"></td>
                                     <td th:text="${r.usuarioModificacion}"></td>
@@ -49,12 +79,16 @@
                                         </a>
                                     </td>
                                     <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                                        <a class="btn btn-danger" th:href="@{/views/roles/eliminar/} + ${r.idRol}" title="Eliminar Rol" onclick="return confirm('Eliminar este rol?');">
+                                        <button class="btn btn-danger" data-bs-toggle="modal" th:attr="data-bs-target=${'#confirmacionModal' + r.idRol}" title="Eliminar Rol">
                                             <i class="bi-trash"></i>
-                                        </a>
+                                        </button>
+                                        <nav th:replace="~{template :: confirmacionModal (idModal=confirmacionModal + ${r.idRol}, texto='¿Eliminar el rol: ' + ${r.descripcion} + '?', objeto=@{/views/roles/eliminar/} + ${r.idRol}, titulo='Eliminar Rol')}"></nav>
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfoot class="table-group-divider">
+                                    
+                            </tfoot>
                         </table>
                         <nav th:replace="~{template :: paginacionTabla (pagina='roles', ruta='roles/')}"></nav>
                     </div>

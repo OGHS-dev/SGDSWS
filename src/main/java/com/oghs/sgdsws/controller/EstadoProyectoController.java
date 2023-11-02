@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/estadosProyecto")
 public class EstadoProyectoController {
 
-    private final String RUTA_VISTA = "/views/estadosProyecto/";
+    private static final String RUTA_VISTA = "/views/estadosProyecto/";
     
-    @Autowired
-    private EstadoProyectoService estadoProyectoService;
+    private final EstadoProyectoService estadoProyectoService;
 
-    @Secured("ROLE_ADMIN")
+    public EstadoProyectoController(EstadoProyectoService estadoProyectoService) {
+        this.estadoProyectoService = estadoProyectoService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verEstadosProyecto(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Estados Proyecto");
@@ -103,9 +105,14 @@ public class EstadoProyectoController {
         if (Objects.isNull(estadoProyecto)) {
             redirectAttributes.addFlashAttribute("error", String.format("El estado de proyecto: %d no existe", idEstadoProyecto));
         } else {
-            estadoProyectoService.eliminarEstadoProyecto(estadoProyecto);
+            if (estadoProyecto.getProyecto().isEmpty()) {
+                estadoProyectoService.eliminarEstadoProyecto(estadoProyecto);
 
-            redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " eliminado exitosamente");
+                redirectAttributes.addFlashAttribute("success", "Estado Proyecto: " + estadoProyecto.getCodigo() + " eliminado exitosamente");
+            } else {
+                String proyectos = estadoProyecto.getProyecto().stream().map(p -> p.getNombre() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El estado de proyecto: %s no se puede eliminar ya que se encuentra asociado a los siguientes proyectos: %s", estadoProyecto.getCodigo(), proyectos));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

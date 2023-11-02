@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/roles")
 public class RolController {
 
-    private final String RUTA_VISTA = "/views/roles/";
+    private static final String RUTA_VISTA = "/views/roles/";
     
-    @Autowired
-    private RolService rolService;
+    private final RolService rolService;
 
-    @Secured("ROLE_ADMIN")
+    public RolController(RolService rolService) {
+        this.rolService = rolService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verRoles(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Roles");
@@ -103,9 +105,14 @@ public class RolController {
         if (Objects.isNull(rol)) {
             redirectAttributes.addFlashAttribute("error", String.format("El rol: %d no existe", idRol));
         } else {
-            rolService.eliminarRol(rol);
+            if (rol.getUsuario().isEmpty()) {
+                rolService.eliminarRol(rol);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Rol: %s eliminado exitosamente", rol.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Rol: %s eliminado exitosamente", rol.getCodigo()));
+            } else {
+                String usuarios = rol.getUsuario().stream().map(u -> u.getNombreUsuario() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El rol: %s no se puede eliminar ya que se encuentra asociado a los siguientes usuarios: %s", rol.getCodigo(), usuarios));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

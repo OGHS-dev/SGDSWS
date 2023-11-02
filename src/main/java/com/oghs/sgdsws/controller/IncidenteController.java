@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/incidentes")
 public class IncidenteController {
     
-    private final String RUTA_VISTA = "/views/incidentes/";
+    private static final String RUTA_VISTA = "/views/incidentes/";
 
-    @Autowired
-    private IncidenteService incidenteService;
+    private final IncidenteService incidenteService;
 
-    @Secured("ROLE_ADMIN")
+    public IncidenteController(IncidenteService incidenteService) {
+        this.incidenteService = incidenteService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verIncidentes(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Incidentes");
@@ -46,7 +48,7 @@ public class IncidenteController {
         return RUTA_VISTA + "verIncidentes";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearIncidente(Model model) {
         model.addAttribute("titulo", "Nuevo Incidente");
@@ -55,13 +57,13 @@ public class IncidenteController {
         return RUTA_VISTA + "crearIncidente";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarIncidente(@Valid @ModelAttribute Incidente incidente, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
             model.addAttribute("titulo", "Crear/Editar Incidente");
-            model.addAttribute("incidente", new Incidente());
+            model.addAttribute("incidente", incidente);
 
             String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
             model.addAttribute("warning", errores);
@@ -76,7 +78,7 @@ public class IncidenteController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idIncidente}")
     public String editarIncidente(@PathVariable("idIncidente") Long idIncidente, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el incidente
@@ -103,9 +105,14 @@ public class IncidenteController {
         if (Objects.isNull(incidente)) {
             redirectAttributes.addFlashAttribute("error", String.format("El incidente: %d no existe", idIncidente));
         } else {
-            incidenteService.eliminarIncidente(incidente);
+            if (incidente.getBitacoraProyecto().isEmpty()) {
+                incidenteService.eliminarIncidente(incidente);
             
-            redirectAttributes.addFlashAttribute("success", String.format("Incidente: %s eliminado exitosamente", incidente.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Incidente: %s eliminado exitosamente", incidente.getCodigo()));
+            } else {
+                String bitacoraProyecto = incidente.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El incidente: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", incidente.getCodigo(), bitacoraProyecto));
+            }
         }
 
         return "redirect:" + RUTA_VISTA;

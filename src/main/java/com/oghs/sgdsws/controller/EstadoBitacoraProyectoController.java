@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/estadosBitacoraProyecto")
 public class EstadoBitacoraProyectoController {
 
-    private final String RUTA_VISTA = "/views/estadosBitacoraProyecto/";
+    private static final String RUTA_VISTA = "/views/estadosBitacoraProyecto/";
 
-    @Autowired
-    private EstadoBitacoraProyectoService estadoBitacoraProyectoService;
+    private final EstadoBitacoraProyectoService estadoBitacoraProyectoService;
 
-    @Secured("ROLE_ADMIN")
+    public EstadoBitacoraProyectoController(EstadoBitacoraProyectoService estadoBitacoraProyectoService) {
+        this.estadoBitacoraProyectoService = estadoBitacoraProyectoService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verEstadosBitacoraProyecto(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Estados de Evento");
@@ -103,9 +105,14 @@ public class EstadoBitacoraProyectoController {
         if (Objects.isNull(estadoBitacoraProyecto)) {
             redirectAttributes.addFlashAttribute("error", String.format("El estado de evento: %d no existe", idEstadoBitacoraProyecto));
         } else {
-            estadoBitacoraProyectoService.eliminarEstadoBitacoraProyecto(estadoBitacoraProyecto);
+            if (estadoBitacoraProyecto.getBitacoraProyecto().isEmpty()) {
+                estadoBitacoraProyectoService.eliminarEstadoBitacoraProyecto(estadoBitacoraProyecto);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Estado de evento: %s eliminado exitosamente", estadoBitacoraProyecto.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Estado de evento: %s eliminado exitosamente", estadoBitacoraProyecto.getCodigo()));
+            } else {
+                String bitacoraProyecto = estadoBitacoraProyecto.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El estado de evento: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", estadoBitacoraProyecto.getCodigo(), bitacoraProyecto));
+            }
         }
 
         return "redirect:" + RUTA_VISTA;

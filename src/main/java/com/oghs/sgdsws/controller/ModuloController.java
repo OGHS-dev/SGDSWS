@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/modulos")
 public class ModuloController {
     
-    private final String RUTA_VISTA = "/views/modulos/";
+    private static final String RUTA_VISTA = "/views/modulos/";
 
-    @Autowired
-    private ModuloService moduloService;
+    private final ModuloService moduloService;
 
-    @Secured("ROLE_ADMIN")
+    public ModuloController(ModuloService moduloService) {
+        this.moduloService = moduloService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verModulos(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Módulos");
@@ -46,7 +48,7 @@ public class ModuloController {
         return RUTA_VISTA + "verModulos";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearModulo(Model model) {
         model.addAttribute("titulo", "Nuevo Módulo");
@@ -55,13 +57,13 @@ public class ModuloController {
         return RUTA_VISTA + "crearModulo";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarModulo(@Valid @ModelAttribute Modulo modulo, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
             model.addAttribute("titulo", "Crear/Editar Módulo");
-            model.addAttribute("modulo", new Modulo());
+            model.addAttribute("modulo", modulo);
 
             String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
             model.addAttribute("warning", errores);
@@ -76,7 +78,7 @@ public class ModuloController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idModulo}")
     public String editarModulo(@PathVariable("idModulo") Long idModulo, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el módulo
@@ -103,9 +105,14 @@ public class ModuloController {
         if (Objects.isNull(modulo)) {
             redirectAttributes.addFlashAttribute("error", String.format("El módulo: %d no existe", idModulo));
         } else {
-            moduloService.eliminarModulo(modulo);
+            if (modulo.getBitacoraProyecto().isEmpty()) {
+                moduloService.eliminarModulo(modulo);
             
-            redirectAttributes.addFlashAttribute("success", String.format("Módulo: %s eliminado exitosamente", modulo.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Módulo: %s eliminado exitosamente", modulo.getCodigo()));
+            } else {
+                String bitacoraProyecto = modulo.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El módulo: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", modulo.getCodigo(), bitacoraProyecto));
+            }
         }
 
         return "redirect:" + RUTA_VISTA;

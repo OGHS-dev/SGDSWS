@@ -27,7 +27,7 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top sticky-top">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
-                        <img th:src="@{/img/sgdsws_b.png}" class="rounded me-2" alt="..." viewBox="0 0 64 64" width="114" height="64">
+                        <img th:src="@{/img/sgdsws_blanco.png}" class="rounded me-2" alt="..." viewBox="0 0 64 64" width="64" height="64">
                         <span>SGDSWS</span>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,11 +99,11 @@
                             <i class="bi-house"></i>
                             <span>&nbsp;Inicio</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/usuarios/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/usuarios/}" role="tab">
                             <i class="bi-person-circle"></i>
                             <span>&nbsp;Usuarios</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/roles/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/roles/}" role="tab">
                             <i class="bi-person-badge"></i>
                             <span>&nbsp;Roles</span>
                         </a>
@@ -111,43 +111,43 @@
                             <i class="bi-people"></i>
                             <span>&nbsp;Equipos</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" th:href="@{/views/proyectos/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR', 'ROLE_DESARROLLO')" th:href="@{/views/proyectos/}" role="tab">
                             <i class="bi-clipboard-data"></i>
                             <span>&nbsp;Proyectos</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/modulos/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/modulos/}" role="tab">
                             <i class="bi-diagram-2"></i>
                             <span>&nbsp;Módulos</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/hallazgos/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/hallazgos/}" role="tab">
                             <i class="bi-bug"></i>
                             <span>&nbsp;Hallazgos</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/incidentes/}" role="tab">
-                            <i class="bi-shield-exclamation"></i>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/incidentes/}" role="tab">
+                            <i class="bi-exclamation-triangle"></i>
                             <span>&nbsp;Incidentes</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/categorias/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/categorias/}" role="tab">
                             <i class="bi-info-square"></i>
                             <span>&nbsp;Categorías</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/prioridades/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/prioridades/}" role="tab">
                             <i class="bi-list-ol"></i>
                             <span>&nbsp;Prioridades</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/impactos/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/impactos/}" role="tab">
                             <i class="bi-fire"></i>
                             <span>&nbsp;Impactos</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/nivelesRiesgo/}" role="tab">
-                            <i class="bi-exclamation-triangle"></i>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/nivelesRiesgo/}" role="tab">
+                            <i class="bi-shield-exclamation"></i>
                             <span>&nbsp;Niveles de Riesgo</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/estadosProyecto/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/estadosProyecto/}" role="tab">
                             <i class="bi-bookmarks"></i>
                             <span>&nbsp;Estados de Proyecto</span>
                         </a>
-                        <a class="list-group-item list-group-item-action" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/views/estadosBitacoraProyecto/}" role="tab">
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/estadosBitacoraProyecto/}" role="tab">
                             <i class="bi-bookmarks"></i>
                             <span>&nbsp;Estados de Evento</span>
                         </a>
@@ -256,6 +256,12 @@
             </h2>
         </th:block>
 
+        <!-- Etiqueta forms -->
+        <th:block th:fragment="etiquetaForms (texto)">
+            <label for="" class="col-form-label" th:text="${texto}"></label>
+            <hr class="border border-primary border-2 opacity-50">
+        </th:block>
+
         <!-- Campo input -->
         <th:block th:fragment="campoInput (tipoCampo, campo, textoLabel, textoSpan, icono, objeto, soloLectura)">
             <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
@@ -297,7 +303,7 @@
         <!-- Campo text area -->
         <th:block th:fragment="campoTextArea (campo, objeto)">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <label class="form-label">Comentarios a agregar al evento</label>
+                <label class="form-label">Agregar comentarios al evento:</label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi-input-cursor-text"></i>
@@ -314,7 +320,7 @@
         <!-- Campo file chooser -->
         <th:block th:fragment="campoFileChooser (texto)">
             <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
-                <label class="form-label">Archivos a cargar al evento</label>
+                <label class="form-label">Cargar archivos al evento:</label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi-files"></i>
@@ -356,7 +362,7 @@
         </th:block>
 
         <!-- Modal confirmación -->
-        <th:block th:fragment="confirmacionModal (idModal, texto, objeto)">
+        <th:block th:fragment="confirmacionModal (idModal, texto, objeto, titulo)">
             <div class="modal fade" th:id="${idModal}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -371,7 +377,7 @@
                             <button type="button" class="btn btn-secondary" title="Cancelar" data-bs-dismiss="modal">
                                 <span>Cancelar</span>
                             </button>
-                            <a type="button" class="btn btn-danger" th:href="${objeto}" title="Eliminar Proyecto">
+                            <a type="button" class="btn btn-danger" th:href="${objeto}" th:title="${titulo}">
                                 <i th:class="bi-trash"></i>
                                 <span>Eliminar</span>
                             </a>

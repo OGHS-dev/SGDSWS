@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,16 +35,19 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/proyectos")
 public class ProyectoController {
 
-    private final String RUTA_VISTA = "/views/proyectos/";
+    private static final String RUTA_VISTA = "/views/proyectos/";
 
-    @Autowired
-    private ProyectoService proyectoService;
+    private final ProyectoService proyectoService;
 
-    @Autowired
-    private EstadoProyectoService estadoProyectoService;
+    private final EstadoProyectoService estadoProyectoService;
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+
+    public ProyectoController(ProyectoService proyectoService, EstadoProyectoService estadoProyectoService, UsuarioService usuarioService) {
+        this.proyectoService = proyectoService;
+        this.estadoProyectoService = estadoProyectoService;
+        this.usuarioService = usuarioService;
+    }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR", "ROLE_DESARROLLO"})
     @GetMapping("/")
@@ -92,7 +94,7 @@ public class ProyectoController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/editar/{idProyecto}")
     public String editarProyecto(@PathVariable("idProyecto") Long idProyecto, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el proyecto
@@ -116,7 +118,7 @@ public class ProyectoController {
         return RUTA_VISTA + "crearProyecto";
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/eliminar/{idProyecto}")
     public String eliminarProyecto(@PathVariable("idProyecto") Long idProyecto, RedirectAttributes redirectAttributes) {
         // Validar que exista el proyecto

@@ -6,17 +6,21 @@
         <header th:replace="~{template :: header}"></header>
         
         <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (elementos=${navegacion})}"></nav>
             <form th:action="@{/views/estadosBitacoraProyecto/guardar}" th:object="${estadoBitacoraProyecto}" method="post" novalidate>
                 <div class="card">
                     <div class="card-header bg-dark text-white">
                         <h2 th:replace="~{template :: encabezadoCard (icono='bookmark-plus', texto=${titulo})}"></h2>
                     </div>
                     <div class="card-body">
-                        <input type="hidden" th:field="*{idEstadoBitacoraProyecto}">
-                        <div class="row">
-                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del estado de evento:', textoSpan='Código asignado al estado de evento.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
-                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del estado de evento:', textoSpan='Descripción asignada al estado de evento.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
-                            <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del estado de evento:', textoSpan='Estatus asignado al estado de evento.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='')}"></div>
+                        <div class="card card-body">
+                            <label th:replace="~{template :: etiquetaForms (texto='Insertar datos del estado de evento:')}"></label>
+                            <div class="row">
+                                <input type="hidden" th:field="*{idEstadoBitacoraProyecto}">
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del estado de evento:', textoSpan='Código asignado al estado de evento.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del estado de evento:', textoSpan='Descripción asignada al estado de evento.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del estado de evento:', textoSpan='Estatus asignado al estado de evento.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='.etiqueta')}"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-white">

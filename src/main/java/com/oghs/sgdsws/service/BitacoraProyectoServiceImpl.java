@@ -3,7 +3,6 @@ package com.oghs.sgdsws.service;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +18,7 @@ import com.oghs.sgdsws.model.entity.Proyecto;
 import com.oghs.sgdsws.repository.ArchivoRepository;
 import com.oghs.sgdsws.repository.BitacoraProyectoRepository;
 import com.oghs.sgdsws.repository.ComentarioRepository;
+import com.oghs.sgdsws.repository.EstadoBitacoraProyectoRepository;
 import com.oghs.sgdsws.util.Paginado;
 import com.oghs.sgdsws.util.Paginando;
 
@@ -29,14 +29,20 @@ import com.oghs.sgdsws.util.Paginando;
 @Service
 public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
 
-    @Autowired
-    private BitacoraProyectoRepository bitacoraProyectoRepository;
+    private final BitacoraProyectoRepository bitacoraProyectoRepository;
 
-    @Autowired
-    private ArchivoRepository archivoRepository;
+    private final EstadoBitacoraProyectoRepository estadoBitacoraProyectoRepository;
 
-    @Autowired
-    private ComentarioRepository comentarioRepository;
+    private final ArchivoRepository archivoRepository;
+
+    private final ComentarioRepository comentarioRepository;
+
+    public BitacoraProyectoServiceImpl(BitacoraProyectoRepository bitacoraProyectoRepository, EstadoBitacoraProyectoRepository estadoBitacoraProyectoRepository, ArchivoRepository archivoRepository, ComentarioRepository comentarioRepository) {
+        this.bitacoraProyectoRepository = bitacoraProyectoRepository;
+        this.estadoBitacoraProyectoRepository = estadoBitacoraProyectoRepository;
+        this.archivoRepository = archivoRepository;
+        this.comentarioRepository = comentarioRepository;
+    }
 
     @Override
     public List<BitacoraProyecto> obtenerBitacoraProyectoPorProyecto(Proyecto proyecto) {
@@ -46,7 +52,7 @@ public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
     @Override
     public Paginado<BitacoraProyecto> obtenerBitacoraProyectoPorProyectoPaginado(Proyecto proyecto, int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idBitacoraProyecto"));
-        Page<BitacoraProyecto> bitacoraProyectoPage = (Page<BitacoraProyecto>) bitacoraProyectoRepository.findByProyecto(proyecto, pageRequest);
+        Page<BitacoraProyecto> bitacoraProyectoPage = bitacoraProyectoRepository.findByProyecto(proyecto, pageRequest);
         
         return new Paginado<>(bitacoraProyectoPage, Paginando.of(bitacoraProyectoPage.getTotalPages(), numeroPagina, tamano));
     }
@@ -58,10 +64,14 @@ public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         proyectoDTO.getBitacoraProyecto().setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
         proyectoDTO.getBitacoraProyecto().setUsuarioReporte(authentication.getName());
+
+        if (Objects.isNull(proyectoDTO.getBitacoraProyecto().getEstadoBitacoraProyecto()) ) {
+            proyectoDTO.getBitacoraProyecto().setEstadoBitacoraProyecto(estadoBitacoraProyectoRepository.findByCodigo("EABI"));
+        }
+
         bitacoraProyectoRepository.save(proyectoDTO.getBitacoraProyecto());
 
         if (!archivos.isEmpty()) {
-            System.out.println(archivos.size());
             archivos.forEach(archivo -> {
                 archivo.setBitacoraProyecto(proyectoDTO.getBitacoraProyecto());
                 archivo.setUsuarioCreacion(authentication.getName());
@@ -69,7 +79,7 @@ public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
             });
         }
 
-        if (!Objects.isNull(proyectoDTO.getComentario().getComentario())) {
+        if (!proyectoDTO.getComentario().getComentario().isBlank()) {
             Comentario comentario = new Comentario();
             comentario.setBitacoraProyecto(proyectoDTO.getBitacoraProyecto());
             comentario.setComentario(proyectoDTO.getComentario().getComentario());

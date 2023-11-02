@@ -2,12 +2,12 @@ package com.oghs.sgdsws.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.oghs.sgdsws.model.Estatus;
 import com.oghs.sgdsws.model.entity.Hallazgo;
 import com.oghs.sgdsws.repository.HallazgoRepository;
 import com.oghs.sgdsws.util.Paginado;
@@ -20,18 +20,21 @@ import com.oghs.sgdsws.util.Paginando;
 @Service
 public class HallazgoServiceImpl implements HallazgoService {
 
-    @Autowired
-    private HallazgoRepository hallazgoRepository;
+    private final HallazgoRepository hallazgoRepository;
+
+    public HallazgoServiceImpl(HallazgoRepository hallazgoRepository) {
+        this.hallazgoRepository = hallazgoRepository;
+    }
 
     @Override
     public List<Hallazgo> obtenerHallazgos() {
-        return (List<Hallazgo>) hallazgoRepository.findAll();
+        return hallazgoRepository.findAllByEstatusOrderByCodigoAsc(Estatus.ACTIVO);
     }
 
     @Override
     public Paginado<Hallazgo> obtenerHallazgosPaginado(int numeroPagina, int tamano) {
         PageRequest pageRequest = PageRequest.of(numeroPagina - 1, tamano, Sort.by(Sort.Direction.ASC, "idHallazgo"));
-        Page<Hallazgo> hallazgoPage = (Page<Hallazgo>) hallazgoRepository.findAll(pageRequest);
+        Page<Hallazgo> hallazgoPage = hallazgoRepository.findAll(pageRequest);
 
         return new Paginado<>(hallazgoPage, Paginando.of(hallazgoPage.getTotalPages(), numeroPagina, tamano));
     }

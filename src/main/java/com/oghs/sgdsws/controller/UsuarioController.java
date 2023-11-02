@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,21 +37,24 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/usuarios")
 public class UsuarioController {
 
-    private final String RUTA_VISTA = "/views/usuarios/";
+    private static final String RUTA_VISTA = "/views/usuarios/";
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private RolService rolService;
+    private final RolService rolService;
 
-    @Autowired
-    private ProyectoService proyectoService;
+    private final ProyectoService proyectoService;
 
-    @Autowired
-    private BitacoraProyectoService bitacoraProyectoService;
+    private final BitacoraProyectoService bitacoraProyectoService;
     
-    @Secured("ROLE_ADMIN")
+    public UsuarioController(UsuarioService usuarioService, RolService rolService, ProyectoService proyectoService, BitacoraProyectoService bitacoraProyectoService) {
+        this.usuarioService = usuarioService;
+        this.rolService = rolService;
+        this.proyectoService = proyectoService;
+        this.bitacoraProyectoService = bitacoraProyectoService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verUsuarios(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Usuarios");
@@ -61,7 +63,7 @@ public class UsuarioController {
         return RUTA_VISTA + "verUsuarios";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearUsuario(Model model) {
         model.addAttribute("titulo", "Nuevo Usuario");
@@ -71,7 +73,7 @@ public class UsuarioController {
         return RUTA_VISTA + "crearUsuario";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarUsuario(@Valid @ModelAttribute Usuario usuario, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
@@ -93,7 +95,7 @@ public class UsuarioController {
         return "redirect:" + RUTA_VISTA;
     }
     
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idUsuario}")
     public String editarUsuario(@PathVariable("idUsuario") Long idUsuario, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el usuario
@@ -121,9 +123,14 @@ public class UsuarioController {
         if (Objects.isNull(usuario)) {
             redirectAttributes.addFlashAttribute("error", String.format("El usuario: %d no existe", idUsuario));
         } else {
-            usuarioService.eliminarUsuario(usuario);
+            if (usuario.getUsuarioProyecto().isEmpty()) {
+                usuarioService.eliminarUsuario(usuario);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Usuario: %s eliminado exitosamente", usuario.getNombreUsuario()));
+                redirectAttributes.addFlashAttribute("success", String.format("Usuario: %s eliminado exitosamente", usuario.getNombreUsuario()));
+            } else {
+                String proyectosUsuario = usuario.getUsuarioProyecto().stream().map(up -> up.getProyecto().getNombre() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El usuario: %s no se puede eliminar ya que se encuentra en los siguientes proyectos: %s", usuario.getNombreUsuario(), proyectosUsuario));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/prioridades")
 public class PrioridadController {
 
-    private final String RUTA_VISTA = "/views/prioridades/";
+    private static final String RUTA_VISTA = "/views/prioridades/";
     
-    @Autowired
-    private PrioridadService prioridadService;
+    private final PrioridadService prioridadService;
 
-    @Secured("ROLE_ADMIN")
+    public PrioridadController(PrioridadService prioridadService) {
+        this.prioridadService = prioridadService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verPrioridades(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Prioridades");
@@ -46,7 +48,7 @@ public class PrioridadController {
         return RUTA_VISTA + "verPrioridades";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearPrioridad(Model model) {
         model.addAttribute("titulo", "Nueva Prioridad");
@@ -55,7 +57,7 @@ public class PrioridadController {
         return RUTA_VISTA + "crearPrioridad";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarPrioridad(@Valid @ModelAttribute Prioridad prioridad, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
@@ -76,7 +78,7 @@ public class PrioridadController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idPrioridad}")
     public String editarPrioridad(@PathVariable("idPrioridad") Long idPrioridad, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista la prioridad
@@ -105,9 +107,14 @@ public class PrioridadController {
             
             return "redirect:" + RUTA_VISTA;
         } else {
-            prioridadService.eliminarPrioridad(prioridad);
+            if (prioridad.getBitacoraProyecto().isEmpty()) {
+                prioridadService.eliminarPrioridad(prioridad);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Prioridad: %s eliminada exitosamente", prioridad.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Prioridad: %s eliminada exitosamente", prioridad.getCodigo()));
+            } else {
+                String bitacoraProyecto = prioridad.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("La prioridad: %s no se puede eliminar ya que se encuentra asociada a los siguientes eventos: %s", prioridad.getCodigo(), bitacoraProyecto));
+            }
         }
 
         return "redirect:" + RUTA_VISTA;

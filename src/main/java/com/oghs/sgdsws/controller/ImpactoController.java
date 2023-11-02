@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/impactos")
 public class ImpactoController {
 
-    private final String RUTA_VISTA = "/views/impactos/";
+    private static final String RUTA_VISTA = "/views/impactos/";
 
-    @Autowired
-    private ImpactoService impactoService;
+    private final ImpactoService impactoService;
 
-    @Secured("ROLE_ADMIN")
+    public ImpactoController(ImpactoService impactoService) {
+        this.impactoService = impactoService;
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verImpactos(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Impactos");
@@ -46,7 +48,7 @@ public class ImpactoController {
         return RUTA_VISTA + "verImpactos";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearImpacto(Model model) {
         model.addAttribute("titulo", "Nuevo Impacto");
@@ -55,7 +57,7 @@ public class ImpactoController {
         return RUTA_VISTA + "crearImpacto";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarImpacto(@Valid @ModelAttribute Impacto impacto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
@@ -76,7 +78,7 @@ public class ImpactoController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idImpacto}")
     public String editarImpacto(@PathVariable("idImpacto") Long idImpacto, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el impacto
@@ -103,9 +105,14 @@ public class ImpactoController {
         if (Objects.isNull(impacto)) {
             redirectAttributes.addFlashAttribute("error", String.format("El impacto: %d no existe", idImpacto));
         } else {
-            impactoService.eliminarImpacto(impacto);
+            if (impacto.getBitacoraProyecto().isEmpty()) {
+                impactoService.eliminarImpacto(impacto);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Impacto: %s eliminado exitosamente", impacto.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Impacto: %s eliminado exitosamente", impacto.getCodigo()));
+            } else {
+                String bitacoraProyecto = impacto.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El impacto: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", impacto.getCodigo(), bitacoraProyecto));
+            }
         }
         
         return "redirect:" + RUTA_VISTA;

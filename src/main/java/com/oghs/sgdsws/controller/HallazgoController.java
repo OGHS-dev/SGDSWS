@@ -3,7 +3,6 @@ package com.oghs.sgdsws.controller;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +31,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/views/hallazgos")
 public class HallazgoController {
     
-    private final String RUTA_VISTA = "/views/hallazgos/";
+    private static final String RUTA_VISTA = "/views/hallazgos/";
+    
+    private final HallazgoService hallazgoService;
 
-    @Autowired
-    private HallazgoService hallazgoService;
+    public HallazgoController(HallazgoService hallazgoService) {
+        this.hallazgoService = hallazgoService;
+    }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR", "ROLE_REVISOR"})
     @GetMapping("/")
     public String verHallazgos(@RequestParam(value = "numeroPagina", required = false, defaultValue = "1") int numeroPagina, @RequestParam(value = "tamano", required = false, defaultValue = "5") int tamano, Model model) {
         model.addAttribute("titulo", "Hallazgos");
@@ -46,7 +48,7 @@ public class HallazgoController {
         return RUTA_VISTA + "verHallazgos";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @GetMapping("/crear")
     public String crearHallazgo(Model model) {
         model.addAttribute("titulo", "Nuevo Hallazgo");
@@ -55,13 +57,13 @@ public class HallazgoController {
         return RUTA_VISTA + "crearHallazgo";
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR", "ROLE_AUDITOR"})
     @PostMapping("/guardar")
     public String guardarHallazgo(@Valid @ModelAttribute Hallazgo hallazgo, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         // Validar errores en el formulario
         if (bindingResult.hasErrors()) {
             model.addAttribute("titulo", "Crear/Editar Hallazgo");
-            model.addAttribute("hallazgo", new Hallazgo());
+            model.addAttribute("hallazgo", hallazgo);
 
             String errores = "Error en los datos proporcionados:\n\n" + bindingResult.getFieldErrors().stream().map(error -> error.getDefaultMessage() + "\n").collect(Collectors.joining());
             model.addAttribute("warning", errores);
@@ -76,7 +78,7 @@ public class HallazgoController {
         return "redirect:" + RUTA_VISTA;
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN", "ROLE_SUPERVISOR"})
     @GetMapping("/editar/{idHallazgo}")
     public String editarHallazgo(@PathVariable("idHallazgo") Long idHallazgo, Model model, RedirectAttributes redirectAttributes) {
         // Validar que exista el hallazgo
@@ -103,9 +105,14 @@ public class HallazgoController {
         if (Objects.isNull(hallazgo)) {
             redirectAttributes.addFlashAttribute("error", String.format("El hallazgo: %d no existe", idHallazgo));
         } else {
-            hallazgoService.eliminarHallazgo(hallazgo);
+            if (hallazgo.getBitacoraProyecto().isEmpty()) {
+                hallazgoService.eliminarHallazgo(hallazgo);
 
-            redirectAttributes.addFlashAttribute("success", String.format("Hallazgo: %s eliminado exitosamente", hallazgo.getCodigo()));
+                redirectAttributes.addFlashAttribute("success", String.format("Hallazgo: %s eliminado exitosamente", hallazgo.getCodigo()));
+            } else {
+                String bitacoraProyecto = hallazgo.getBitacoraProyecto().stream().map(bp -> bp.getDescripcion() + ", ").collect(Collectors.joining());
+                redirectAttributes.addFlashAttribute("warning", String.format("El hallazgo: %s no se puede eliminar ya que se encuentra asociado a los siguientes eventos: %s", hallazgo.getCodigo(), bitacoraProyecto));
+            }
         }
 
         return "redirect:" + RUTA_VISTA;
