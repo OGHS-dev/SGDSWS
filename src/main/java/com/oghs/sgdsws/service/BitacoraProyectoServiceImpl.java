@@ -59,13 +59,13 @@ public class BitacoraProyectoServiceImpl implements BitacoraProyectoService {
 
     @Override
     public void guardarBitacoraProyecto(ProyectoDTO proyectoDTO, List<Archivo> archivos) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<BitacoraProyecto> listaBitacoraProyecto = bitacoraProyectoRepository.findByProyecto(proyectoDTO.getBitacoraProyecto().getProyecto());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         proyectoDTO.getBitacoraProyecto().setRevision(listaBitacoraProyecto.get(listaBitacoraProyecto.size() - 1).getRevision() + 1);
-        proyectoDTO.getBitacoraProyecto().setUsuarioReporte(authentication.getName());
 
-        if (Objects.isNull(proyectoDTO.getBitacoraProyecto().getEstadoBitacoraProyecto()) ) {
+        if (Objects.isNull(proyectoDTO.getBitacoraProyecto().getEstadoBitacoraProyecto())) {
+            proyectoDTO.getBitacoraProyecto().setUsuarioReporte(authentication.getName());
             proyectoDTO.getBitacoraProyecto().setEstadoBitacoraProyecto(estadoBitacoraProyectoRepository.findByCodigo("EABI"));
         }
 

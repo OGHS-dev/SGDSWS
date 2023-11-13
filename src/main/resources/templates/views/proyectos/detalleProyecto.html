@@ -377,7 +377,7 @@
                     $.get(href, function (bitacoraProyecto, status) {
                         // Llenar campos de evento
                         $('.modal #idBitacoraProyecto').val(bitacoraProyecto.idBitacoraProyecto);
-                        $('.modal #fechaBitacora').val(!$.isEmptyObject(bitacoraProyecto.fechaBitacora) ? new Date(bitacoraProyecto.fechaBitacora).toISOString().slice(0, 10) : "");
+                        $('.modal #fechaBitacora').val(!$.isEmptyObject(bitacoraProyecto.fechaBitacora) ? new Date(bitacoraProyecto.fechaBitacora).toISOString().slice(0, 19).replace("T", " ") : "");
                         $('.modal #usuarioReporte').val(!$.isEmptyObject(bitacoraProyecto.usuarioReporte) ? bitacoraProyecto.usuarioReporte : "");
                         $('.modal #revision').val(bitacoraProyecto.revision);
                         $('.modal #modulo').val(!$.isEmptyObject(bitacoraProyecto.modulo) ? bitacoraProyecto.modulo.idModulo : "");
@@ -394,7 +394,7 @@
                         $('.modal #frecuencia').val(!$.isEmptyObject(bitacoraProyecto.frecuencia) ? bitacoraProyecto.frecuencia : "");
                         $('.modal #acciones').val(!$.isEmptyObject(bitacoraProyecto.acciones) ? bitacoraProyecto.acciones : "");
                         $('.modal #usuarioAsignado').val(!$.isEmptyObject(bitacoraProyecto.usuarioAsignado) ? bitacoraProyecto.usuarioAsignado : "");
-                        $('.modal #fechaAtencion').val(!$.isEmptyObject(bitacoraProyecto.fechaAtencion) ? new Date(bitacoraProyecto.fechaAtencion).toISOString().slice(0, 10) : "");
+                        $('.modal #fechaAtencion').val(!$.isEmptyObject(bitacoraProyecto.fechaAtencion) ? new Date(bitacoraProyecto.fechaAtencion).toISOString().slice(0, 19).replace("T", " ") : "");
 
                         // Limpiar ul de archivos
                         $('.modal #listaArchivos').empty();
@@ -414,7 +414,7 @@
                                         "</span>" + 
                                         "<div class='form-floating'>" + 
                                             "<input type='text' class='form-control' value='" + value.nombreArchivo + " (" + value.tamanoArchivo + " B)' readonly>" + 
-                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 10) + "</label>" + 
+                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 19).replace("T", " ") + "</label>" + 
                                         "</div>" + 
                                         "<a href='/views/proyectos/detalle/descargarArchivo?idArchivo=" + value.idArchivo + "' class='btn btn-primary d-flex justify-content-center align-items-center' title='Descargar'>" + 
                                             "<i class='bi-download'></i>" + 
@@ -447,7 +447,7 @@
                                         "</span>" + 
                                         "<div class='form-floating'>" + 
                                             "<textarea class='form-control' style='height: 116px' readonly>" + value.comentario + "</textarea>" + 
-                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 10) + "</label>" + 
+                                            "<label class='form-label'>Usuario: " + value.usuarioCreacion + " Fecha: " + new Date(value.fechaCreacion).toISOString().slice(0, 19).replace("T", " ") + "</label>" + 
                                         "</div>" + 
                                     "</li>"
                                 );
@@ -456,25 +456,37 @@
                             $('.modal #listaComentarios').append("<caption>Sin comentarios cargados al evento</caption>");
                         }
 
+                        // Habilitar todos los campos
+                        $('.modal .form-control').each(function(key, value) {
+                            habilitarCampos(this);
+                        });
+                        $('.modal .form-select').each(function(key, value) {
+                            habilitarCampos(this);
+                        });
+                        // $('.modal #listaArchivos').find('a.btn-danger').removeAttr('href').addClass('disabled');
+                        // $('.modal #listaArchivos').find('a.btn-danger').show();
+                        $('.modal .btn-primary').prop('disabled', false);
+                        $('.modal .btn-primary').prop('hidden', false);
+
                         // Obtener usuario autenticado y validar si es el usuario de reporte o asignado del evento
                         var usuario = $('.btn-outline-info').find('span').text();
 
                         if (usuario != 'ADMIN') {
                             // Usuario asignado al evento puede editar
                             if (usuario != bitacoraProyecto.usuarioReporte && usuario == bitacoraProyecto.usuarioAsignado) {
-                                $('.modal #modulo').prop('disabled', true);
-                                $('.modal #hallazgo').prop('disabled', true);
-                                $('.modal #incidente').prop('disabled', true);
-                                $('.modal #categoria').prop('disabled', true);
-                                $('.modal #prioridad').prop('disabled', true);
-                                $('.modal #impacto').prop('disabled', true);
-                                $('.modal #nivelRiesgo').prop('disabled', true);
+                                // $('.modal #modulo').prop('disabled', true);
+                                // $('.modal #hallazgo').prop('disabled', true);
+                                // $('.modal #incidente').prop('disabled', true);
+                                // $('.modal #categoria').prop('disabled', true);
+                                // $('.modal #prioridad').prop('disabled', true);
+                                // $('.modal #impacto').prop('disabled', true);
+                                // $('.modal #nivelRiesgo').prop('disabled', true);
                                 // $('.modal #estadoBitacoraProyecto').prop('disabled', true);
                                 // $('.modal #descripcion').prop('disabled', true);
                                 // $('.modal #componente').prop('disabled', true);
                                 // $('.modal #version').prop('disabled', true);
-                                $('.modal #frecuencia').prop('disabled', true);
-                                $('.modal #acciones').prop('disabled', true);
+                                // $('.modal #frecuencia').prop('disabled', true);
+                                // $('.modal #acciones').prop('disabled', true);
                                 // $('.modal #usuarioAsignado').prop('disabled', true);
                                 // $('.modal #fechaAtencion').prop('disabled', true);
                                 // $('.modal #archivos').prop('disabled', true);
@@ -503,12 +515,16 @@
                                 $('.modal #usuarioAsignado').prop('disabled', true);
                                 $('.modal #fechaAtencion').prop('disabled', true);
                                 $('.modal #archivos').prop('disabled', true);
-                                $('.modal #listaArchivos').find('a.btn-danger').removeAttr('href').addClass('disabled');
-                                $('.modal #listaArchivos').find('a.btn-danger').hide();
+                                // $('.modal #listaArchivos').find('a.btn-danger').removeAttr('href').addClass('disabled');
+                                // $('.modal #listaArchivos').find('a.btn-danger').hide();
                                 $('.modal #comentarios').prop('disabled', true);
                                 $('.modal .btn-primary').prop('disabled', true);
                                 $('.modal .btn-primary').prop('hidden', true);
                             }
+                        }
+
+                        function habilitarCampos(campo) {
+                            $(campo).prop('disabled', false);
                         }
                     });
 

@@ -286,14 +286,14 @@ public class BitacoraProyectoController {
             }
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getName().equals("ADMIN") || authentication.getName().equals(proyectoDTO.getBitacoraProyecto().getUsuarioReporte()) || authentication.getName().equals(proyectoDTO.getBitacoraProyecto().getUsuarioAsignado())) {
+        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // if (authentication.getName().equals("ADMIN") || authentication.getName().equals(proyectoDTO.getBitacoraProyecto().getUsuarioReporte()) || authentication.getName().equals(proyectoDTO.getBitacoraProyecto().getUsuarioAsignado())) {
             bitacoraProyectoService.guardarBitacoraProyecto(proyectoDTO, archivos);
 
             redirectAttributes.addFlashAttribute("success", "Bitácora Proyecto: " + proyectoDTO.getBitacoraProyecto().getRevision() + " guardada exitosamente");
-        } else {
-            redirectAttributes.addFlashAttribute("warning", "No cuenta con permisos para actualizar el evento");
-        }
+        // } else {
+            // redirectAttributes.addFlashAttribute("warning", "No cuenta con permisos para actualizar el evento");
+        // }
 
         return "redirect:" + RUTA_VISTA + "detalle/" + proyectoDTO.getBitacoraProyecto().getProyecto().getIdProyecto() + "?numeroPagina=1";
     }
