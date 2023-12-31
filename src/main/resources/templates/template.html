@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:fragment="head">
+        <title>SGDSWS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- Bootstrap CSS -->
+        <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" type="text/css"/>
+        <!-- Bootstrap icons -->
+        <link th:rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"/>
+
+        <!-- <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.min.js}"></script> -->
+        <!-- <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.esm.min.js}"></script> -->
+        <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/webjars/jquery/3.7.0/jquery.min.js}"></script>
+        <!-- <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script> -->
+    </head>
+
+    <!-- <body th:fragment="body"> -->
+        
+        <!-- Encabezado -->
+        <header th:fragment="header">
+
+            <!-- Barra de navegación/menus -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top sticky-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img th:src="@{/img/sgdsws_blanco.png}" class="rounded me-2" alt="..." viewBox="0 0 64 64" width="64" height="64">
+                        <span>SGDSWS</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent" sec:authorize="isAuthenticated()">
+                        <ul class="navbar-nav me-auto  mb-lg-0 d-flex">
+                            <li class="nav-item dropdown">
+                                <a class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi-person-circle"></i>
+                                    <span sec:authentication="name"></span>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a th:href="@{/views/usuarios/perfil}" class="dropdown-item">
+                                            <i class="bi-person-gear"></i>
+                                            <span>Perfil</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bi-wrench"></i>
+                                            <span>Configuración</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/logout}" class="dropdown-item">
+                                            <i class="bi-door-closed"></i>
+                                            <span>Cerrar Sesión</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <div class="vr"></div>
+                            <a class="btn btn-outline-light" data-bs-toggle="offcanvas" href="#menuLateral" aria-controls="menuLateral">
+                                <i class="bi-menu-button"></i>
+                                <span>Menú</span>
+                            </a>
+                        </ul>
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <!-- <i class="bi-search"></i>&nbsp; -->
+                                <span>Buscar</span>
+                            </button>
+                        </form>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-outline-warning" th:href="@{/login}">
+                            <i class="bi-key"></i>
+                            <span>Iniciar Sesión</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Menu lateral -->
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="static" tabindex="-1" id="menuLateral" aria-labelledby="menuLateralLabel">
+                <div class="offcanvas-header bg-dark text-white">
+                    <h2 class="offcanvas-title" id="menuLateralLabel">Módulos</h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="list-group" role="tablist">
+                        <a class="list-group-item list-group-item-action" th:href="@{/index}" role="tab">
+                            <i class="bi-house"></i>
+                            <span>&nbsp;Inicio</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/usuarios/}" role="tab">
+                            <i class="bi-person-circle"></i>
+                            <span>&nbsp;Usuarios</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/roles/}" role="tab">
+                            <i class="bi-person-badge"></i>
+                            <span>&nbsp;Roles</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">
+                            <i class="bi-people"></i>
+                            <span>&nbsp;Equipos</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR', 'ROLE_DESARROLLO')" th:href="@{/views/proyectos/}" role="tab">
+                            <i class="bi-clipboard-data"></i>
+                            <span>&nbsp;Proyectos</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/modulos/}" role="tab">
+                            <i class="bi-diagram-2"></i>
+                            <span>&nbsp;Módulos</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/hallazgos/}" role="tab">
+                            <i class="bi-bug"></i>
+                            <span>&nbsp;Hallazgos</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/incidentes/}" role="tab">
+                            <i class="bi-exclamation-triangle"></i>
+                            <span>&nbsp;Incidentes</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/categorias/}" role="tab">
+                            <i class="bi-info-square"></i>
+                            <span>&nbsp;Categorías</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/prioridades/}" role="tab">
+                            <i class="bi-list-ol"></i>
+                            <span>&nbsp;Prioridades</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/impactos/}" role="tab">
+                            <i class="bi-fire"></i>
+                            <span>&nbsp;Impactos</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/nivelesRiesgo/}" role="tab">
+                            <i class="bi-shield-exclamation"></i>
+                            <span>&nbsp;Niveles de Riesgo</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/estadosProyecto/}" role="tab">
+                            <i class="bi-bookmarks"></i>
+                            <span>&nbsp;Estados de Proyecto</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" th:href="@{/views/estadosBitacoraProyecto/}" role="tab">
+                            <i class="bi-bookmarks"></i>
+                            <span>&nbsp;Estados de Evento</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notificaciones -->
+            <div class="toast-container top-0 end-0 p-3">
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${info != null}">
+                    <div class="toast-header text-bg-primary">
+                        <i class="bi-info-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Información</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${info}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${success != null}">
+                    <div class="toast-header text-bg-success">
+                        <i class="bi-check-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Notificación</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${success}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${warning != null}">
+                    <div class="toast-header text-bg-warning">
+                        <i class="bi-exclamation-circle-fill"></i>
+                        <strong class="me-auto">&nbsp;Advertencia</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${warning}"></div>
+                </div>
+                <div id="notificacionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" th:if="${error != null}">
+                    <div class="toast-header text-bg-danger">
+                        <i class="bi-exclamation-triangle-fill"></i>
+                        <strong class="me-auto">&nbsp;Error</strong>
+                        <small class="text-body-secondary">SGDSWS</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" th:text="${error}"></div>
+                </div>
+            </div>
+            
+            <script type="text/javascript" th:inline="javascript">
+                // Regresar de página de error
+                function goBack() {
+                    window.history.back();
+                }
+                
+                // Inicializar notificaciones
+                if (document.getElementById('notificacionToast') != null) {
+                    bootstrap.Toast.getOrCreateInstance(document.getElementById('notificacionToast')).show();
+                }
+                
+                
+
+                $(document).ready(function() {
+                    $('.form-control').each(function(key, value) {
+                        validarCampos(this);
+                    });
+                    $('.form-select').each(function(key, value) {
+                        validarCampos(this);
+                    });
+
+                    // Inicializar tooltips
+                    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+                });
+
+                // Validar campos vacios
+                function validarCampos(campo) {
+                    if ($(campo).val().length <= 0) {
+                        $(campo).removeClass('is-valid');
+                    }
+                }
+            </script>
+        </header>
+
+        <!-- Barra breadcrumb -->
+        <th:block th:fragment="barraBreadcrumb (elementos)">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Library</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Data</li> -->
+
+                    <li class="breadcrumb-item">
+                        <a href="/home">Inicio</a>
+                    </li>
+                    <li th:each="e : ${elementos}" class="breadcrumb-item">
+                        <a th:text="${e}" href="#"></a>
+                    </li>
+                </ol>
+            </nav>
+        </th:block>
+
+        <!-- Encabezado card -->
+        <th:block th:fragment="encabezadoCard (icono, texto)">
+            <h2 class="card-title">
+                <i th:class="bi-__${icono}__"></i>
+                <span th:text="${texto}"></span>
+            </h2>
+        </th:block>
+
+        <!-- Etiqueta forms -->
+        <th:block th:fragment="etiquetaForms (texto)">
+            <label for="" class="col-form-label" th:text="${texto}"></label>
+            <hr class="border border-primary border-2 opacity-50">
+        </th:block>
+
+        <!-- Campo input -->
+        <th:block th:fragment="campoInput (tipoCampo, campo, textoLabel, textoSpan, icono, objeto, soloLectura)">
+            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i th:class="bi-__${icono}__"></i>
+                    </span>
+                    <div class="form-floating">
+                        <input th:type="${tipoCampo}" class="form-control" th:id="${campo}" th:name="${campo}" placeholder="..." th:field="*{__${objeto}__}" th:classappend="${#fields.hasErrors('__${objeto}__') ? 'is-invalid' : 'is-valid'}" th:aria-describedby="${campo}" th:aria-label="${campo}" th:readonly="${__${soloLectura}__}">
+                        <label th:for="${campo}" class="form-label" th:text="${textoLabel}"></label>
+                    </div>
+                </div>
+                <span class="form-text" th:text="${textoSpan}"></span>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('__${objeto}__')}" th:errors="*{__${objeto}__}"></div>
+                <!-- <div class="invalid-feedback" th:each="e : ${#fields.errors('__${objeto}__')}" th:text="${e}"></div> -->
+            </div>
+        </th:block>
+        
+        <!-- Campo select -->
+        <th:block th:fragment="campoSelect (campo, textoLabel, textoSpan, textoSelect, objeto, lista, listaValue, listaText)">
+            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-cursor"></i>
+                    </span>
+                    <div class="form-floating">
+                        <select class="form-select selectpicker" th:id="${campo}" th:name="${campo}" th:field="*{__${objeto}__}" th:classappend="${#fields.hasErrors('__${objeto}__') ? 'is-invalid' : 'is-valid'}" th:aria-describedby="${campo}" th:aria-label="${campo}">
+                            <option selected disabled value="" th:text="${textoSelect}"></option>
+                            <option th:each="i : __${lista}__" th:value="${i__${listaValue}__}" th:text="${i__${listaText}__}"></option>
+                        </select>
+                        <label th:for="${campo}" class="form-label" th:text="${textoLabel}"></label>
+                    </div>
+                </div>
+                <span class="form-text" th:text="${textoSpan}"></span>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('__${objeto}__')}" th:errors="*{__${objeto}__}"></div>
+            </div>
+        </th:block>
+
+        <!-- Campo text area -->
+        <th:block th:fragment="campoTextArea (campo, objeto)">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <label class="form-label">Agregar comentarios al evento:</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-input-cursor-text"></i>
+                    </span>
+                    <div class="form-floating">
+                        <textarea class="form-control" th:id="${campo}" th:name="${campo}" placeholder="Comentarios..." th:field="*{__${objeto}__}" th:aria-describedby="${campo}" th:aria-label="${campo}" style="height: 116px"></textarea>
+                        <label th:for="${campo}" class="form-label" sec:authentication="name">Comentarios:</label>
+                    </div>
+                </div>
+                <span class="form-text">Comentarios para agregar al evento.</span>
+            </div>
+        </th:block>
+
+        <!-- Campo file chooser -->
+        <th:block th:fragment="campoFileChooser (texto)">
+            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                <label class="form-label">Cargar archivos al evento:</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi-files"></i>
+                    </span>
+                    <input type="file" class="form-control" id="archivos" name="archivos" placeholder="Archivos..." aria-describedby="archivos" aria-label="archivos" multiple>
+                </div>
+                <span class="form-text">Archivos para cargar al evento.</span>
+            </div>
+        </th:block>
+
+        <!-- Botón button -->
+        <th:block th:fragment="boton (icono, texto, titulo)">
+            <button type="submit" class="btn btn-primary" th:title="${titulo}">
+                <i th:class="bi-__${icono}__"></i>
+                <span th:text="${texto}"></span>
+            </button>
+        </th:block>
+
+        <!-- Paginación tabla -->
+        <th:block th:fragment="paginacionTabla (pagina, ruta)">
+            <nav aria-label="Page navigation" class="paging">
+                <ul class="pagination" th:if="${__${pagina}__.page.totalPages > 1}">
+                    <li class="page-item" th:classappend="${!__${pagina}__.paginando.isAnteriorHabilitada() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/views/__${ruta}__?numeroPagina=' + ${__${pagina}__.paginando.numeroPagina - 1}}" tabindex="-1">Anterior</a>
+                    </li>
+                    <th:block th:each="item : ${__${pagina}__.paginando.getElementos()}">
+                        <li class="page-item" th:classappend="${item.indice == __${pagina}__.paginando.numeroPagina ? 'active' : ''}" th:if="${item.tipoElementoPagina.name() == 'PAGINA'}">
+                            <a class="page-link" th:href="@{'/views/__${ruta}__?numeroPagina=' + ${item.indice}}" th:text="${item.indice}"></a>
+                        </li>
+                        <li class="page-item disabled" th:if="${item.tipoElementoPagina.name() == 'PUNTOS'}">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!__${pagina}__.paginando.isSiguienteHabilitada() ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/views/__${ruta}__?numeroPagina=' + ${__${pagina}__.paginando.numeroPagina + 1}}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </th:block>
+
+        <!-- Modal confirmación -->
+        <th:block th:fragment="confirmacionModal (idModal, texto, objeto, titulo)">
+            <div class="modal fade" th:id="${idModal}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-white">
+                            <h3 class="modal-title">
+                                <i class="bi-question-circle"></i>
+                                <span>Confirmación</span>
+                            </h3>
+                        </div>
+                        <div class="modal-body" th:text="${texto}"></div>
+                        <div class="modal-footer bg-dark text-white">
+                            <button type="button" class="btn btn-secondary" title="Cancelar" data-bs-dismiss="modal">
+                                <span>Cancelar</span>
+                            </button>
+                            <a type="button" class="btn btn-danger" th:href="${objeto}" th:title="${titulo}">
+                                <i th:class="bi-trash"></i>
+                                <span>Eliminar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+        <!-- Pie de página -->
+        <footer th:fragment="footer" class="footer-dark bg-dark text-white">
+            <!-- Section: Social media -->
+            <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+                <!-- Left -->
+                <div class="me-5 d-none d-lg-block">
+                    <span>Información de contacto:</span>
+                </div>
+                <!-- Left -->
+            
+                <!-- Right -->
+                <div>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-facebook"></i>
+                    </a>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-twitter"></i>
+                    </a>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-google"></i>
+                    </a>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-instagram"></i>
+                    </a>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-linkedin"></i>
+                    </a>
+                    <a href="#" class="me-4 link-secondary">
+                        <i class="bi-github"></i>
+                    </a>
+                </div>
+                <!-- Right -->
+            </section>
+            <!-- Section: Social media -->
+            
+            <!-- Section: Links  -->
+            <section class="">
+                <div class="container text-center text-md-start mt-5">
+                    <!-- Grid row -->
+                    <div class="row mt-3">
+                        <!-- Grid column -->
+                        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                            <!-- Content -->
+                            <h6 class="text-uppercase fw-bold mb-4">
+                                <i class="fas fa-gem me-3 text-secondary"></i>
+                                SGDSWS
+                            </h6>
+                            <p>Sistema de Gestión de Desarrollo de Sofware con Seguridad</p>
+                        </div>
+                        <!-- Grid column -->
+            
+                        <!-- Grid column -->
+                        <div class="col-md-2 col-lg-3 col-xl-3 mx-auto mb-4 mb-md-0">
+                            <!-- Links -->
+                            <h6 class="text-uppercase fw-bold mb-4">
+                                Proyecto
+                            </h6>
+                            <p>
+                                <a href="#" class="text-reset">Instituto Politécnico Nacional</a>
+                            </p>
+                            <p>
+                                <a href="#" class="text-reset">Escuela Superior de Ingeniería Mecánica y Eléctrica Unidad Culhuacán</a>
+                            </p>
+                            <p>
+                                <a href="#" class="text-reset">Sección de Estudios de Posgrado e Investigación</a>
+                            </p>
+                            <p>
+                                <a href="#" class="text-reset">Maestría en Ingeniería en Seguridad y Tecnologías de la Información</a>
+                            </p>
+                        </div>
+                        <!-- Grid column -->
+            
+                        <!-- Grid column -->
+                        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                            <!-- Links -->
+                            <h6 class="text-uppercase fw-bold mb-4">Contacto</h6>
+                            <p>
+                                <i class="fas fa-home me-3 text-secondary"></i>
+                                MSI Pablo Ramón Mercado Hernández
+                            </p>
+                            <p>
+                                <i class="fas fa-envelope me-3 text-secondary"></i>
+                                prmercado@ipn.mx
+                            </p>
+                            <p>
+                                <i class="fas fa-print me-3 text-secondary"></i>
+                                + 52 55 1234 5678
+                            </p>
+                            <p>
+                                <a href="#" class="text-reset">-</a>
+                            </p>
+                        </div>
+                        <!-- Grid column -->
+
+                        <!-- Grid column -->
+                        <div class="col-md-4 col-lg-2 col-xl-2 mx-auto mb-4">
+                            <!-- Links -->
+                            <h6 class="text-uppercase fw-bold mb-4">Contacto</h6>
+                            <p>
+                                <i class="fas fa-home me-3 text-secondary"></i>
+                                Oscar Gabriel Hernández Santiesteban
+                            </p>
+                            <p>
+                                <i class="fas fa-envelope me-3 text-secondary"></i>
+                                oghdzsant@outlook.com
+                            </p>
+                            <p>
+                                <i class="fas fa-print me-3 text-secondary"></i>
+                                + 52 722 373 61 26
+                            </p>
+                            <p>
+                                <a href="#" class="text-reset">-</a>
+                            </p>
+                        </div>
+                        <!-- Grid column -->
+                    </div>
+                    <!-- Grid row -->
+                </div>
+            </section>
+            <!-- Section: Links  -->
+            
+            <!-- Copyright -->
+            <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
+                <!-- &copy; -->
+                © 2023 Copyright: OGHS
+                <!-- <a class="text-reset fw-bold" href="https://mdbootstrap.com/">MDBootstrap.com</a> -->
+            </div>
+        </footer>
+    <!-- </body> -->
+</html>

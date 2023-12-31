@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (elementos=${navegacion})}"></nav>
+            <form th:action="@{/views/roles/guardar}" th:object="${rol}" method="post" novalidate>
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h2 th:replace="~{template :: encabezadoCard (icono='plus-circle', texto=${titulo})}"></h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="card card-body">
+                            <label th:replace="~{template :: etiquetaForms (texto='Insertar datos del rol:')}"></label>
+                            <div class="row">
+                                <input type="hidden" th:field="*{idRol}">
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='codigo', textoLabel='Código del rol:', textoSpan='Código asignado al rol.', icono='input-cursor-text', objeto=codigo, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoInput (tipoCampo='text', campo='descripcion', textoLabel='Descripción del rol:', textoSpan='Descripción asignada al rol.', icono='input-cursor-text', objeto=descripcion, soloLectura=false)}"></div>
+                                <div th:replace="~{template :: campoSelect (campo='estatus', textoLabel='Estatus del rol:', textoSpan='Estatus asignado al rol.', textoSelect='Seleccionar estatus...', objeto=estatus, lista='${T(com.oghs.sgdsws.model.Estatus).values()}', listaValue='', listaText='.etiqueta')}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-white">
+                        <button th:replace="~{template :: boton (icono='save', texto='Guardar', titulo='Guardar Rol')}"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>

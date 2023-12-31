@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (texto)}"></nav>
+            <form th:object="${usuario}">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h2 th:replace="~{template :: encabezadoCard (icono='person-gear', texto=${titulo})}"></h2>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{idUsuario}">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                <div class="card card-body">
+                                    <div class="text-center">
+                                        <img th:src="@{/img/usuario.png}" class="rounded me-2" alt="..." viewBox="0 0 64 64" width="64" height="64">
+                                        <!-- [[${proyectosUsuario}]] -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                <div class="card card-body">
+                                    <div class="accordion accordion-flush" id="contrasenaAccordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                                    <i class="bi-key"></i>
+                                                    <span>&nbsp;Cambiar Contraseña</span>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#contrasenaAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <!-- <label for="contrasena1" class="form-label sr-only">Contraseña</label> -->
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">
+                                                                <i class="bi-key"></i>
+                                                            </span>
+                                                            <div class="form-floating">
+                                                                <input type="contrasena1" class="form-control" id="contrasena1" name="contrasena1" placeholder="Contraseña..." aria-describedby="contrasena1" aria-label="contrasena1" required>
+                                                                <label for="contrasena1">Contraseña:</label>
+                                                            </div>
+                                                        </div>
+                                                        <span class="form-text">Nueva contraseña.</span>
+
+                                                        <!-- <label for="contrasena2" class="form-label sr-only">Contraseña</label> -->
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">
+                                                                <i class="bi-key"></i>
+                                                            </span>
+                                                            <div class="form-floating">
+                                                                <input type="contrasena2" class="form-control" id="contrasena2" name="contrasena2" placeholder="Contraseña..." aria-describedby="contrasena2" aria-label="contrasena2" required>
+                                                                <label for="contrasena2">Contraseña:</label>
+                                                            </div>
+                                                        </div>
+                                                        <span class="form-text">Confirmar contraseña.</span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <button class="btn btn-warning" type="button">
+                                                            <i class="bi-lock"></i>
+                                                            <span>Cambiar Contraseña</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='nombreUsuario', textoLabel='Nombre de usuario:', textoSpan='Nombre de usuario asignado.', icono='eye', objeto=nombreUsuario, soloLectura=true)}"></div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='correo', textoLabel='Correo electrónico del usuario:', textoSpan='Correo electrónico asociado al usuario.', icono='eye', objeto=correo, soloLectura=true)}"></div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='rol', textoLabel='Rol del usuario:', textoSpan='Rol asignado al usuario.', icono='eye', objeto=rol.descripcion, soloLectura=true)}"></div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='text', campo='estatus', textoLabel='Estatus del usuario:', textoSpan='Estatus asignado al usuario.', icono='eye', objeto=estatus, soloLectura=true)}"></div>
+                            <div th:replace="~{template :: campoInput (tipoCampo='date', campo='fechaVigencia', textoLabel='Fecha de vigencia del usuario:', textoSpan='Fecha de vigencia asignada al usuario.', icono='eye', objeto=fechaVigencia, soloLectura=true)}"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                <label for="listaUsuariosProyecto" class="form-label">Proyectos asignados</label>
+                                <ul class="list-group" id="listaArchivos">
+                                    <li th:each="lpu : ${listaProyectosUsuario}" class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-eye"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" th:value="${lpu.nombre}" readonly>
+                                            <label class="form-label" th:text="${lpu.descripcion}"></label>
+                                        </div>
+                                        <a th:href="@{#}" class="btn btn-primary d-flex justify-content-center align-items-center" title="Ir a proyecto">
+                                            <i class="bi-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <span class="form-text">Lista de proyectos asignados.</span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 ">
+                                <label for="listaUsuariosProyecto" class="form-label">Eventos asignados</label>
+                                <ul class="list-group" id="listaArchivos">
+                                    <li th:each="lbpu : ${listaBitcoraProyectoUsuario}" class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-eye"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" th:value="${lbpu.componente}" readonly>
+                                            <label class="form-label" th:text="${lbpu.descripcion}"></label>
+                                        </div>
+                                        <a th:href="@{#}" class="btn btn-primary d-flex justify-content-center align-items-center" title="Ir a evento">
+                                            <i class="bi-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <span class="form-text">Lista de eventos asignados.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-white">
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <footer th:replace="~{template :: footer}"></footer>
+
+        <link th:rel="stylesheet" th:href="@{/css/password.min.css}"/>
+
+        <script th:src="@{/js/password.min.js}"></script>
+        <script type="text/javascript" th:inline="javascript">
+            // Inicializar plugin bootstrapDualListbox
+            $('#password').password({
+                enterPass: 'Type your password',
+                shortPass: 'The password is too short',
+                containsField: 'The password contains your username',
+                steps: {
+                    // Easily change the steps' expected score here
+                    13: 'Really insecure password',
+                    33: 'Weak; try combining letters & numbers',
+                    67: 'Medium; try using special characters',
+                    94: 'Strong password',
+                },
+                showPercent: false,
+                showText: true, // shows the text tips
+                animate: true, // whether or not to animate the progress bar on input blur/focus
+                animateSpeed: 'fast', // the above animation speed
+                field: false, // select the match field (selector or jQuery instance) for better password checks
+                fieldPartialMatch: true, // whether to check for partials in field
+                minimumLength: 4, // minimum password length (below this threshold, the score is 0)
+                useColorBarImage: true, // use the (old) colorbar image
+                customColorBarRGB: {
+                    red: [0, 240],
+                    green: [0, 240],
+                    blue: 10,
+                } // set custom rgb color ranges for colorbar.
+            });
+        </script>
+    </body>
+</html>

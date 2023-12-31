@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container" data-bs-spy="scroll">
+            <nav th:replace="~{template :: barraBreadcrumb (elementos=${navegacion})}"></nav>
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2 th:replace="~{template :: encabezadoCard (icono='bookmarks', texto=${titulo})}"></h2>
+                </div>
+                <div class="card-body">
+                    <div class="card card-body" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                        <label th:replace="~{template :: etiquetaForms (texto='Crear nuevo estado de proyecto:')}"></label>
+                        <div class="card card-body">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                <a class="btn btn-primary" th:href="@{/views/estadosProyecto/crear}" title="Crear Nuevo Estado de Proyecto">
+                                    <i class="bi-bookmark-plus"></i>
+                                    <span>Nuevo Estado de Proyecto</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card card-body table-responsive" data-bs-spy="scroll">
+                        <label th:replace="~{template :: etiquetaForms (texto='Listado de estados de proyecto existentes:')}"></label>
+                        <div class="row d-flex align-items-center">
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi-input-cursor-text"></i>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="search" class="form-control" id="buscar" placeholder="Buscar..." aria-describedby="buscar" aria-label="buscar">
+                                        <label for="buscar">Buscar:</label>
+                                    </div>
+                                </div>
+                                <span class="form-text">Buscar estado de proyecto por código o descripción.</span>
+                                <!-- <div class="alert alert-warning" th:if="${#fields.hasErrors('bitacoraProyecto.acciones')}" th:errors="*{bitacoraProyecto.acciones}"></div> -->
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                                <a class="btn btn-primary" th:href="@{#}" title="Buscar Estado de Proyecto">
+                                    <i class="bi-search"></i>
+                                    <span>Buscar</span>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover">
+                            <caption>Lista de estados de proyecto</caption>
+                            <thead class="table-group-divider table-dark">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Estatus</th>
+                                    <th scope="col">Usuario Creación</th>
+                                    <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Usuario Modificación</th>
+                                    <th scope="col">Fecha Modificación</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Editar</th>
+                                    <th scope="col" sec:authorize="hasAnyRole('ROLE_ADMIN')">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr th:each="ep : ${estadosProyecto.page}">
+                                    <th scope="row" th:text="${ep.idEstadoProyecto}"></th>
+                                    <td th:text="${ep.codigo}"></td>
+                                    <td th:text="${ep.descripcion}"></td>
+                                    <td th:text="${ep.estatus.etiqueta}"></td>
+                                    <td th:text="${ep.usuarioCreacion}"></td>
+                                    <td th:text="${#dates.format(ep.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${ep.usuarioModificacion}"></td>
+                                    <td th:text="${#dates.format(ep.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <a class="btn btn-warning" th:href="@{/views/estadosProyecto/editar/} + ${ep.idEstadoProyecto}" title="Editar Estado de Proyecto">
+                                            <i class="bi-pencil-square"></i>
+                                        </a>
+                                    </td>
+                                    <td sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                                        <button class="btn btn-danger" data-bs-toggle="modal" th:attr="data-bs-target=${'#confirmacionModal' + ep.idEstadoProyecto}" title="Eliminar Estado de Proyecto">
+                                            <i class="bi-trash"></i>
+                                        </button>
+                                        <nav th:replace="~{template :: confirmacionModal (idModal=confirmacionModal + ${ep.idEstadoProyecto}, texto='¿Eliminar este estado de proyecto: ' + ${ep.descripcion} + '?', objeto=@{/views/estadosProyecto/eliminar/} + ${ep.idEstadoProyecto}, titulo='Eliminar Estado de Proyecto')}"></nav>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="table-group-divider">
+                                    
+                            </tfoot>
+                        </table>
+                        <nav th:replace="~{template :: paginacionTabla (pagina='estadosProyecto', ruta='estadosProyecto/')}"></nav>
+                    </div>
+                </div>
+                <div class="card-footer bg-dark text-white">
+                    
+                </div>
+            </div>
+        </div>
+        
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>

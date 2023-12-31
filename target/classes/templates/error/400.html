@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+        
+        <div class="container text-center py-3">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h1 class="panel-title text-danger">
+                        <span th:text="${error}"></span> - <span th:text="${status}"></span>
+                    </h1>
+                </div>
+                <div class="panel-body">
+                    <!-- <img th:src="@{/img/error.png}" width="64" height="64"> -->
+                    <br>
+                    <h3>Solicitud incorrecta</h3>
+                    <br>
+                    <button class="btn btn-primary" onclick="goBack()">Regresar</button>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>

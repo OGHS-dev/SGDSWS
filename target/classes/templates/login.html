@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{template :: head}"></head>
+    <body>
+        <header th:replace="~{template :: header}"></header>
+
+        <div class="container">
+            <div class="row py-4">
+                <div class="container text-center">
+                    <h1>Sistema de Gestión de Desarrollo de Software con Seguridad</h1>
+                </div>
+            </div>
+            <div class="row py-4">
+                <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 mx-auto">
+                    <form th:action="@{/login}" method="post">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h2 th:replace="~{template :: encabezadoCard (icono='door-open', texto='Iniciar Sesión')}"></h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="card card-body">
+                                    <!-- <label for="username" class="form-label sr-only">Usuario</label> -->
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-person"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="Usuario..." aria-describedby="username" aria-label="username" required autofocus>
+                                            <label for="username">Usuario:</label>
+                                        </div>
+                                    </div>
+                                    <span class="form-text">Para solicitar un usuario nuevo favor de comunicarse con el área de Seguridad de la Información.</span>
+                                    
+                                    <!-- <label for="password" class="form-label sr-only">Contraseña</label> -->
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi-key"></i>
+                                        </span>
+                                        <div class="form-floating">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña..." aria-describedby="password" aria-label="password" required>
+                                            <label for="password">Contraseña:</label>
+                                        </div>
+                                    </div>
+                                    <span class="form-text">Para solicitar reposición de contraseña favor de comunicarse con el área de Seguridad de la Información.</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-dark text-white">
+                                <button th:replace="~{template :: boton (icono='save', texto='Ingresar', titulo='Iniciar Sesión')}"></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="~{template :: footer}"></footer>
+    </body>
+</html>
