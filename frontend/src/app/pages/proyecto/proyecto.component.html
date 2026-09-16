@@ -1,0 +1,32 @@
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Proyectos</h1>
+    <a class="btn btn-primary" routerLink="/proyecto/nuevo">Nuevo proyecto</a>
+  </div>
+  <mat-spinner *ngIf="cargando"></mat-spinner>
+  <p *ngIf="error" class="alert alert-danger">{{ error }}</p>
+  <table *ngIf="!cargando && !error" mat-table [dataSource]="proyectos" class="mat-elevation-z2 w-100">
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let proyecto">{{ proyecto.nombre }}</td>
+    </ng-container>
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let proyecto">{{ proyecto.estadoProyecto }}</td>
+    </ng-container>
+    <ng-container matColumnDef="responsable">
+      <th mat-header-cell *matHeaderCellDef>Responsable</th>
+      <td mat-cell *matCellDef="let proyecto">{{ proyecto.responsable }}</td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let proyecto">
+        <a class="btn btn-sm btn-outline-primary" [routerLink]="['/proyecto', proyecto.idProyecto]">Ver</a>
+        <a class="btn btn-sm btn-outline-secondary ms-1"
+           [routerLink]="['/proyecto', proyecto.idProyecto, 'bitacora']">Bitácora</a>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['nombre', 'estado', 'responsable', 'acciones']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['nombre', 'estado', 'responsable', 'acciones'];"></tr>
+  </table>
+</section>

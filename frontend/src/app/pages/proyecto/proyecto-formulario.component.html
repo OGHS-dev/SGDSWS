@@ -1,0 +1,49 @@
+<section class="container py-4">
+  <a routerLink="/proyecto">Volver a proyectos</a>
+  <h1>{{ idProyecto ? 'Editar proyecto' : 'Nuevo proyecto' }}</h1>
+  <mat-spinner *ngIf="cargando"></mat-spinner>
+  <p *ngIf="error" class="alert alert-danger">{{ error }}</p>
+  <form *ngIf="!cargando" [formGroup]="form" (ngSubmit)="guardar()" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="nombre">Nombre</label>
+      <input id="nombre" class="form-control" formControlName="nombre">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="responsable">Responsable</label>
+      <input id="responsable" class="form-control" formControlName="responsable">
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="descripcion">Descripción</label>
+      <textarea id="descripcion" class="form-control" rows="3" formControlName="descripcion"></textarea>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="estado">Estado</label>
+      <select id="estado" class="form-select" formControlName="idEstadoProyecto">
+        <option [ngValue]="null">Seleccione...</option>
+        <option *ngFor="let estado of estados" [ngValue]="estado.id">{{ estado.descripcion }}</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="fechaInicio">Fecha de inicio</label>
+      <input id="fechaInicio" type="date" class="form-control" formControlName="fechaInicio">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="fechaFin">Fecha de fin</label>
+      <input id="fechaFin" type="date" class="form-control" formControlName="fechaFin">
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="usuarios">Usuarios asignados</label>
+      <select id="usuarios" class="form-select" multiple formControlName="idsUsuarios">
+        <option *ngFor="let usuario of usuarios" [ngValue]="usuario.idUsuario">
+          {{ usuario.nombreUsuario }}
+        </option>
+      </select>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary me-2" type="submit" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/proyecto">Cancelar</a>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,18 @@
+# Java/Maven
+**/target/
+**/.mvn/timing.properties
+
+# Angular/Node
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Local environment and IDE files
+**/.env
+**/.env.*
+!.env.example
+**/.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

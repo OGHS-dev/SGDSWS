@@ -1,0 +1,332 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+        <a class="navbar-brand" routerLink="/indice">
+            <img src="images/sgdsws_blanco.png" alt="..." class="rounded ms-2 me-2" width="64" height="64">
+            <span>SGDSWS</span>
+        </a>
+
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            @if (usuarioEnSesion) {
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Dropdown -->
+                    <li class="nav-item dropdown">
+                        <div mdbDropdown class="btn-group">
+                            <a class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi-person-circle"></i>
+                                <!-- <i class="fas fa-user-circle me-2"></i> -->
+                                <span>{{usuario?.nombreUsuario}}</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenu">
+                                <li>
+                                    <a class="dropdown-item" routerLink="#">
+                                        <i class="bi-person-gear"></i>
+                                        <!-- <i class="fas fa-user-cog me-2"></i> -->
+                                        <span>Perfil</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" routerLink="#">
+                                        <i class="bi-wrench"></i>
+                                        <!-- <i class="fas fa-tools me-2"></i> -->
+                                        <span>Configuración</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" (click)="cerrarSesion()">
+                                        <i class="bi-door-closed"></i>
+                                        <!-- <i class="fas fa-sign-out-alt me-2"></i> -->
+                                        <span>Cerrar Sesión</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <div class="vr"></div>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light" data-bs-toggle="offcanvas" href="#menuLateral" aria-controls="menuLateral">
+                            <i class="bi-menu-button"></i>
+                            <!-- <i class="fas fa-bars me-2"></i> -->
+                            <span>Menú</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Search form -->
+                <form class="d-flex input-group w-auto">
+                    <input type="search" class="form-control" placeholder="Type query" aria-label="Search" />
+                    <button class="btn btn-primary" type="button">
+                        Search
+                    </button>
+                </form>
+            } @else {
+                <!-- <a mat-raised-button routerLink="/inicioSesion" color="accent" class="warning">
+                    <mat-icon>login</mat-icon>
+                    <span>Iniciar Sesión</span>
+                </a>
+                <a mat-raised-button routerLink="/registro" color="accent">
+                    <mat-icon>app_registration</mat-icon>
+                    <span>Registro</span>
+                </a> -->
+                <div class="btn-toolbar" role="toolbar" aria-label="Login Toolbar">
+                    <a class="btn btn-primary" routerLink="/inicioSesion" title="Iniciar Sesión">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <!-- <i class="fas fa-sign-in-alt me-2"></i> -->
+                        <span>Iniciar Sesión</span>
+                    </a>
+                    <a class="btn btn-secondary" routerLink="/registro" title="Registro">
+                        <i class="bi-person-plus"></i>
+                        <!-- <i class="fas fa-user-plus me-2"></i> -->
+                        <span>Registro</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</nav>
+
+<!-- <mat-toolbar class="example-toolbar">
+    <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="example-app-name">Responsive App</h1>
+</mat-toolbar> -->
+
+<!-- Notificaciones -->
+<!-- <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Bootstrap</strong>
+        <small>11 mins ago</small>
+        <button type="button" class="ms-2 mb-1 btn-close" data-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Hello, world! This is a toast message.</div>
+</div> -->
+
+<!-- Menu lateral -->
+@if (usuarioEnSesion) {
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="static" tabindex="-1"  aria-labelledby="menuLateralLabel">
+        <div class="offcanvas-header bg-dark text-white">
+            <h2 id="menuLateralLabel" class="offcanvas-title">Módulos</h2>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="list-group" role="tablist">
+                <a routerLink="/inicio" class="list-group-item list-group-item-action bi bi-house" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Inicio</span>
+                </a>
+                <a *ngIf="tieneRol('ADMIN', 'SUPERVISOR', 'AUDITOR', 'REVISOR')" routerLink="/usuario" class="list-group-item list-group-item-action bi bi-person-circle" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Usuarios</span>
+                </a>
+                <a th:href="@{/views/roles/}" class="list-group-item list-group-item-action bi bi-person-badge" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Roles</span>
+                </a>
+                <a routerLink="" class="list-group-item list-group-item-action bi bi-people disabled" tabindex="-1" aria-disabled="true" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Equipos</span>
+                </a>
+                <a *ngIf="tieneRol('ADMIN', 'SUPERVISOR', 'AUDITOR', 'REVISOR', 'DESARROLLO')" routerLink="/proyecto" class="list-group-item list-group-item-action bi bi-clipboard-data" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Proyectos</span>
+                </a>
+                <a *ngIf="tieneRol('ADMIN', 'SUPERVISOR', 'AUDITOR', 'REVISOR')" routerLink="/proyecto" class="list-group-item list-group-item-action bi bi-diagram-2" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Módulos</span>
+                </a>
+                <a th:href="@{/views/hallazgos/}" class="list-group-item list-group-item-action bi bi-bug" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Hallazgos</span>
+                </a>
+                <a th:href="@{/views/incidentes/}" class="list-group-item list-group-item-action bi bi-exclamation-triangle" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Incidentes</span>
+                </a>
+                <a th:href="@{/views/categorias/}" class="list-group-item list-group-item-action bi bi-info-square" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Categorías</span>
+                </a>
+                <a th:href="@{/views/prioridades/}" class="list-group-item list-group-item-action bi bi-list-ol" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Prioridades</span>
+                </a>
+                <a th:href="@{/views/impactos/}" class="list-group-item list-group-item-action bi bi-fire" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Impactos</span>
+                </a>
+                <a th:href="@{/views/nivelesRiesgo/}" class="list-group-item list-group-item-action bi bi-shield-exclamation" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Niveles de Riesgo</span>
+                </a>
+                <a th:href="@{/views/estadosProyecto/}" class="list-group-item list-group-item-action bi bi-bookmarks" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Estados de Proyecto</span>
+                </a>
+                <a th:href="@{/views/estadosBitacoraProyecto/}" class="list-group-item list-group-item-action bi bi-bookmarks" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERVISOR', 'ROLE_AUDITOR', 'ROLE_REVISOR')" role="tab" data-bs-dismiss="offcanvas">
+                    <span class="px-2">Estados de Evento</span>
+                </a>
+            </div>
+        </div>
+        <router-outlet></router-outlet>
+    </div>
+<!-- @if (usuarioEnSesion) { -->
+    <!-- <mat-sidenav-container class="">
+        <mat-sidenav #sidenav mode="over">
+            <div class="bg-dark text-white">
+                <h2>Módulos</h2>
+            </div>
+            <div class="list-group list-group-light">
+                <a routerLink="/indice" class="list-group-item list-group-item-action">
+                    <i class="fas fa-home ms-2 me-2"></i>
+                    <span class="fw-bold">Inicio</span>
+                </a>
+                <a routerLink="/usuario" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-friends ms-2 me-2"></i>
+                    <span class="fw-bold">Usuarios</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-tag ms-2 me-2"></i>
+                    <span class="fw-bold">Roles</span>
+                </a>
+                <a routerLink="" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users ms-2 me-2"></i>
+                    <span class="fw-bold">Equipos</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-clipboard ms-2 me-2"></i>
+                    <span class="fw-bold">Proyectos</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-project-diagram ms-2 me-2"></i>
+                    <span class="fw-bold">Módulos</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-bug ms-2 me-2"></i>
+                    <span class="fw-bold">Hallazgos</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-exclamation-circle ms-2 me-2"></i>
+                    <span class="fw-bold">Incidentes</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags ms-2 me-2"></i>
+                    <span class="fw-bold">Categorías</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-list-ol ms-2 me-2"></i>
+                    <span class="fw-bold">Prioridades</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-fire ms-2 me-2"></i>
+                    <span class="fw-bold">Impactos</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-thermometer ms-2 me-2"></i>
+                    <span class="fw-bold">Niveles de Riesgo</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tag ms-2 me-2"></i>
+                    <span class="fw-bold">Estados de Proyecto</span>
+                </a>
+                <a routerLink="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tag ms-2 me-2"></i>
+                    <span class="fw-bold">Estados de Evento</span>
+                </a>
+            </div> -->
+
+
+
+            <!-- <mat-nav-list>
+                <mat-selection-list>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>home</mat-icon>
+                        <div matListItemTitle>Índice</div>
+                        <div matListItemLine>Donde se encuentra el jom</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>person</mat-icon>
+                        <div matListItemTitle>Usuarios</div>
+                        <div matListItemLine>Consultar módulo de usuarios</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Roles</div>
+                        <div matListItemLine>Consultar módulo de roles</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Equipos</div>
+                        <div matListItemLine>Consultar módulo de equipos</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Proyectos</div>
+                        <div matListItemLine>Consultar módulo de proyectos</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Módulos</div>
+                        <div matListItemLine>Consultar módulo de módulos</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Hallazgos</div>
+                        <div matListItemLine>Consultar módulo de hallazgos</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Incidentes</div>
+                        <div matListItemLine>Consultar módulo de incidentes</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Categorías</div>
+                        <div matListItemLine>Consultar módulo de categorías</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Prioridades</div>
+                        <div matListItemLine>Consultar módulo de prioridades</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Impactos</div>
+                        <div matListItemLine>Consultar módulo de impactos</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Niveles de Riesgo</div>
+                        <div matListItemLine>Consultar módulo de niveles de riesgo</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Estados de Proyecto</div>
+                        <div matListItemLine>Consultar módulo de niveles de estados de proyecto</div>
+                    </mat-list-item>
+                    <mat-list-item routerLink="/indice">
+                        <mat-icon matListItemIcon>info</mat-icon>
+                        <div matListItemTitle>Estados de Evento</div>
+                        <div matListItemLine>Consultar módulo de niveles de estados de evento</div>
+                    </mat-list-item>
+                </mat-selection-list>
+            </mat-nav-list>
+        </mat-sidenav>
+    
+        <mat-sidenav-content>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container> -->
+}
+
+<!-- <script type="text/javascript">
+    // Inicializar notificaciones
+    // if (document.getElementById('notificacionToast') != null) {
+    //     bootstrap.Toast.getOrCreateInstance(document.getElementById('notificacionToast')).show();
+    // }
+    
+    // $(document).ready(function() {
+    //     // Inicializar tooltips
+    //     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    //     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    // });
+
+</script> -->
