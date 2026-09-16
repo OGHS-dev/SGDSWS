@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.primary-snackbar {
+    --mdc-snackbar-container-color: #3B71CA;
+    --mat-mdc-snack-bar-button-color: #FBFBFB;
+}
+
+.success-snackbar {
+    --mdc-snackbar-container-color: #14A44D;
+    --mat-mdc-snack-bar-button-color: #FBFBFB;
+}
+
+.warning-snackbar {
+    --mdc-snackbar-container-color: #E4A11B;
+    --mat-mdc-snack-bar-button-color: #FBFBFB;
+}
+
+.danger-snackbar {
+    --mdc-snackbar-container-color: #DC4C64;
+    --mat-mdc-snack-bar-button-color: #FBFBFB;
+}
+
+.info-snackbar {
+    --mdc-snackbar-container-color: #54B4D3;
+    --mat-mdc-snack-bar-button-color: #FBFBFB;
+}
+
+/* .ng-valid:not(form).ng-touched {
+    border-left: 4px solid #42a944;
+} */
+
+/* .ng-invalid:not(form).ng-touched {
+    border-left: 4px solid #a94442;
+} */
+ 

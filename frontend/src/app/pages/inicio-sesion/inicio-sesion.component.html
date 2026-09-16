@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="row mt-2 mb-2">
+        <h1 class="text-center">Sistema de Gestión de Desarrollo de Software con Seguridad</h1>
+    </div>
+    <div class="row mt-2 mb-2">
+        <form [formGroup]="formularioInicioSesion" (ngSubmit)="iniciarSesion(formularioInicioSesion)" class="col-sm-12 col-md-8 col-lg-6 col-xl-4 mx-auto text-center">
+            <mat-card appearance="raised" class="card mt-2 mb-2">
+                <mat-card-header class="card-header bg-dark text-white">
+                    <mat-icon mat-card-avatar>login</mat-icon>
+                    <mat-card-title>Iniciar Sesión</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="card-body mt-2 mb-2">
+                    <mat-card-subtitle>Inicie sesión con su usuario</mat-card-subtitle>
+                    <mat-form-field appearance="outline" class="mt-2 mb-2">
+                        <mat-icon matPrefix>person</mat-icon>
+                        <mat-label>Usuario:</mat-label>
+                        <input type="text" matInput formControlName="nombreUsuario" placeholder="Usuario..." required>
+                        <mat-hint>Nombre de usuario</mat-hint>
+                        <!-- @if (f['nombreUsuario'].errors) {
+                            <mat-error>El nombre de usuario es requerido</mat-error>
+                        } -->
+                        @if (f['nombreUsuario'].hasError('required')) {
+                            <mat-error>El nombre de usuario es <strong>requerido</strong></mat-error>
+                        }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="mt-2 mb-2">
+                        <mat-icon matPrefix>password</mat-icon>
+                        <mat-label>Contraseña:</mat-label>
+                        <input type="password" matInput formControlName="contrasena" placeholder="Contraseña..." required>
+                        <mat-hint>Contraseña de usuario</mat-hint>
+                        @if (f['contrasena'].hasError('required')) {
+                            <mat-error>La contraseña es requerida</mat-error>
+                        }
+                    </mat-form-field>
+                </mat-card-content>
+                <mat-card-actions class="card-body mt-2 mb-2">
+                    <!-- <button mat-raised-button extended color="primary" title="Iniciar Sesión">
+                        <mat-icon>login</mat-icon>
+                        <span>Iniciar Sesión</span>
+                    </button> -->
+                    <!-- <button mat-raised-button extended color="secondary" type="reset" title="Limpiar">
+                        <mat-icon>clear_all</mat-icon>
+                        <span>Limpiar</span>
+                    </button> -->
+                    <div class="btn-toolbar" role="toolbar" aria-label="Login Toolbar">
+                        <button type="submit" class="btn btn-primary ms-2 me-2" mdbRipple title="Iniciar Sesión">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <span>Iniciar Sesión</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary ms-2 me-2" mdbRipple title="Limpiar">
+                            <i class="fas fa-eraser me-2"></i>
+                            <span>Limpiar</span>
+                        </button>
+                    </div>
+                </mat-card-actions>
+                <mat-card-footer class="card-footer bg-dark text-warning">
+                    {{errorInicioSesion}}
+                </mat-card-footer>
+            </mat-card>
+        </form>
+    </div>
+    <div class="row mt-2 mb-2">
+
+    </div>
+</div>

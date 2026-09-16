@@ -1,0 +1,29 @@
+<section class="container py-4">
+  <a routerLink="/proyecto">Volver a proyectos</a>
+  <mat-spinner *ngIf="cargando"></mat-spinner>
+  <p *ngIf="error" class="alert alert-danger">{{ error }}</p>
+  <article *ngIf="!cargando && proyecto" class="card mb-4">
+    <div class="card-body">
+      <h1 class="card-title">{{ proyecto.nombre }}</h1>
+      <p class="card-text">{{ proyecto.descripcion }}</p>
+      <dl class="row">
+        <dt class="col-sm-3">Estado</dt>
+        <dd class="col-sm-9">{{ proyecto.estadoProyecto }}</dd>
+        <dt class="col-sm-3">Responsable</dt>
+        <dd class="col-sm-9">{{ proyecto.responsable }}</dd>
+        <dt class="col-sm-3">Periodo</dt>
+        <dd class="col-sm-9">{{ proyecto.fechaInicio }} - {{ proyecto.fechaFin }}</dd>
+      </dl>
+      <a class="btn btn-primary" [routerLink]="['/proyecto', proyecto.idProyecto, 'editar']">Editar</a>
+      <a class="btn btn-outline-secondary ms-2" [routerLink]="['/proyecto', proyecto.idProyecto, 'bitacora']">
+        Ver bitácora
+      </a>
+    </div>
+  </article>
+  <h2 class="h4" *ngIf="!cargando && proyecto">Revisiones recientes</h2>
+  <div *ngFor="let bitacora of bitacoras" class="border rounded p-3 mb-2">
+    <strong>Revisión {{ bitacora.revision }}</strong>
+    <span class="ms-2">{{ bitacora.estadoBitacoraProyecto?.descripcion }}</span>
+    <p class="mb-0">{{ bitacora.descripcion }}</p>
+  </div>
+</section>
